@@ -183,19 +183,20 @@ def _adb_list():
 # ── Android actions ──────────────────────────────────────────────────────────
 
 def android_set_proxy(proxy_host, proxy_port):
-    """Set HTTP proxy on all connected Android devices via adb."""
+    """Set HTTP proxy on all connected Android devices via adb.
+
+    Returns a list of dicts: [{"serial", "model", "ok", "message"}, ...]
+    Returns None if adb is missing or no devices are connected.
+    """
     if not check_adb():
-        print("\n  [!] adb not found on PATH. Install Android platform-tools first.")
-        return
+        return None
 
     devices = get_connected_android_devices()
     if not devices:
-        print("\n  [!] No connected Android devices found.")
-        print("      Make sure USB debugging is enabled and the device is connected.")
-        return
+        return None
 
-    print(f"\n  Found {len(devices)} device(s):\n")
     proxy_value = f"{proxy_host}:{proxy_port}"
+    results = []
 
     for serial, model in devices:
         try:
@@ -204,25 +205,48 @@ def android_set_proxy(proxy_host, proxy_port):
                 capture_output=True, text=True, timeout=10,
             )
             if result.returncode == 0:
-                print(f"    [OK] {model} ({serial}) -> proxy set to {proxy_value}")
+                results.append({"serial": serial, "model": model, "ok": True,
+                                "message": f"proxy set to {proxy_value}"})
             else:
-                print(f"    [FAIL] {model} ({serial}) -> {result.stderr.strip()}")
+                results.append({"serial": serial, "model": model, "ok": False,
+                                "message": result.stderr.strip()})
         except subprocess.TimeoutExpired:
-            print(f"    [FAIL] {model} ({serial}) -> timed out")
+            results.append({"serial": serial, "model": model, "ok": False,
+                            "message": "timed out"})
+
+    return results
+
+
+def android_set_proxy_cli(proxy_host, proxy_port):
+    """CLI wrapper around android_set_proxy — prints results."""
+    results = android_set_proxy(proxy_host, proxy_port)
+    if results is None:
+        if not check_adb():
+            print("\n  [!] adb not found on PATH. Install Android platform-tools first.")
+        else:
+            print("\n  [!] No connected Android devices found.")
+            print("      Make sure USB debugging is enabled and the device is connected.")
+        return
+    print(f"\n  Found {len(results)} device(s):\n")
+    for r in results:
+        tag = "OK" if r["ok"] else "FAIL"
+        print(f"    [{tag}] {r['model']} ({r['serial']}) -> {r['message']}")
 
 
 def android_clear_proxy():
-    """Clear HTTP proxy on all connected Android devices."""
+    """Clear HTTP proxy on all connected Android devices.
+
+    Returns a list of dicts: [{"serial", "model", "ok", "message"}, ...]
+    Returns None if adb is missing or no devices are connected.
+    """
     if not check_adb():
-        print("\n  [!] adb not found on PATH. Install Android platform-tools first.")
-        return
+        return None
 
     devices = get_connected_android_devices()
     if not devices:
-        print("\n  [!] No connected Android devices found.")
-        return
+        return None
 
-    print(f"\n  Clearing proxy on {len(devices)} device(s):\n")
+    results = []
 
     for serial, model in devices:
         try:
@@ -235,12 +259,31 @@ def android_clear_proxy():
                 capture_output=True, text=True, timeout=10,
             )
             if result.returncode == 0:
-                print(f"    [OK] {model} ({serial}) -> proxy cleared")
-                print(f"         (toggle Wi-Fi on the device if proxy still shows in Wi-Fi settings)")
+                results.append({"serial": serial, "model": model, "ok": True,
+                                "message": "proxy cleared (toggle Wi-Fi if it still shows)"})
             else:
-                print(f"    [FAIL] {model} ({serial}) -> {result.stderr.strip()}")
+                results.append({"serial": serial, "model": model, "ok": False,
+                                "message": result.stderr.strip()})
         except subprocess.TimeoutExpired:
-            print(f"    [FAIL] {model} ({serial}) -> timed out")
+            results.append({"serial": serial, "model": model, "ok": False,
+                            "message": "timed out"})
+
+    return results
+
+
+def android_clear_proxy_cli():
+    """CLI wrapper around android_clear_proxy — prints results."""
+    results = android_clear_proxy()
+    if results is None:
+        if not check_adb():
+            print("\n  [!] adb not found on PATH. Install Android platform-tools first.")
+        else:
+            print("\n  [!] No connected Android devices found.")
+        return
+    print(f"\n  Clearing proxy on {len(results)} device(s):\n")
+    for r in results:
+        tag = "OK" if r["ok"] else "FAIL"
+        print(f"    [{tag}] {r['model']} ({r['serial']}) -> {r['message']}")
 
 
 # ── Main menu ────────────────────────────────────────────────────────────────
@@ -282,9 +325,9 @@ def main():
             break
 
         if choice == "1":
-            android_set_proxy(proxy_host, proxy_port)
+            android_set_proxy_cli(proxy_host, proxy_port)
         elif choice == "2":
-            android_clear_proxy()
+            android_clear_proxy_cli()
         elif choice == "3":
             adb_wireless_connect()
         elif choice == "4":

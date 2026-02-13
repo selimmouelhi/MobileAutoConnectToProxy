@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxy Setup - Android Devices</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+  <h1>Proxy Setup</h1>
+  <p class="subtitle">Android Test Devices via ADB</p>
+
+  <div class="info-bar">
+    <div class="info-item">
+      <label>Mac IP</label>
+      <span id="mac-ip">...</span>
+    </div>
+    <div class="info-item">
+      <label>ADB Status</label>
+      <span id="adb-status">...</span>
+    </div>
+    <div class="info-item">
+      <label>Devices</label>
+      <span id="device-count">...</span>
+    </div>
+  </div>
+
+  <!-- State banner -->
+  <div class="state-banner state-nodevices" id="state-banner">
+    <span class="emoji">&#9203;</span>
+    <span class="label">Loading...</span>
+  </div>
+
+  <p class="section-title">Connected Devices</p>
+  <div class="devices" id="device-list">
+    <div class="no-devices">Loading...</div>
+  </div>
+
+  <div class="form-row">
+    <div class="field">
+      <label>Proxy IP Address</label>
+      <input type="text" id="proxy-ip" placeholder="192.168.x.x">
+    </div>
+    <div class="field port">
+      <label>Port</label>
+      <input type="number" id="proxy-port" value="" placeholder="9090">
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-enable" id="btn-enable" onclick="enableProxy()">Enable Proxy</button>
+    <button class="btn btn-disable" id="btn-disable" onclick="disableProxy()">Disable Proxy</button>
+    <button class="btn btn-delete" id="btn-delete" onclick="deleteProxy()">Delete Proxy</button>
+  </div>
+
+  <div class="results" id="results">
+    <p class="section-title" id="results-title">Results</p>
+    <div id="results-body"></div>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

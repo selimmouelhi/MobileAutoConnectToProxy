@@ -233,6 +233,60 @@ def android_set_proxy_cli(proxy_host, proxy_port):
         print(f"    [{tag}] {r['model']} ({r['serial']}) -> {r['message']}")
 
 
+def android_get_proxy_state(serial):
+    """Query the current http_proxy setting on a single device.
+
+    Returns the proxy value string (e.g. "192.168.4.132:9090", ":0"),
+    or None if unset / error.
+    """
+    try:
+        result = subprocess.run(
+            ["adb", "-s", serial, "shell", "settings", "get", "global", "http_proxy"],
+            capture_output=True, text=True, timeout=5,
+        )
+        value = result.stdout.strip()
+        if result.returncode != 0 or not value or value == "null":
+            return None
+        return value
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return None
+
+
+def android_delete_proxy():
+    """Fully remove HTTP proxy setting from all connected Android devices.
+
+    Unlike android_clear_proxy (which sets :0), this deletes the setting entirely.
+    Returns a list of dicts: [{"serial", "model", "ok", "message"}, ...]
+    Returns None if adb is missing or no devices are connected.
+    """
+    if not check_adb():
+        return None
+
+    devices = get_connected_android_devices()
+    if not devices:
+        return None
+
+    results = []
+
+    for serial, model in devices:
+        try:
+            result = subprocess.run(
+                ["adb", "-s", serial, "shell", "settings", "delete", "global", "http_proxy"],
+                capture_output=True, text=True, timeout=10,
+            )
+            if result.returncode == 0:
+                results.append({"serial": serial, "model": model, "ok": True,
+                                "message": "proxy deleted"})
+            else:
+                results.append({"serial": serial, "model": model, "ok": False,
+                                "message": result.stderr.strip()})
+        except subprocess.TimeoutExpired:
+            results.append({"serial": serial, "model": model, "ok": False,
+                            "message": "timed out"})
+
+    return results
+
+
 def android_clear_proxy():
     """Clear HTTP proxy on all connected Android devices.
 

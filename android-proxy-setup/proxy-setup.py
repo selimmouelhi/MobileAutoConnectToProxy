@@ -180,7 +180,72 @@ def _adb_list():
             print(f"    - {model} ({serial})")
 
 
+# ── ADB reverse (USB tunnel) ─────────────────────────────────────────────────
+
+def adb_reverse_add(serial, port):
+    """Set up adb reverse so device localhost:<port> forwards to Mac's <port> over USB."""
+    try:
+        result = subprocess.run(
+            ["adb", "-s", serial, "reverse", f"tcp:{port}", f"tcp:{port}"],
+            capture_output=True, text=True, timeout=10,
+        )
+        return result.returncode == 0
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        return False
+
+
+def adb_reverse_remove(serial, port):
+    """Remove adb reverse for a given port."""
+    try:
+        subprocess.run(
+            ["adb", "-s", serial, "reverse", "--remove", f"tcp:{port}"],
+            capture_output=True, text=True, timeout=10,
+        )
+    except (FileNotFoundError, subprocess.TimeoutExpired):
+        pass
+
+
 # ── Android actions ──────────────────────────────────────────────────────────
+
+def android_set_proxy_usb(proxy_port):
+    """Set HTTP proxy via USB tunnel on all connected Android devices.
+
+    Sets up adb reverse and points proxy to 127.0.0.1:<port>.
+    Returns a list of dicts: [{"serial", "model", "ok", "message"}, ...]
+    Returns None if adb is missing or no devices are connected.
+    """
+    if not check_adb():
+        return None
+
+    devices = get_connected_android_devices()
+    if not devices:
+        return None
+
+    results = []
+    proxy_value = f"127.0.0.1:{proxy_port}"
+
+    for serial, model in devices:
+        if not adb_reverse_add(serial, proxy_port):
+            results.append({"serial": serial, "model": model, "ok": False,
+                            "message": "failed to set up USB tunnel"})
+            continue
+        try:
+            result = subprocess.run(
+                ["adb", "-s", serial, "shell", "settings", "put", "global", "http_proxy", proxy_value],
+                capture_output=True, text=True, timeout=10,
+            )
+            if result.returncode == 0:
+                results.append({"serial": serial, "model": model, "ok": True,
+                                "message": f"proxy set to {proxy_value} (USB tunnel)"})
+            else:
+                results.append({"serial": serial, "model": model, "ok": False,
+                                "message": result.stderr.strip()})
+        except subprocess.TimeoutExpired:
+            results.append({"serial": serial, "model": model, "ok": False,
+                            "message": "timed out"})
+
+    return results
+
 
 def android_set_proxy(proxy_host, proxy_port):
     """Set HTTP proxy on all connected Android devices via adb.
@@ -252,6 +317,56 @@ def android_get_proxy_state(serial):
         return None
 
 
+def check_proxy_health(serial, current_mac_ip):
+    """Check whether the device's proxy config is healthy.
+
+    Returns a dict with:
+      - "status": "ok" | "stale" | "no_tunnel" | "clean" | "disabled"
+      - "issue": human-readable description (None if ok/clean)
+      - "proxy": current proxy value
+    """
+    proxy = android_get_proxy_state(serial)
+
+    if proxy is None:
+        return {"status": "clean", "issue": None, "proxy": None}
+
+    if proxy == ":0":
+        return {"status": "disabled", "issue": None, "proxy": proxy}
+
+    # Parse proxy value
+    if ":" in proxy:
+        host, _, port = proxy.rpartition(":")
+    else:
+        host, port = proxy, ""
+
+    # USB tunnel mode — check that adb reverse is actually set up
+    if host == "127.0.0.1":
+        try:
+            result = subprocess.run(
+                ["adb", "-s", serial, "reverse", "--list"],
+                capture_output=True, text=True, timeout=5,
+            )
+            if f"tcp:{port}" not in result.stdout:
+                return {
+                    "status": "no_tunnel",
+                    "issue": f"Proxy points to 127.0.0.1:{port} but no adb reverse tunnel is active — traffic is blackholed",
+                    "proxy": proxy,
+                }
+        except (FileNotFoundError, subprocess.TimeoutExpired):
+            pass
+        return {"status": "ok", "issue": None, "proxy": proxy}
+
+    # Wi-Fi mode — check IP matches Mac's current IP
+    if host != current_mac_ip:
+        return {
+            "status": "stale",
+            "issue": f"Proxy points to {host} but Mac's current IP is {current_mac_ip} — device traffic is blackholed",
+            "proxy": proxy,
+        }
+
+    return {"status": "ok", "issue": None, "proxy": proxy}
+
+
 def android_delete_proxy():
     """Fully remove HTTP proxy setting from all connected Android devices.
 
@@ -274,6 +389,7 @@ def android_delete_proxy():
                 ["adb", "-s", serial, "shell", "settings", "delete", "global", "http_proxy"],
                 capture_output=True, text=True, timeout=10,
             )
+            adb_reverse_remove(serial, DEFAULT_PROXY_PORT)
             if result.returncode == 0:
                 results.append({"serial": serial, "model": model, "ok": True,
                                 "message": "proxy deleted"})
@@ -304,6 +420,7 @@ def android_clear_proxy():
 
     for serial, model in devices:
         try:
+            adb_reverse_remove(serial, DEFAULT_PROXY_PORT)
             subprocess.run(
                 ["adb", "-s", serial, "shell", "settings", "delete", "global", "http_proxy"],
                 capture_output=True, text=True, timeout=10,

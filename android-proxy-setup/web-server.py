@@ -20,13 +20,15 @@ get_local_ip = proxy_setup.get_local_ip
 check_adb = proxy_setup.check_adb
 get_connected_android_devices = proxy_setup.get_connected_android_devices
 android_set_proxy = proxy_setup.android_set_proxy
+android_set_proxy_usb = proxy_setup.android_set_proxy_usb
 android_clear_proxy = proxy_setup.android_clear_proxy
 android_delete_proxy = proxy_setup.android_delete_proxy
 android_get_proxy_state = proxy_setup.android_get_proxy_state
+check_proxy_health = proxy_setup.check_proxy_health
 DEFAULT_PROXY_PORT = proxy_setup.DEFAULT_PROXY_PORT
 
 HOST = "0.0.0.0"
-PORT = 8080
+PORT = 8081
 
 STATIC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
 
@@ -98,12 +100,19 @@ class ProxyHandler(BaseHTTPRequestHandler):
 
     def _handle_status(self):
         devices = get_connected_android_devices()
+        mac_ip = get_local_ip()
         device_list = []
         for serial, model in devices:
-            proxy = android_get_proxy_state(serial)
-            device_list.append({"serial": serial, "model": model, "proxy": proxy})
+            health = check_proxy_health(serial, mac_ip)
+            device_list.append({
+                "serial": serial,
+                "model": model,
+                "proxy": health["proxy"],
+                "health": health["status"],
+                "issue": health["issue"],
+            })
         self._send_json({
-            "ip": get_local_ip(),
+            "ip": mac_ip,
             "port": DEFAULT_PROXY_PORT,
             "adb": check_adb(),
             "devices": device_list,
@@ -113,19 +122,24 @@ class ProxyHandler(BaseHTTPRequestHandler):
         data = self._read_json()
         if data is None:
             return
-        ip = data.get("ip", "").strip()
+        usb = data.get("usb", False)
         port = data.get("port", DEFAULT_PROXY_PORT)
-        if not ip:
-            self._send_json({"error": "Missing 'ip' field"}, 400)
-            return
         try:
             port = int(port)
         except (TypeError, ValueError):
             self._send_json({"error": "Invalid port"}, 400)
             return
 
-        log.info("ENABLE PROXY  ->  %s:%d", ip, port)
-        results = android_set_proxy(ip, port)
+        if usb:
+            log.info("ENABLE PROXY (USB)  ->  127.0.0.1:%d", port)
+            results = android_set_proxy_usb(port)
+        else:
+            ip = data.get("ip", "").strip()
+            if not ip:
+                self._send_json({"error": "Missing 'ip' field"}, 400)
+                return
+            log.info("ENABLE PROXY  ->  %s:%d", ip, port)
+            results = android_set_proxy(ip, port)
         if results is None:
             if not check_adb():
                 self._send_json({"error": "adb not found on PATH"})

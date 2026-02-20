@@ -37,7 +37,16 @@
     <div class="no-devices">Loading...</div>
   </div>
 
-  <div class="form-row">
+  <div class="mode-toggle">
+    <label class="toggle-label">Connection Mode</label>
+    <div class="toggle-btns">
+      <button class="toggle-btn active" id="mode-wifi" onclick="setMode('wifi')">Wi-Fi</button>
+      <button class="toggle-btn" id="mode-usb" onclick="setMode('usb')">USB</button>
+    </div>
+    <span class="mode-hint" id="mode-hint">Routes traffic over Wi-Fi network</span>
+  </div>
+
+  <div class="form-row" id="ip-row">
     <div class="field">
       <label>Proxy IP Address</label>
       <input type="text" id="proxy-ip" placeholder="192.168.x.x">

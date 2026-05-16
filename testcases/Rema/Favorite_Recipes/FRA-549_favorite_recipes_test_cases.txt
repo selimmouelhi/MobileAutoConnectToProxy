@@ -1,0 +1,368 @@
+FAVREC-01 | Verify updated search bar design on recipes screen [P1]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+    Actions
+        Observe the search bar at the top of the Recipes screen
+        Compare search bar colors, icon placement, and placeholder text against Figma design
+    Expected
+        Search bar uses updated background and border colors per Figma
+        New search icon is displayed and positioned slightly to the left compared to previous design
+        Placeholder text is displayed with updated color and sourced from the API
+        Active/focused text color matches the updated design
+    API
+        N/A
+FAVREC-02 | Verify search bar clear icon and cancel behavior [P1]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+    Actions
+        Tap on the search bar to activate it
+        Type a search query
+        Observe the clear icon inside the search bar
+        Tap the clear icon
+    Expected
+        New clear icon (X) is displayed inside the search bar when text is entered
+        Tapping the clear icon removes the entered text
+        Search bar remains active/focused after clearing text
+    API
+        N/A
+FAVREC-03 | Verify favorites button appears next to search bar [P0]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+    Actions
+        Observe the area to the right of the search bar
+    Expected
+        A heart/favorites icon button is displayed to the right of the search bar
+        The icon matches the Figma design specifications
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes?fields=id
+FAVREC-04 | Verify favorites button transitions to Cancel when search is active [P1]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+        Favorites button is visible next to search bar
+    Actions
+        Tap on the search bar to activate it
+        Observe the area where the favorites button was
+    Expected
+        The favorites button is replaced by a "Cancel" text button
+        Tapping "Cancel" deactivates the search bar and restores the favorites button
+    API
+        N/A
+FAVREC-05 | Verify favorite icon displayed on recipe cards [P0]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen with recipe cards visible
+    Actions
+        Observe any recipe card in the list
+    Expected
+        A heart/favorites icon is displayed on each recipe card
+        The icon position and size match the Figma design
+        Unfavorited recipes show an empty/outline heart icon
+        Favorited recipes show a filled heart icon
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes?fields=id
+FAVREC-06 | Verify adding a recipe to favorites from recipe card [P0]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+        A recipe that is NOT yet favorited is visible
+    Actions
+        Tap the heart/favorites icon on the recipe card
+        Observe the icon state change
+    Expected
+        The heart icon transitions from outline (empty) to filled state
+        The change is immediate (optimistic UI update)
+        The recipe is added to the user's favorites list
+    API
+        POST /api/v3/users/{user-id}/favorite-recipes/{recipe_id}
+FAVREC-07 | Verify removing a recipe from favorites from recipe card [P0]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+        A recipe that IS already favorited is visible (filled heart)
+    Actions
+        Tap the filled heart/favorites icon on the recipe card
+        Observe the icon state change
+    Expected
+        The heart icon transitions from filled to outline (empty) state
+        The change is immediate (optimistic UI update)
+        The recipe is removed from the user's favorites list
+    API
+        DELETE /api/v3/users/{user-id}/favorite-recipes/{recipe-id}
+FAVREC-08 | Verify recipe details nav bar shows updated icons [P1]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+    Actions
+        Tap on a recipe card to open recipe details
+        Observe the navigation bar at the top of the recipe details screen
+    Expected
+        Dismiss (back/close) icon uses the new asset and matches Figma size and alignment
+        Share icon uses the new asset and matches Figma alignment
+        Favorite (heart) icon is displayed in the nav bar
+        Icons use content/default/strong color as per Figma
+    API
+        N/A
+FAVREC-09 | Verify adding a recipe to favorites from recipe details [P0]
+    Preconditions
+        User is logged in
+        User has opened a recipe that is NOT yet favorited
+        Recipe details screen is displayed
+    Actions
+        Tap the favorite (heart) icon in the nav bar
+        Observe the icon state change
+    Expected
+        The heart icon transitions from outline to filled state
+        The recipe is added to the user's favorites list
+    API
+        POST /api/v3/users/{user-id}/favorite-recipes/{recipe_id}
+FAVREC-10 | Verify removing a recipe from favorites from recipe details [P0]
+    Preconditions
+        User is logged in
+        User has opened a recipe that IS already favorited
+        Recipe details screen is displayed with filled heart icon
+    Actions
+        Tap the filled favorite (heart) icon in the nav bar
+        Observe the icon state change
+    Expected
+        The heart icon transitions from filled to outline state
+        The recipe is removed from the user's favorites list
+    API
+        DELETE /api/v3/users/{user-id}/favorite-recipes/{recipe-id}
+FAVREC-11 | Verify navigating to favorite recipes list [P0]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+        User has at least one favorited recipe
+    Actions
+        Tap the favorites button next to the search bar
+    Expected
+        Favorite recipes screen/view is displayed
+        All previously favorited recipes are shown
+        Each recipe card displays the filled heart icon
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes
+FAVREC-12 | Verify favorite recipes list is empty when no favorites exist [P1]
+    Preconditions
+        User is logged in
+        User has no favorited recipes
+    Actions
+        Tap the favorites button next to the search bar
+    Expected
+        Favorite recipes screen/view is displayed
+        An empty state is shown (no recipes listed)
+        Appropriate empty state message or illustration is displayed
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes
+FAVREC-13 | Verify removing a recipe from favorites list updates the view [P1]
+    Preconditions
+        User is logged in
+        User is on the favorite recipes list
+        At least one favorited recipe is displayed
+    Actions
+        Tap the filled heart icon on one of the favorited recipes
+        Observe the list
+    Expected
+        The recipe is removed from the favorites list
+        The list updates to no longer show the unfavorited recipe
+        If no more favorites remain, the empty state is displayed
+    API
+        DELETE /api/v3/users/{user-id}/favorite-recipes/{recipe-id}
+FAVREC-14 | Verify sorting button displays updated design [P1]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+    Actions
+        Observe the sorting button on the Recipes screen
+    Expected
+        Sorting button displays the new chevron icon asset
+        Spacing between button text and chevron icon matches Figma design
+        Button text is displayed in UPPERCASE
+    API
+        N/A
+FAVREC-15 | Verify recipe action button margins match design [P1]
+    Preconditions
+        User is logged in
+        User has opened a recipe details screen
+    Actions
+        Scroll to the blue action button at the bottom of the recipe content
+        Observe the button position relative to surrounding content
+    Expected
+        The blue button is not floating too high above the content
+        Button margins match the original Figma design specifications
+    API
+        N/A
+FAVREC-16 | Verify login prompt when logged-out user taps favorite on recipe card [P0]
+    Preconditions
+        User is NOT logged in
+        User is on the Recipes screen with recipe cards visible
+    Actions
+        Tap the heart/favorites icon on any recipe card
+    Expected
+        A login prompt bottom sheet/dialog is displayed (not the full login screen)
+        The prompt allows the user to choose to log in or dismiss
+        Dismissing the prompt returns user to the Recipes screen without changes
+    API
+        N/A
+FAVREC-17 | Verify login prompt when logged-out user taps favorite on recipe details [P0]
+    Preconditions
+        User is NOT logged in
+        User is viewing a recipe details screen
+    Actions
+        Tap the favorite (heart) icon in the recipe details nav bar
+    Expected
+        A login prompt bottom sheet/dialog is displayed (not the full login screen)
+        The prompt allows the user to choose to log in or dismiss
+        Dismissing the prompt returns user to the recipe details screen without changes
+    API
+        N/A
+FAVREC-18 | Verify login prompt when logged-out user taps favorites button next to search bar [P0]
+    Preconditions
+        User is NOT logged in
+        User is on the Recipes screen
+    Actions
+        Tap the favorites button next to the search bar
+    Expected
+        A login prompt bottom sheet/dialog is displayed (not the full login screen)
+        The prompt allows the user to choose to log in or dismiss
+        Dismissing the prompt returns user to the Recipes screen without changes
+    API
+        N/A
+FAVREC-19 | Verify successful login from favorite login prompt adds the recipe to favorites [P1]
+    Preconditions
+        User is NOT logged in
+        User is on the Recipes screen
+    Actions
+        Tap the heart/favorites icon on a recipe card
+        Login prompt is displayed
+        Tap to log in and complete the login flow successfully
+        Observe the recipe card after login
+    Expected
+        User is logged in and returned to the Recipes screen
+        The recipe that was tapped is now marked as favorited (filled heart)
+    API
+        POST /api/v3/users/{user-id}/favorite-recipes/{recipe_id}
+FAVREC-20 | Verify favorite state persists after app restart [P1]
+    Preconditions
+        User is logged in
+        User has favorited at least one recipe
+    Actions
+        Force close the app
+        Relaunch the app
+        Navigate to the Recipes screen
+    Expected
+        Previously favorited recipes still show the filled heart icon
+        Tapping the favorites button shows all previously favorited recipes
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes?fields=id
+FAVREC-21 | Verify favorite state syncs across recipe card and recipe details [P1]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen with recipe cards visible
+    Actions
+        Tap the heart icon on a recipe card to favorite it
+        Tap the recipe card to open recipe details
+        Observe the favorite icon in the details nav bar
+    Expected
+        The favorite icon in recipe details shows the filled state
+        Unfavoriting from details and going back updates the recipe card to outline state
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes?fields=id
+FAVREC-22 | Verify favorite icon state on recipe card after returning from favorites list [P1]
+    Preconditions
+        User is logged in
+        User has some recipes favorited and some not
+    Actions
+        Tap the favorites button to open favorites list
+        Unfavorite a recipe from the list
+        Navigate back to the Recipes screen
+    Expected
+        The unfavorited recipe card now shows an outline heart icon
+        All other favorite states remain unchanged
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes?fields=id
+FAVREC-23 | Verify behavior when favorite API call fails (network error) [P2]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+        Device has no network connectivity or API is unreachable
+    Actions
+        Tap the heart icon on a recipe card to favorite it
+    Expected
+        If optimistic UI was applied, the heart icon reverts to outline state
+        An error message or toast is displayed indicating the action failed
+        The recipe is NOT added to the favorites list
+    API
+        POST /api/v3/users/{user-id}/favorite-recipes/{recipe_id}
+FAVREC-24 | Verify behavior when unfavorite API call fails (network error) [P2]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+        A recipe is already favorited
+        Device has no network connectivity or API is unreachable
+    Actions
+        Tap the filled heart icon on the favorited recipe card
+    Expected
+        If optimistic UI was applied, the heart icon reverts to filled state
+        An error message or toast is displayed indicating the action failed
+        The recipe remains in the favorites list
+    API
+        DELETE /api/v3/users/{user-id}/favorite-recipes/{recipe-id}
+FAVREC-25 | Verify rapid tap on favorite icon does not cause inconsistent state [P2]
+    Preconditions
+        User is logged in
+        User is on the Recipes screen
+    Actions
+        Rapidly tap the heart icon on a recipe card multiple times in quick succession
+        Wait for all requests to complete
+    Expected
+        The heart icon settles to a consistent final state (either filled or outline)
+        The backend state matches the UI state
+        No duplicate entries are created in the favorites list
+    API
+        POST /api/v3/users/{user-id}/favorite-recipes/{recipe_id}
+        DELETE /api/v3/users/{user-id}/favorite-recipes/{recipe-id}
+FAVREC-26 | Verify favorites list loads correctly with many favorited recipes [P2]
+    Preconditions
+        User is logged in
+        User has favorited a large number of recipes (20+)
+    Actions
+        Tap the favorites button next to the search bar
+        Scroll through the favorites list
+    Expected
+        All favorited recipes are loaded and displayed
+        Scrolling is smooth without performance degradation
+        Each recipe card shows the filled heart icon
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes
+FAVREC-27 | Verify favorite state is user-specific (not shared between accounts) [P2]
+    Preconditions
+        Two different user accounts exist (User A and User B)
+        User A has favorited recipes; User B has not
+    Actions
+        Log in as User A and verify favorites are displayed
+        Log out
+        Log in as User B
+        Navigate to the Recipes screen
+    Expected
+        User B's recipe cards all show outline (unfavorited) heart icons
+        Tapping the favorites button shows empty state for User B
+        User A's favorites are not visible to User B
+    API
+        GET /api/v3/users/{user-id}/favorite-recipes?fields=id
+FAVREC-28 | Verify dismiss icon size and alignment on recipe details (iOS-specific) [P1]
+    Preconditions
+        User is logged in on an iOS device
+        User is on the Recipes screen
+    Actions
+        Tap a recipe card to open recipe details
+        Observe the dismiss (close/back) icon in the nav bar
+    Expected
+        The dismiss icon uses the existing iOS dismiss icon asset
+        The size is adjusted to match the updated Figma design
+        The icon alignment matches Figma specifications
+    API
+        N/A

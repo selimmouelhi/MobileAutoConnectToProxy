@@ -1,0 +1,637 @@
+Share Shopping List - Module 5: Accept Invitation
+
+ACCEPT_INV-01 | Deep link opens the app and navigates to invitation sheet [P0]
+    Preconditions
+        Rema 1000 app is installed on the device
+        User taps a deep link in the format https://shop.rema1000.dk/shopping-list-invitation-link/<invitation-id>
+        The app is not currently running in the foreground
+    Actions
+        Tap the deep link from an external source (e.g. messaging app, browser, email)
+        Observe whether the Rema 1000 app opens
+        Observe the screen presented after the app opens
+    Expected
+        The Rema 1000 app opens upon tapping the deep link
+        The invitation sheet is presented immediately on top of whatever view is shown in the app
+        The invitation sheet contains the correct content for the given invitation ID
+    API
+        getInvitationByUrl(url: URL) is called with the deep link URL
+ACCEPT_INV-02 | Deep link opens invitation sheet when app is already in foreground [P0]
+    Preconditions
+        Rema 1000 app is installed and currently running in the foreground
+        User has completed any cookie consent flow
+    Actions
+        Switch to another app or browser
+        Tap a deep link in the format https://shop.rema1000.dk/shopping-list-invitation-link/<invitation-id>
+        Observe whether the Rema 1000 app comes to the foreground
+        Observe the screen presented
+    Expected
+        The Rema 1000 app returns to the foreground
+        The invitation sheet is presented immediately on top of the current view
+        The previous app state is preserved behind the invitation sheet
+    API
+        getInvitationByUrl(url: URL) is called with the deep link URL
+ACCEPT_INV-03 | Deep link is ignored when cookie consent prompt is showing [P0]
+    Preconditions
+        Rema 1000 app is installed on the device
+        User has not yet made a decision on cookies (cookie consent prompt is showing)
+    Actions
+        Tap a deep link in the format https://shop.rema1000.dk/shopping-list-invitation-link/<invitation-id>
+        Observe the app state
+        Observe whether the invitation sheet is presented
+    Expected
+        The deep link is ignored and no invitation sheet is presented
+        The cookie consent prompt remains visible and interactive
+        The user must complete the cookie consent flow first
+        After completing the cookie consent flow the user must tap the deep link again to trigger the invitation
+    API
+        N/A
+ACCEPT_INV-04 | Deep link is ignored when an invitation sheet is already presented [P0]
+    Preconditions
+        Rema 1000 app is running in the foreground
+        An invitation sheet is already presented on screen
+    Actions
+        Tap another deep link in the format https://shop.rema1000.dk/shopping-list-invitation-link/<invitation-id>
+        Observe the app state
+    Expected
+        The second deep link is ignored and no action is taken
+        The currently displayed invitation sheet remains on screen and is not replaced
+        No duplicate invitation sheets are presented
+        No crash or visual glitch occurs
+    API
+        N/A
+ACCEPT_INV-05 | Invitation sheet shows loading state with title, close button, and Rema spinner [P0]
+    Preconditions
+        User has tapped a valid deep link or the app has detected a pending invitation
+        Network conditions allow the invitation API request to proceed
+    Actions
+        Observe the invitation sheet immediately after it is presented
+        Verify the presence of the title, close button, and loading indicator
+    Expected
+        The invitation sheet is presented as a bottom sheet
+        The top bar title displays text matching localization key app_list_invitation.top_bar_title (fallback: "Anmodning om deling")
+        A close button (X) is visible in the top area of the sheet
+        The Rema spinner is displayed centered in the middle of the sheet
+        No content or error state is visible during loading
+    API
+        getInvitationByUrl(url: URL) is in progress
+ACCEPT_INV-06 | Invitation sheet displays correct content for logged-in user after successful fetch [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has tapped a valid deep link
+        The getInvitationByUrl request completes successfully
+    Actions
+        Wait for the invitation data to load
+        Observe the invitation sheet content
+    Expected
+        The loading spinner is replaced by the invitation content
+        The avatar of the user who sent the invitation is displayed (profile picture or initials if no image)
+        The name of the shopping list is displayed
+        The invitation body text displays text matching localization key app_list_invitation.body (fallback: "Du er blevet inviteret til en faelles indkobsliste. Nar du er blevet en del af listen, kan i bygge en faelles indkobsliste og dele den i realtid.")
+        The accept button displays text matching localization key app_list_invitation.accept_button (fallback: "Bliv en del af listen")
+        The decline button displays text matching localization key app_list_invitation.decline_button (fallback: "Afsla")
+        No raw localization key strings are displayed
+    API
+        getInvitationByUrl(url: URL) returns invitation data successfully
+ACCEPT_INV-07 | Invitation sender avatar displays profile picture when available [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed with loaded content
+        The user who sent the invitation has a profile picture set
+    Actions
+        Observe the avatar displayed in the invitation sheet
+    Expected
+        The sender's profile picture is displayed in the avatar
+        The image is correctly loaded and not broken or pixelated
+        The avatar is properly sized according to the design specification
+    API
+        N/A
+ACCEPT_INV-08 | Invitation sender avatar displays initials when no profile picture is set [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed with loaded content
+        The user who sent the invitation does not have a profile picture set
+    Actions
+        Observe the avatar displayed in the invitation sheet
+    Expected
+        The sender's initials are displayed in the avatar (first letter of first name + first letter of last name)
+        The initials are clearly legible against the avatar background color
+        No broken image placeholder or blank circle is shown
+    API
+        N/A
+ACCEPT_INV-09 | Dismiss invitation sheet by tapping the X close button [P0]
+    Preconditions
+        Invitation sheet is currently presented on screen
+    Actions
+        Locate the close button (X) in the top area of the invitation sheet
+        Tap the X button
+        Observe the result
+    Expected
+        The invitation sheet is dismissed
+        The dismiss animation plays smoothly
+        The user returns to the previous screen state
+        No API calls are made to accept or decline the invitation
+    API
+        N/A
+ACCEPT_INV-10 | Dismiss invitation sheet by tapping above the sheet [P0]
+    Preconditions
+        Invitation sheet is currently presented on screen as a bottom sheet
+    Actions
+        Tap on the area above or outside the bottom sheet (the dimmed background region)
+        Observe the result
+    Expected
+        The invitation sheet is dismissed
+        The dismiss animation plays smoothly
+        The user returns to the previous screen state
+        No API calls are made to accept or decline the invitation
+    API
+        N/A
+ACCEPT_INV-11 | API returns 400 error and invitation sheet fades to expired error state [P0]
+    Preconditions
+        User has tapped a deep link for an invitation that is invalid or expired
+        The getInvitationByUrl request returns a 400 error
+    Actions
+        Wait for the invitation request to complete with a 400 error
+        Observe the invitation sheet transition
+    Expected
+        The loading state fades to the expired error state
+        The top bar title changes to text matching localization key app_list_invitation.error_expired_top_bar_title (fallback: "Deling udlobet")
+        The error title displays text matching localization key app_list_invitation.error_expired_title (fallback: "Linket er udlobet")
+        The error body displays text matching localization key app_list_invitation.error_expired_body (fallback: "For at fa adgang til indkobslisten skal du bruge en ny invitation.")
+        A button displays text matching localization key app_list_invitation.error_expired_button (fallback: "Forstaet")
+        No raw localization key strings are displayed
+    API
+        getInvitationByUrl(url: URL) returns HTTP 400
+ACCEPT_INV-12 | Tapping expired error button dismisses the invitation sheet [P0]
+    Preconditions
+        Invitation sheet is displaying the expired error state
+        The expired error button is visible
+    Actions
+        Tap the expired error button (fallback: "Forstaet")
+        Observe the result
+    Expected
+        The invitation sheet is dismissed
+        The dismiss animation plays smoothly
+        The user returns to the previous screen state
+    API
+        N/A
+ACCEPT_INV-13 | Network error keeps loading state and presents error alert with cancel and try again [P0]
+    Preconditions
+        User has tapped a valid deep link
+        Network conditions are configured to cause the getInvitationByUrl request to fail with a non-400 error (e.g. network timeout, 500 server error)
+    Actions
+        Wait for the invitation request to fail
+        Observe the invitation sheet state
+        Observe the error alert that appears
+    Expected
+        The invitation sheet remains in the loading state (Rema spinner continues to show)
+        An error alert is presented on top of the invitation sheet
+        The error alert has a cancel button
+        The error alert has a try again button
+    API
+        getInvitationByUrl(url: URL) fails with a non-400 error
+ACCEPT_INV-14 | Tapping cancel on network error alert dismisses the invitation sheet [P0]
+    Preconditions
+        Invitation sheet is in loading state
+        A network error alert is displayed on top of the invitation sheet
+    Actions
+        Tap the cancel button on the error alert
+        Observe the result
+    Expected
+        The error alert is dismissed
+        The invitation bottom sheet is also dismissed
+        The user returns to the previous screen state
+    API
+        N/A
+ACCEPT_INV-15 | Tapping try again on network error alert retries the request [P0]
+    Preconditions
+        Invitation sheet is in loading state
+        A network error alert is displayed on top of the invitation sheet
+    Actions
+        Tap the try again button on the error alert
+        Observe the error alert
+        Observe the invitation sheet
+    Expected
+        The error alert is dismissed
+        The invitation sheet remains open and continues to display the loading state with the Rema spinner
+        A new getInvitationByUrl request is issued
+        If the retry succeeds the loading state is replaced by the invitation content
+        If the retry fails again the error alert is presented once more with the same cancel and try again options
+    API
+        getInvitationByUrl(url: URL) is retried
+ACCEPT_INV-16 | Successive retry failures do not degrade invitation sheet state [P1]
+    Preconditions
+        Invitation sheet is in loading state
+        Network conditions are configured to cause persistent failures
+    Actions
+        Wait for the initial request to fail and the error alert to appear
+        Tap try again
+        Wait for the second request to fail and the error alert to reappear
+        Tap try again
+        Wait for the third request to fail and the error alert to reappear
+        Tap cancel
+    Expected
+        Each retry cycle follows the same sequence: alert is dismissed, sheet shows loading state, new request is fired, alert reappears on failure
+        The invitation sheet does not crash, become unresponsive, or display corrupted content after multiple retry cycles
+        Tapping cancel after any number of retries successfully dismisses both the alert and the invitation sheet
+        The user returns to a stable and usable app state
+    API
+        getInvitationByUrl(url: URL) fails repeatedly
+ACCEPT_INV-17 | Invitation sheet shows login required body when user is not logged in [P0]
+    Preconditions
+        User is NOT logged in to the Rema 1000 app
+        User has completed the cookie consent flow
+        User taps a valid deep link
+        The invitation data loads successfully
+    Actions
+        Wait for the invitation sheet to load
+        Observe the invitation sheet content
+    Expected
+        The invitation sheet displays the login required body text matching localization key app_list_invitation.login_required_body (fallback: "Du skal logge ind for at acceptere invitationen. Nar du har accepteret, kan i bygge faelles indkobslister og dele i realtid")
+        A login button is displayed with text matching localization key app_list_invitation.login_required_login_button (fallback: "Log ind")
+        A create user button is displayed with text matching localization key app_list_invitation.login_required_create_user_button (fallback: "Opret bruger")
+        The accept and decline buttons are NOT displayed
+        No raw localization key strings are displayed
+    API
+        getInvitationByUrl(url: URL) returns invitation data successfully
+ACCEPT_INV-18 | Tapping login button dismisses invitation sheet and opens login flow [P0]
+    Preconditions
+        User is NOT logged in to the Rema 1000 app
+        Invitation sheet is displayed with the login required state
+    Actions
+        Tap the login button (fallback: "Log ind")
+        Observe the invitation sheet
+        Observe the screen after the invitation sheet dismisses
+    Expected
+        The invitation sheet is dismissed
+        The login flow is presented to the user
+        The user can complete the login process
+    API
+        N/A
+ACCEPT_INV-19 | Tapping create user button dismisses invitation sheet and opens create user flow [P0]
+    Preconditions
+        User is NOT logged in to the Rema 1000 app
+        Invitation sheet is displayed with the login required state
+    Actions
+        Tap the create user button (fallback: "Opret bruger")
+        Observe the invitation sheet
+        Observe the screen after the invitation sheet dismisses
+    Expected
+        The invitation sheet is dismissed
+        The create user flow is presented to the user
+        The user can complete the registration process
+    API
+        N/A
+ACCEPT_INV-20 | Invitation flow resumes after user logs in [P0]
+    Preconditions
+        User was NOT logged in and tapped a valid deep link
+        Invitation sheet was presented and user tapped the login button
+        Login flow is in progress
+    Actions
+        Complete the login flow successfully
+        Observe the screen after login completes
+    Expected
+        After successful login the invitation flow resumes automatically
+        The invitation sheet is presented again with the full invitation content (sender avatar, list name, accept and decline buttons)
+        The user does not need to tap the deep link again
+    API
+        getInvitationByUrl(url: URL) is called after login to fetch invitation data
+ACCEPT_INV-21 | Invitation flow resumes after user creates an account [P0]
+    Preconditions
+        User was NOT logged in and tapped a valid deep link
+        Invitation sheet was presented and user tapped the create user button
+        Create user flow is in progress
+    Actions
+        Complete the create user flow successfully
+        Observe the screen after account creation completes
+    Expected
+        After successful account creation the invitation flow resumes automatically
+        The invitation sheet is presented again with the full invitation content (sender avatar, list name, accept and decline buttons)
+        The user does not need to tap the deep link again
+    API
+        getInvitationByUrl(url: URL) is called after account creation to fetch invitation data
+ACCEPT_INV-22 | Tapping accept button shows loading state in the button [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed with loaded invitation content
+        Accept and decline buttons are visible
+    Actions
+        Tap the accept button (fallback: "Bliv en del af listen")
+        Observe the accept button state immediately after tapping
+    Expected
+        The accept button displays a loading indicator within the button
+        The loading state persists until the accept request completes
+        The decline button is not clickable during loading
+    API
+        acceptInvitationByUrl(url: URL) is called
+ACCEPT_INV-23 | Successful accept dismisses invitation sheet and shows the shopping list [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed with loaded invitation content
+        Network conditions allow the accept request to succeed
+    Actions
+        Tap the accept button (fallback: "Bliv en del af listen")
+        Wait for the accept request to complete successfully
+        Observe the sequence of events
+    Expected
+        The accept button keeps showing the loading indicator while the request processes
+        After the accept request finishes a force sync of shopping lists is triggered
+        The invitation bottom sheet is dismissed after the sync completes
+        The accepted shopping list is presented to the user
+        The transition is smooth with no visual glitches
+    API
+        acceptInvitationByUrl(url: URL) completes successfully
+        Shopping lists are force synced after acceptance
+ACCEPT_INV-24 | Accept request failure shows error alert with dismiss and retry options [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed with loaded invitation content
+        Network conditions are configured to cause the acceptInvitationByUrl request to fail
+    Actions
+        Tap the accept button (fallback: "Bliv en del af listen")
+        Wait for the accept request to fail
+        Observe the result
+    Expected
+        An error alert is presented on top of the invitation sheet
+        The invitation sheet remains visible behind the error alert
+        The user can dismiss the error alert
+        After dismissing the error alert the user can tap the accept button again to retry
+    API
+        acceptInvitationByUrl(url: URL) fails
+ACCEPT_INV-25 | Retrying accept after error works correctly [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        An accept error alert was displayed and dismissed
+        The invitation sheet is still open with the accept and decline buttons visible
+        Network conditions now allow a successful request
+    Actions
+        Tap the accept button again
+        Wait for the accept request to complete successfully
+        Observe the result
+    Expected
+        The accept button displays a loading indicator within the button
+        The accept request completes successfully
+        The invitation sheet is dismissed after force sync
+        The accepted shopping list is presented to the user
+    API
+        acceptInvitationByUrl(url: URL) completes successfully on retry
+ACCEPT_INV-26 | Tapping decline button dismisses the invitation sheet without calling the API [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed with loaded invitation content
+        Accept and decline buttons are visible
+    Actions
+        Tap the decline button (fallback: "Afsla")
+        Observe the result
+    Expected
+        The invitation sheet is dismissed
+        The dismiss animation plays smoothly
+        No API call is made to accept or decline the invitation
+        The user returns to the previous screen state
+        The shopping list is not added to the user's lists
+    API
+        No API call is made (decline is handled locally)
+ACCEPT_INV-27 | Pending invitations are fetched when the app is launched [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        There is at least one pending invitation for the user on the server
+        The app is not currently running
+    Actions
+        Launch the Rema 1000 app
+        Wait for the app to finish loading
+        Observe the screen after the app has loaded
+    Expected
+        The app fetches pending invitations during launch
+        If pending invitations exist the invitation sheet is presented automatically
+        The invitation sheet displays the content for the first pending invitation
+    API
+        Pending invitations are fetched from the server on app launch
+ACCEPT_INV-28 | Pending invitations are fetched when the app enters foreground [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        The app is currently in the background
+        A new pending invitation has been created for the user while the app was in the background
+    Actions
+        Bring the Rema 1000 app to the foreground
+        Wait for the app to complete its foreground transition
+        Observe the screen
+    Expected
+        The app fetches pending invitations when entering the foreground
+        If a pending invitation exists the invitation sheet is presented
+        The invitation sheet displays the correct invitation content
+    API
+        Pending invitations are fetched from the server on foreground entry
+ACCEPT_INV-29 | Invitation sheet is not presented on launch if one is already displayed [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        An invitation sheet is already presented on screen
+        The app enters the foreground or another fetch trigger occurs
+    Actions
+        Observe whether the app attempts to present another invitation sheet
+    Expected
+        No additional invitation sheet is presented
+        The currently displayed invitation sheet remains on screen and is not replaced or duplicated
+        No crash or visual glitch occurs
+    API
+        N/A
+ACCEPT_INV-30 | Multiple pending invitations are presented one at a time in order [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        There are multiple pending invitations for the user (e.g. Invitation A, Invitation B, Invitation C)
+        The app is launched or enters the foreground
+    Actions
+        Wait for the first invitation sheet to appear
+        Verify it shows the first invitation in the list
+        Accept or decline the first invitation
+        Wait for the first sheet to dismiss
+        Observe whether the next invitation is presented
+        Repeat for remaining invitations
+    Expected
+        The first pending invitation in the list is presented first
+        After the first invitation sheet is dismissed the next pending invitation is presented automatically
+        Each invitation is presented one at a time and never simultaneously
+        The sequence continues until all pending invitations have been addressed
+    API
+        getInvitationByUrl(url: URL) is called for each pending invitation
+ACCEPT_INV-31 | Only the last accepted invitation's shopping list is shown when handling multiple invitations [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        There are multiple pending invitations for the user (e.g. Invitation A, Invitation B, Invitation C)
+    Actions
+        Decline Invitation A
+        Accept Invitation B
+        Decline Invitation C
+        Observe which shopping list is presented after all invitations are handled
+    Expected
+        After all invitation sheets have been dismissed the shopping list for Invitation B (the last accepted invitation) is presented
+        Shopping lists for declined invitations are not shown
+        Only one shopping list is navigated to at the end of the flow
+    API
+        acceptInvitationByUrl(url: URL) is called only for Invitation B
+ACCEPT_INV-32 | Only the last accepted invitation's shopping list is shown when multiple are accepted [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        There are multiple pending invitations for the user (e.g. Invitation A, Invitation B, Invitation C)
+    Actions
+        Accept Invitation A
+        Accept Invitation B
+        Decline Invitation C
+        Observe which shopping list is presented after all invitations are handled
+    Expected
+        After all invitation sheets have been dismissed the shopping list for Invitation B (the last accepted invitation) is presented
+        The shopping list for Invitation A is not navigated to even though it was accepted
+        Both accepted lists appear in the user's shopping lists but only the last one is shown automatically
+    API
+        acceptInvitationByUrl(url: URL) is called for Invitation A and Invitation B
+ACCEPT_INV-33 | All invitations declined results in no shopping list being shown [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        There are multiple pending invitations for the user
+    Actions
+        Decline all pending invitations one by one
+        Observe the screen after the last invitation sheet is dismissed
+    Expected
+        No shopping list is navigated to after all invitations are declined
+        The user remains on whatever screen was active before the invitation flow began
+        No error or unexpected navigation occurs
+    API
+        No acceptInvitationByUrl calls are made
+ACCEPT_INV-34 | Invitation sheet is presented even when tracking is disabled in system settings [P0]
+    Preconditions
+        User has disabled tracking in system settings (e.g. App Tracking Transparency denied on iOS, or equivalent Android setting)
+        Cookies have never been shown to the user because tracking is disabled
+        User is logged in to the Rema 1000 app
+    Actions
+        Tap a valid deep link or launch the app with a pending invitation
+        Observe whether the invitation sheet is presented
+    Expected
+        The invitation sheet is presented correctly despite tracking being disabled
+        The cookie consent prompt is not shown and does not block the invitation
+        The invitation flow works identically to when tracking is enabled
+        The user can accept or decline the invitation normally
+    API
+        getInvitationByUrl(url: URL) is called normally
+ACCEPT_INV-35 | Invitation sheet is presented on app launch when tracking is disabled and invitations are pending [P0]
+    Preconditions
+        User has disabled tracking in system settings
+        User is logged in to the Rema 1000 app
+        There is at least one pending invitation for the user on the server
+        The app is not currently running
+    Actions
+        Launch the Rema 1000 app
+        Wait for the app to finish loading
+        Observe the screen
+    Expected
+        Pending invitations are fetched on app launch
+        The invitation sheet is presented automatically
+        The disabled tracking setting does not prevent the invitation sheet from appearing
+        The invitation content loads and displays correctly
+    API
+        Pending invitations are fetched from the server on app launch
+ACCEPT_INV-36 | Deep link with invalid invitation ID shows expired state [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+    Actions
+        Tap a deep link with a malformed or nonexistent invitation ID (e.g. https://shop.rema1000.dk/shopping-list-invitation-link/invalid-id-123)
+        Wait for the invitation request to complete
+        Observe the invitation sheet
+    Expected
+        The invitation sheet first shows the loading state
+        The API returns a 400 error for the invalid invitation ID
+        The sheet fades to the expired error state with the correct localized text
+        The user can tap the expired error button to dismiss the sheet
+    API
+        getInvitationByUrl(url: URL) returns HTTP 400
+ACCEPT_INV-37 | Accept button loading state prevents interaction with decline button [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed with loaded invitation content
+        Network is throttled to make the loading state observable
+    Actions
+        Tap the accept button (fallback: "Bliv en del af listen")
+        While the accept button is in loading state attempt to tap the decline button
+        Observe the result
+    Expected
+        The decline button is not clickable while the accept request is in progress
+        Tapping the decline button during loading produces no action
+        The invitation sheet remains in the loading state until the accept request completes
+    API
+        acceptInvitationByUrl(url: URL) is in progress
+ACCEPT_INV-38 | Invitation sheet cannot be dismissed while accept request is loading [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed and the accept request is in progress (accept button shows loading)
+    Actions
+        Attempt to tap the X close button while the accept request is loading
+        Attempt to tap above the sheet to dismiss while the accept request is loading
+        Observe the result
+    Expected
+        The invitation sheet remains visible and cannot be dismissed during the accept loading state
+        All dismiss gestures are blocked while the accept request is in progress
+        The loading state continues until the accept request completes
+    API
+        acceptInvitationByUrl(url: URL) is in progress
+ACCEPT_INV-39 | Force sync completes before shopping list is shown after accept [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Invitation sheet is displayed with loaded invitation content
+        Network conditions allow the accept request and sync to succeed
+    Actions
+        Tap the accept button
+        Observe the sequence of events after the accept request completes
+    Expected
+        The accept button continues to show the loading indicator after the accept API call finishes
+        A force sync of shopping lists is triggered
+        The invitation sheet is dismissed only after the force sync completes
+        The accepted shopping list is presented with up-to-date data from the sync
+        The sequence is: accept request finishes, force sync runs, sheet dismisses, shopping list is shown
+    API
+        acceptInvitationByUrl(url: URL) completes successfully
+        Force sync of shopping lists is triggered
+ACCEPT_INV-40 | Localization keys display correct fallback text when translations are missing [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Localization keys for the invitation sheet return empty or are missing
+    Actions
+        Trigger the invitation flow via a valid deep link
+        Wait for the invitation sheet to load
+        Observe all text labels in the invitation sheet
+    Expected
+        Top bar title falls back to "Anmodning om deling"
+        Invitation body falls back to correct Danish text
+        Accept button falls back to "Bliv en del af listen"
+        Decline button falls back to "Afsla"
+        No raw localization key strings are displayed anywhere in the sheet
+        All fallback text is readable and correctly formatted
+    API
+        N/A
+ACCEPT_INV-41 | Expired error state localization keys display correct fallback text [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Localization keys for the expired error state return empty or are missing
+    Actions
+        Trigger the invitation flow with an expired or invalid deep link
+        Wait for the expired error state to display
+        Observe all text labels in the expired error state
+    Expected
+        Top bar title falls back to "Deling udlobet"
+        Error title falls back to "Linket er udlobet"
+        Error body falls back to "For at fa adgang til indkobslisten skal du bruge en ny invitation."
+        Error button falls back to "Forstaet"
+        No raw localization key strings are displayed
+    API
+        N/A
+ACCEPT_INV-42 | Login required state localization keys display correct fallback text [P1]
+    Preconditions
+        User is NOT logged in to the Rema 1000 app
+        Localization keys for the login required state return empty or are missing
+    Actions
+        Trigger the invitation flow via a valid deep link
+        Wait for the invitation sheet to load
+        Observe all text labels in the login required state
+    Expected
+        Login required body falls back to correct Danish text
+        Login button falls back to "Log ind"
+        Create user button falls back to "Opret bruger"
+        No raw localization key strings are displayed
+    API
+        N/A

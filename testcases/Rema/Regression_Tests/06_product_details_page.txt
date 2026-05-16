@@ -1,0 +1,45 @@
+Open Product Details Page and View Info
+    Preconditions
+        --User is logged in; product is visible in search, shopping list, or catalog
+    Actions
+        Tap on any product
+    Expected
+        Product name, image, description, and base price are displayed
+        Labels (e.g., eco, local, age restrictions) are visible
+        "Add to list" and "Add to favorites" buttons are shown (if logged in)
+View Product with special labels or restrictions
+    Actions
+        Open øko product ( search Øko)
+        Open weight product ( search for selv vej)
+        Open alcohol  items
+        Open items wiht max purchase option ( check in newspapers)
+        Open items with limited availability (check in newspapers)
+        Open items with discounted price
+        Open Tobacco items ( search for malboro)
+        Open private parties items ( search in newspapers)
+        Open item with multiple labels - search for MINIMÆLK 0,4% ( it has 6 labels)
+    Expected
+        Weigh info appears for weighted items
+        Yellow box appears for limited availability
+        Yellow box appears for max purchase restriction or any other general information
+        Alcohol product shows age label
+        Tobacco shows age label
+Add / Remove product to shopping list
+    Actions
+        Tap "+" to add item
+        Tap "–" to remove item
+    Expected
+        Item is added/removed from the shopping list
+        Count reflects real-time sync with list, as well as favorites if applied
+        In app notification is shown and navigates the user to current shopping list 
+Add to Favorites/ Remove from favorites
+    Preconditions
+        --User is logged in
+    Actions
+        Open any product
+        Tap on the heart to favorite an item
+        Tap on the enabled heart to disable it 
+    Expected
+        Product is added in first step to favorites with correct number of items
+        Item is removed from favorite cards in front page
+        Item is removed from all favorites list

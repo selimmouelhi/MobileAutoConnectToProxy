@@ -1,0 +1,67 @@
+App install
+    Install RC build 
+        Actions
+            Fresh install the app
+            Open the app
+        Expected
+            App opens on home page
+            Empty list is created and selected having today's date as title
+            User is able to add items to current shopping list or browse different items . tabs
+            Consent (cookies) screen appears
+            User is able to accept consent
+    Install RC build and observe onboarding
+        Actions
+            Fresh install the app
+            Open the app
+        Expected
+            Onboarding is shown
+            User is able to dismiss onboarding
+            Onboarding does not show after app restart
+    Reinstall RC build after deletion
+        Actions
+            Login with latest RC build
+            Add items to shopping list  from differnet sources
+            Delete the app
+            Reinstall the app
+        Expected
+            Upon deleting, the app clears all states and user starts as guest user
+App update
+    Update the public app
+        Preconditions
+            --user is not logged in
+        Actions
+            Install latest RC build
+            Open the app
+            Add a list and add items to the shopping list
+            Update to the lastest version, current live -> release candidate
+            Tap on order button
+        Expected
+            App is updated to the latest version
+            users lists are saved
+            User is able to start login flow
+    Update the app while logged in
+        Preconditions
+            --user is logged in
+        Actions
+            Install live app store version
+            Login 
+            Select a list or a recipe
+            Update the app from current live to release candidate
+        Expected
+            Lists are kept in the new version
+            User can confirm to order
+            User is able to see past orders and differnet informations
+    Update the app while having an ongoing order
+        Actions
+            Start the order flow in live versiob
+            Update the app to the latest version in Testflight
+        Expected
+            After starting the order flow make sure you are seeing the order banner
+            After update, the app still have the order banner, and the order is updated along  the way
+            User is able to cancel order in the RC version
+    Update the app while having items in favorites to the newest version
+        Actions
+            Make sure to have items in favorites ( same items will appear in popular products & Frequently)
+            Add item quantity
+        Expected
+            Item sync through all different modules

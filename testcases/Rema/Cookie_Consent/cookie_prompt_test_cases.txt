@@ -1,0 +1,189 @@
+cookie_prompt-01 | Verify cookie prompt appears on fresh app install
+    Preconditions
+        User has never installed the app before
+        App is freshly installed on device
+    Actions
+        Launch the app for the first time
+        Observe the bottom sheet that appears
+    Expected
+        Cookie consent bottom sheet is displayed on top of welcome screen
+        Bottom sheet contains title "Cookies hjælper os med at forbedre appen"
+        Three action buttons are visible: "Det er OK", "Kun nødvendige", "Indstil præferencer"
+        Links "Læs mere om vores persondatapolitik" and "Læs mere" are visible
+    API
+        N/A
+
+cookie_prompt-02 | Verify cookie prompt appears after app update for existing users
+    Preconditions
+        User has app installed from version before cookie prompt feature
+        App is updated to version with cookie prompt feature
+    Actions
+        Open the updated app
+        Observe the screen
+    Expected
+        Cookie consent bottom sheet is displayed
+        Bottom sheet appears on top of the current screen
+        All cookie prompt content is visible and readable
+    API
+        N/A
+
+cookie_prompt-03 | Verify accepting all cookies dismisses prompt
+    Preconditions
+        User has freshly installed app
+        Cookie consent prompt is displayed
+    Actions
+        Tap "Det er OK" button
+        Observe the screen
+    Expected
+        Cookie consent bottom sheet is dismissed immediately
+        User proceeds to the welcome screen or main app content
+        Cookie prompt does not reappear
+    API
+        N/A
+
+cookie_prompt-04 | Verify accepting only necessary cookies dismisses prompt
+    Preconditions
+        User has freshly installed app
+        Cookie consent prompt is displayed
+    Actions
+        Tap "Kun nødvendige" button
+        Observe the screen
+    Expected
+        Cookie consent bottom sheet is dismissed immediately
+        User proceeds to the welcome screen or main app content
+        Cookie prompt does not reappear
+    API
+        N/A
+
+cookie_prompt-05 | Verify opening cookie preferences configuration screen
+    Preconditions
+        User has freshly installed app
+        Cookie consent prompt is displayed
+    Actions
+        Tap "Indstil præferencer" button
+        Observe the new screen
+    Expected
+        Configuration screen opens
+        Screen title shows "Cookies hjælper os med at forbedre appen"
+        "Nødvendige" toggle is visible and turned ON
+        "Funktionelle - fejlsøgning" toggle is visible and turned OFF
+        "Accepter valgte" and "Accepter alle" buttons are visible at bottom
+    API
+        N/A
+
+cookie_prompt-06 | Verify necessary cookies toggle cannot be disabled
+    Preconditions
+        User is on cookie preferences configuration screen
+        "Nødvendige" toggle is ON
+    Actions
+        Tap on "Nødvendige" toggle to attempt turning it OFF
+        Observe the toggle state
+    Expected
+        "Nødvendige" toggle remains ON
+        Toggle does not respond to tap interaction
+        No error message is displayed
+    API
+        N/A
+
+cookie_prompt-07 | Verify enabling functional cookies and accepting selection
+    Preconditions
+        User is on cookie preferences configuration screen
+        "Funktionelle - fejlsøgning" toggle is OFF by default
+    Actions
+        Tap "Funktionelle - fejlsøgning" toggle to turn it ON
+        Tap "Accepter valgte" button
+        Observe the screen
+    Expected
+        "Funktionelle - fejlsøgning" toggle changes to ON state
+        Configuration screen is dismissed
+        User proceeds to welcome screen or main app content
+        Cookie prompt does not reappear
+    API
+        N/A
+
+cookie_prompt-08 | Verify accepting all cookies from configuration screen
+    Preconditions
+        User is on cookie preferences configuration screen
+    Actions
+        Tap "Accepter alle" button
+        Observe the screen
+    Expected
+        Configuration screen is dismissed immediately
+        User proceeds to welcome screen or main app content
+        All cookie types are accepted
+        Cookie prompt does not reappear
+    API
+        N/A
+
+cookie_prompt-09 | Verify privacy policy link opens correctly
+    Preconditions
+        User has freshly installed app
+        Cookie consent prompt is displayed
+    Actions
+        Tap "Læs mere om vores persondatapolitik" link
+        Observe what happens
+    Expected
+        Privacy policy page or web view opens
+        Content about privacy policy is displayed
+        User can navigate back to cookie prompt
+    API
+        N/A
+
+cookie_prompt-10 | Verify cookie information link opens correctly
+    Preconditions
+        User has freshly installed app
+        Cookie consent prompt is displayed
+    Actions
+        Tap "Læs mere" link in cookie description text
+        Observe what happens
+    Expected
+        Information page about cookies opens
+        Cookie details and descriptions are displayed
+        User can navigate back to cookie prompt
+    API
+        N/A
+
+cookie_prompt-11 | Verify ATT prompt appears after cookie consent on iOS [P1]
+    Preconditions
+        iOS device is used
+        User has freshly installed app
+        Cookie consent prompt is displayed
+    Actions
+        Tap "Det er OK" button to accept all cookies
+        Wait for cookie prompt to dismiss
+        Observe the next prompt that appears
+    Expected
+        ATT (App Tracking Transparency) prompt appears
+        Prompt text is displayed in Danish
+        Prompt contains options to allow or deny tracking
+    API
+        N/A
+
+cookie_prompt-12 | Verify cookie prompt does not reappear after accepting
+    Preconditions
+        User has accepted cookies in previous session
+        App was closed completely
+    Actions
+        Launch the app again
+        Navigate through app screens
+    Expected
+        Cookie consent prompt does NOT appear
+        User proceeds directly to main app content
+        App functions normally without showing cookie prompt
+    API
+        N/A
+
+cookie_prompt-13 | Verify cookie prompt does not reappear after logout and login
+    Preconditions
+        User has accepted cookies
+        User is logged into the app
+    Actions
+        Logout from the app
+        Login again with same or different credentials
+        Observe the screen
+    Expected
+        Cookie consent prompt does NOT appear
+        User proceeds directly to main app content after login
+        Previous cookie preferences are maintained
+    API
+        N/A

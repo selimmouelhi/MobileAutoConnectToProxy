@@ -1,0 +1,585 @@
+Newspapers Backend & API Validation - AVIS-API
+
+AVIS-API-01 | Verify Tjek catalogs API returns valid response structure [P0]
+    Preconditions
+        User has valid API key for Tjek
+        Dealer ID 11deC is configured
+    Actions
+        Send GET request to https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC
+        Verify response status is 200
+        Parse response body as JSON
+        Validate response is an array of catalog objects
+    Expected
+        Response contains array of catalog objects
+        Each catalog has required fields: id, ern, label, run_from, run_till, publish, page_count, offer_count, branding, dealer_id, dimensions, images, pdf_url, types, all_stores
+        All field types match specification (strings, integers, objects, arrays, booleans)
+        branding object contains name, website, description, logo, color, pageflip
+        dimensions object contains height and width
+        images object contains thumb, view, zoom URLs
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog array with complete structure
+AVIS-API-02 | Verify catalog date fields are valid and in correct chronological order [P0]
+    Preconditions
+        Catalogs API returns at least one catalog
+    Actions
+        Retrieve catalog object from API response
+        Parse publish, run_from, run_till as ISO datetime values
+        Compare dates to verify chronological order
+        Validate all dates are valid ISO 8601 format
+    Expected
+        All date fields parse successfully as ISO 8601 datetimes
+        Chronological order is maintained: publish <= run_from < run_till
+        run_till is after run_from (offer period has valid duration)
+        Dates are not null or empty
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalogs with publish, run_from, run_till fields
+AVIS-API-03 | Verify page_count and offer_count are positive integers [P1]
+    Preconditions
+        Catalogs API returns at least one catalog
+    Actions
+        Extract page_count and offer_count from catalog object
+        Verify both values are integers
+        Verify both values are greater than 0
+    Expected
+        page_count is an integer > 0
+        offer_count is an integer > 0
+        Values match expected catalog content (reasonable values, e.g., page_count < 200, offer_count < 1000)
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns page_count and offer_count fields
+AVIS-API-04 | Verify catalog image URLs are accessible [P1]
+    Preconditions
+        Catalogs API returns at least one catalog with images object
+    Actions
+        Extract thumb, view, and zoom URLs from images object
+        Send HEAD request to each URL
+        Verify response status for each image URL
+    Expected
+        All image URLs return status 200
+        URLs are well-formed and use HTTPS protocol
+        Content-Type header indicates image format (e.g., image/jpeg, image/png)
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog with images.thumb, images.view, images.zoom
+AVIS-API-05 | Verify PDF URL is accessible and returns valid PDF [P1]
+    Preconditions
+        Catalogs API returns at least one catalog with pdf_url
+    Actions
+        Extract pdf_url from catalog object
+        Send HEAD request to pdf_url
+        Verify response headers
+    Expected
+        pdf_url returns status 200
+        Content-Type header is application/pdf
+        Content-Length header is present and > 0
+        URL is well-formed and uses HTTPS protocol
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog with pdf_url field
+AVIS-API-06 | Verify offer detail API returns complete offer structure [P0]
+    Preconditions
+        Valid offer ID is available from catalog
+    Actions
+        Send GET request to https://squid-api.tjek.com/v2/offers/{offerId}
+        Verify response status is 200
+        Parse response body as JSON
+        Validate all required offer fields are present
+    Expected
+        Response contains single offer object
+        Offer has required fields: id, ern, heading, description, catalog_page, pricing, quantity, images, run_from, run_till, publish, dealer_id, catalog_id, links, category_ids
+        pricing object contains price, pre_price, currency
+        quantity object contains unit (with symbol, si), size (with from, to), pieces (with from, to)
+        images object contains thumb, view, zoom
+        links object contains webshop field (can be null)
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns complete offer structure
+AVIS-API-07 | Verify offer pricing has valid price and currency [P0]
+    Preconditions
+        Offer detail API returns offer with pricing object
+    Actions
+        Extract pricing object from offer
+        Verify price field is present and numeric
+        Verify currency field is present
+        Check that price is greater than 0
+    Expected
+        price is a numeric value > 0
+        currency is "DKK"
+        pre_price (if present) is numeric and >= price (original price before discount)
+        Pricing values have maximum 2 decimal places
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with pricing.price, pricing.pre_price, pricing.currency
+AVIS-API-08 | Verify offer quantity fields are consistent [P1]
+    Preconditions
+        Offer detail API returns offer with quantity object
+    Actions
+        Extract quantity object from offer
+        Verify unit.symbol and unit.si are present
+        Verify size.from and size.to are numeric if present
+        Verify pieces.from and pieces.to are numeric if present
+    Expected
+        unit.symbol is a non-empty string (e.g., "g", "stk.", "ml")
+        unit.si contains valid SI unit information
+        If size.to is present, size.to >= size.from
+        If pieces.to is present, pieces.to >= pieces.from
+        At least one quantity dimension (size or pieces) is populated
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with quantity.unit, quantity.size, quantity.pieces
+AVIS-API-09 | Verify offer products API returns valid product structure [P0]
+    Preconditions
+        Valid offer ID is available
+    Actions
+        Send POST request to https://squid-api.tjek.com/v4/rpc/get_offer_products
+        Request body: {"id": "offerId"}
+        Verify response status is 200
+        Parse response body as JSON
+    Expected
+        Response contains offer_products array
+        Each product has: product object (with id, gtin, images array, country_code, brand), name, external_id
+        product.id is non-empty string
+        product.images is an array (can be empty)
+        product.country_code is valid country code string
+        name field is non-empty string
+    API
+        POST https://squid-api.tjek.com/v4/rpc/get_offer_products - Returns offer_products array with product details
+AVIS-API-10 | Verify catalogs API returns empty array when no newspapers available [P1]
+    Preconditions
+        Dealer ID has no active catalogs (or use invalid dealer_id for testing)
+    Actions
+        Send GET request to https://squid-api.tjek.com/v2/catalogs?dealer_id={emptyDealerId}
+        Verify response status
+        Parse response body
+    Expected
+        Response status is 200
+        Response body is empty array []
+        No error is thrown
+        App handles empty state gracefully (shows "Ingen tilbudsaviser" message)
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id={emptyDealerId} - Returns empty array
+AVIS-API-11 | Verify catalogs API handles 500 server error [P2]
+    Preconditions
+        Tjek API is returning 500 error (use Proxyman to mock)
+    Actions
+        Trigger catalogs API request from app
+        Observe app behavior when receiving 500 response
+    Expected
+        App displays error message to user (e.g., "Kunne ikke hente tilbudsaviser")
+        App does not crash
+        User can retry the request (pull to refresh)
+        Previous cached catalogs (if any) remain visible
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns 500 Internal Server Error
+AVIS-API-12 | Verify catalogs API handles network timeout [P2]
+    Preconditions
+        Network connection is slow or API is timing out (use Proxyman to simulate delay)
+    Actions
+        Trigger catalogs API request from app
+        Wait for timeout to occur
+        Observe app behavior
+    Expected
+        App displays loading indicator during request
+        After timeout, app shows error message (e.g., "Netværksfejl - prøv igen")
+        App does not crash or hang indefinitely
+        User can retry the request
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Request times out
+AVIS-API-13 | Verify offer detail API handles 404 for invalid offer ID [P1]
+    Preconditions
+        User has opened newspaper viewer
+    Actions
+        Send GET request to https://squid-api.tjek.com/v2/offers/INVALID_ID
+        Verify response status
+    Expected
+        Response status is 404
+        Response body contains error message
+        App handles 404 gracefully (shows "Tilbud ikke fundet" or similar)
+        App does not crash
+        User can navigate back or close overlay
+    API
+        GET https://squid-api.tjek.com/v2/offers/INVALID_ID - Returns 404 Not Found
+AVIS-API-14 | Verify offer products API returns empty products array [P2]
+    Preconditions
+        Offer exists but has no linked products
+    Actions
+        Send POST request to https://squid-api.tjek.com/v4/rpc/get_offer_products with offer ID that has no products
+        Parse response
+    Expected
+        Response status is 200
+        offer_products array is empty []
+        App handles empty products gracefully (shows message or hides Avisvarer section)
+        No crash or error occurs
+    API
+        POST https://squid-api.tjek.com/v4/rpc/get_offer_products - Returns {"offer_products": []}
+AVIS-API-15 | Verify product images API handles 404 [P2]
+    Preconditions
+        Product has invalid or missing image URL
+    Actions
+        Request product image from https://api.staging.digital.rema1000.dk/api/v1/catalog/store/{storeId}/item/{itemId}/image/{timestamp}/{size}.png
+        Use invalid itemId or timestamp
+    Expected
+        Response status is 404
+        App shows placeholder image or fallback UI
+        App does not crash
+        Product name and other details still display correctly
+    API
+        GET https://api.staging.digital.rema1000.dk/api/v1/catalog/store/{storeId}/item/{itemId}/image/{timestamp}/{size}.png - Returns 404
+AVIS-API-16 | Verify add to shopping list API with correct source field for Android [P0]
+    Preconditions
+        User is logged in on Android device
+        User has at least one shopping list
+        Valid store_item_id is available from Avisvarer product
+    Actions
+        Add product from Avisvarer to shopping list
+        Intercept POST request to https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2
+        Extract request body
+        Verify source field in items array
+    Expected
+        Request contains changes array with items array
+        Each item has source field set to "android_newspaper_list"
+        Item has required fields: amount, bought, name, store_id, store_item_id, offlineId
+        Response status is 200
+        Shopping list syncs successfully
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Syncs shopping list with source "android_newspaper_list"
+AVIS-API-17 | Verify add to shopping list API with correct source field for iOS [P0]
+    Preconditions
+        User is logged in on iOS device
+        User has at least one shopping list
+        Valid store_item_id is available from Avisvarer product
+    Actions
+        Add product from Avisvarer to shopping list
+        Intercept POST request to https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2
+        Extract request body
+        Verify source field in items array
+    Expected
+        Request contains changes array with items array
+        Each item has source field set to "ios_newspaper_list"
+        Item has required fields: amount, bought, name, store_id, store_item_id, offlineId
+        Response status is 200
+        Shopping list syncs successfully
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Syncs shopping list with source "ios_newspaper_list"
+AVIS-API-18 | Verify add to cart fails with 401 unauthorized [P2]
+    Preconditions
+        User's auth token is expired or invalid
+        User attempts to add product from Avisvarer
+    Actions
+        Trigger add to shopping list action
+        Mock 401 response from shopping list sync API
+        Observe app behavior
+    Expected
+        Response status is 401
+        App detects unauthorized state
+        App prompts user to log in again or shows session expired message
+        Product is not added to shopping list
+        App does not crash
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Returns 401 Unauthorized
+AVIS-API-19 | Verify add to cart fails with 500 server error [P2]
+    Preconditions
+        Shopping list sync API returns 500 error (use Proxyman to mock)
+    Actions
+        Add product from Avisvarer to shopping list
+        Observe app behavior when receiving 500 response
+    Expected
+        Response status is 500
+        App displays error message (e.g., "Kunne ikke tilføje til indkøbsliste")
+        App does not crash
+        User can retry adding the product
+        Product is queued for offline sync if offline mode is enabled
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Returns 500 Internal Server Error
+AVIS-API-20 | Verify Tjek WebView handles complete API outage [P2]
+    Preconditions
+        All Tjek API endpoints are unreachable (network blocked or API down)
+    Actions
+        Navigate to Tilbudsavis section in app
+        Attempt to load newspaper viewer WebView
+        Observe app behavior
+    Expected
+        WebView fails to load publication-viewer.tjek.com
+        App displays error message indicating content is unavailable
+        App does not crash or freeze
+        User can navigate back to previous screen
+        Retry mechanism is available
+    API
+        N/A - Complete Tjek API outage scenario
+AVIS-API-21 | Verify catalog label matches UI display [P0]
+    Preconditions
+        Catalogs API returns at least one catalog with label field
+        User is viewing Tilbudsavis screen
+    Actions
+        Extract label field from catalog API response (e.g., "Uge 15")
+        Compare with catalog title displayed in UI
+    Expected
+        Label from API exactly matches title shown in app UI
+        No truncation or modification of label text
+        Label is displayed in correct location (catalog card or header)
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog with label field
+AVIS-API-22 | Verify date range in UI matches run_from and run_till from API [P0]
+    Preconditions
+        Catalogs API returns catalog with run_from and run_till dates
+        User is viewing Tilbudsavis screen with catalog cards
+    Actions
+        Extract run_from and run_till from catalog API response
+        Format dates as displayed in UI (e.g., "1. apr - 7. apr")
+        Compare with date range text in UI
+    Expected
+        Start date in UI matches run_from from API
+        End date in UI matches run_till from API
+        Date format is consistent with app locale (Danish)
+        Date range is displayed in correct location on catalog card
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns run_from and run_till fields
+AVIS-API-23 | Verify offer prices in overlay match pricing object from API [P0]
+    Preconditions
+        Offer detail API returns offer with pricing.price and pricing.pre_price
+        User has opened offer detail overlay in newspaper viewer
+    Actions
+        Extract price and pre_price from offer API response
+        Compare with price displayed in offer overlay
+        Verify pre_price (if present) is shown as strikethrough original price
+    Expected
+        Current price in UI matches pricing.price from API (formatted as "XX,XX kr.")
+        If pre_price is present, it is shown as strikethrough and matches API value
+        Currency is displayed as "kr." or "DKK"
+        Price formatting matches Danish locale (comma for decimal separator)
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with pricing.price and pricing.pre_price
+AVIS-API-24 | Verify Kommende badge shown only when publish date is future or run_from not started [P1]
+    Preconditions
+        Catalogs API returns catalogs with various publish and run_from dates (past, current, future)
+        User is viewing Tilbudsavis screen
+    Actions
+        For each catalog, compare current date/time with publish and run_from dates
+        Check if "Kommende" badge is displayed on catalog card
+    Expected
+        Catalog with publish date in the future shows "Kommende" badge
+        Catalog with run_from date in the future shows "Kommende" badge
+        Catalog with both publish and run_from in the past does NOT show "Kommende" badge
+        Badge logic is consistent across all catalogs
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalogs with publish and run_from fields
+AVIS-API-25 | Verify product count in Avisvarer matches offer_count from catalog [P1]
+    Preconditions
+        Catalogs API returns catalog with offer_count field
+        User has opened Avisvarer from catalog detail screen
+    Actions
+        Extract offer_count from catalog API response
+        Count number of products displayed in Avisvarer list
+        Compare counts
+    Expected
+        Number of products in Avisvarer list matches offer_count from API
+        If client-side filtering is applied, unfiltered count matches API
+        Count is consistent across multiple loads
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog with offer_count field
+AVIS-API-26 | Verify catalog with page_count equals 0 [P2]
+    Preconditions
+        Catalog exists with page_count set to 0 (use Proxyman to mock)
+    Actions
+        Load catalog with page_count = 0
+        Attempt to open newspaper viewer
+        Observe app behavior
+    Expected
+        App handles page_count = 0 gracefully
+        Either shows error message ("Ingen sider tilgængelige") or hides catalog from list
+        App does not crash
+        User can navigate to other catalogs
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog with page_count = 0
+AVIS-API-27 | Verify offer with pre_price equals null [P2]
+    Preconditions
+        Offer exists with pricing.pre_price = null (no original price/discount)
+    Actions
+        Load offer detail overlay for offer without pre_price
+        Check UI rendering of price section
+    Expected
+        Current price is displayed normally
+        No strikethrough price is shown
+        No discount badge or indicator is shown
+        Pricing section layout is correct with only current price
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with pricing.pre_price = null
+AVIS-API-28 | Verify offer with webshop link equals null [P2]
+    Preconditions
+        Offer exists with links.webshop = null
+    Actions
+        Load offer detail overlay
+        Check if webshop button or link is present
+    Expected
+        No webshop button is displayed when links.webshop is null
+        Overlay layout adjusts correctly without webshop link
+        No broken link or error is shown
+        Other offer details display normally
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with links.webshop = null
+AVIS-API-29 | Verify product with gtin and brand both null [P2]
+    Preconditions
+        Offer products API returns product with gtin = null and brand = null
+    Actions
+        Load Avisvarer with product that has null gtin and brand
+        Check product card display
+    Expected
+        Product is still displayed in Avisvarer list
+        Product name is shown correctly
+        Missing gtin and brand do not cause crash or display errors
+        Product can be added to shopping list successfully
+    API
+        POST https://squid-api.tjek.com/v4/rpc/get_offer_products - Returns product with product.gtin = null and product.brand = null
+AVIS-API-30 | Verify very large catalog with 100+ pages [P2]
+    Preconditions
+        Catalog exists with page_count >= 100 (use real or mocked data)
+    Actions
+        Load catalog with high page count
+        Open newspaper viewer WebView
+        Navigate through multiple pages
+        Monitor app performance and memory usage
+    Expected
+        Catalog loads successfully without timeout
+        WebView renders all pages correctly
+        Page navigation is smooth without crashes
+        Memory usage remains within acceptable limits
+        No performance degradation or freezing
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog with page_count >= 100
+AVIS-API-31 | Verify expired catalogs with run_till in the past are handled correctly [P1]
+    Preconditions
+        Catalog exists with run_till date in the past
+    Actions
+        Request catalogs API
+        Check if expired catalog is included in response
+        Check app behavior for expired catalogs
+    Expected
+        Expired catalogs may still be returned by API (depending on Tjek retention policy)
+        If shown in app, expired catalogs are marked appropriately (e.g., "Udløbet" badge or moved to separate section)
+        User can still view expired catalogs if they are displayed
+        Current/active catalogs are prioritized in UI ordering
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - May return catalogs with run_till in the past
+AVIS-API-32 | Verify concurrent add-to-cart requests are handled correctly [P2]
+    Preconditions
+        User is offline or has slow network connection
+        Offline sync is enabled
+    Actions
+        Add multiple products from Avisvarer to shopping list in quick succession
+        Intercept multiple POST requests to shopping list sync API
+        Monitor request queue and sync behavior
+    Expected
+        Each add-to-cart action generates unique offlineId
+        Requests are queued and synced in order when connection is available
+        No duplicate items are created in shopping list
+        All items sync successfully without data loss
+        Sync status is reflected in UI
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Multiple concurrent requests with unique offlineIds
+AVIS-API-33 | Verify offlineId uniqueness for shopping list items [P1]
+    Preconditions
+        User adds multiple products from Avisvarer to shopping list
+    Actions
+        Intercept POST requests to shopping list sync API
+        Extract offlineId field from each item in request body
+        Check for uniqueness of offlineIds
+    Expected
+        Each item has a unique offlineId (UUID format)
+        No duplicate offlineIds are generated across multiple add actions
+        offlineId format is valid UUID (e.g., "550e8400-e29b-41d4-a716-446655440000")
+        Same product added multiple times gets different offlineIds
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Items contain unique offlineId values
+AVIS-API-34 | Verify Tjek analytics tracking API is called on catalog view [P1]
+    Preconditions
+        User opens newspaper viewer
+    Actions
+        Intercept POST request to https://squid-api.tjek.com/sync
+        Verify request body contains catalog view event
+        Check that pp.id field matches catalog ID
+    Expected
+        Analytics API is called when catalog is opened
+        Request body contains pp.id field with correct catalog ID
+        Event type indicates catalog view action
+        Request includes appropriate headers (x-api-key, etc.)
+    API
+        POST https://squid-api.tjek.com/sync - Tracks catalog view with pp.id field
+AVIS-API-35 | Verify shopping list sync respects X-Device header [P0]
+    Preconditions
+        User is on Android or iOS device
+    Actions
+        Add product from Avisvarer to shopping list
+        Intercept POST request to shopping list sync API
+        Verify X-Device header in request
+    Expected
+        Android: X-Device header is "android"
+        iOS: X-Device header is "ios"
+        X-Locale header is "da" (Danish)
+        X-Timezone header is "Europe/Copenhagen"
+        Authorization header contains valid Bearer token
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Request includes platform-specific headers
+AVIS-API-36 | Verify offer description field is displayed correctly [P1]
+    Preconditions
+        Offer has description field with special notes (e.g., "Maks. 6 stk. pr. kunde pr. dag")
+    Actions
+        Load offer detail overlay
+        Check if description is displayed
+        Verify full description text matches API response
+    Expected
+        Description from API is displayed in offer overlay
+        Multi-line descriptions are formatted correctly
+        Special characters and Danish letters (æ, ø, å) render correctly
+        Description is not truncated unless UI design specifies truncation
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with description field
+AVIS-API-37 | Verify catalog_page field maps offer to correct page in viewer [P1]
+    Preconditions
+        Offer has catalog_page field indicating page number in newspaper
+    Actions
+        Note catalog_page value from offer API (e.g., catalog_page = 5)
+        Open offer in newspaper viewer
+        Check which page is displayed/highlighted
+    Expected
+        Opening offer navigates to correct page in newspaper viewer
+        Page number matches catalog_page value from API
+        Offer is highlighted or indicated on the page
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with catalog_page field
+AVIS-API-38 | Verify dealer_id consistency across catalogs and offers [P1]
+    Preconditions
+        Catalogs API and offer detail API return data
+    Actions
+        Extract dealer_id from catalog object
+        Extract dealer_id from offer object
+        Compare values
+    Expected
+        dealer_id is "11deC" for Rema 1000 in both catalogs and offers
+        dealer_id is consistent across all API responses
+        No mismatched dealer_id values between catalog and its offers
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalogs with dealer_id
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with matching dealer_id
+AVIS-API-39 | Verify category_ids field is present and valid [P2]
+    Preconditions
+        Catalog and offer APIs return category_ids arrays
+    Actions
+        Extract category_ids from catalog object
+        Extract category_ids from offer object
+        Verify array contents
+    Expected
+        category_ids is an array (can be empty)
+        Array contains valid category identifier strings
+        No null or invalid values in array
+        Categories are used for filtering or organization (if applicable)
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog with category_ids array
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with category_ids array
+AVIS-API-40 | Verify offer images are cropped sections from catalog page [P1]
+    Preconditions
+        Offer detail API returns images object with thumb, view, zoom URLs
+    Actions
+        Load offer image URLs
+        Compare with full catalog page image
+        Verify images are cropped from correct page location
+    Expected
+        Offer images are cropped sections from the catalog page specified by catalog_page field
+        Image URLs are accessible and return 200 status
+        Image quality is appropriate for zoom level (thumb < view < zoom)
+        Images accurately show the offer as it appears in the newspaper
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns offer with images.thumb, images.view, images.zoom

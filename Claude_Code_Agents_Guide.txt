@@ -1,0 +1,107 @@
+======================================================
+  CLAUDE CODE - CUSTOM AGENTS GUIDE
+======================================================
+
+WHAT ARE AGENTS?
+----------------
+Reusable AI assistants you define for specific tasks.
+Write the instructions once, use them forever.
+They follow your rules, format, and workflow
+every single time.
+
+
+HOW TO CREATE ONE
+-----------------
+1. Create the folder:       mkdir -p .claude/agents
+2. Add a markdown file:     .claude/agents/my-agent.md
+3. Write it like this:
+
+    ---
+    name: my-agent
+    description: What it does and when to trigger it
+    model: sonnet
+    color: green
+    ---
+
+    You are my-agent. Your instructions go here...
+
+   Above the second --- = config (name, model, color)
+   Below the second --- = the agent's full prompt
+
+4. Done. Claude picks it up automatically.
+
+
+HOW TO TRIGGER AN AGENT
+------------------------
+- Describe what you need naturally. Claude picks
+  the right agent based on its description.
+- Or be explicit: "use the jira-bug-reporter agent"
+
+
+MODEL OPTIONS
+-------------
+  sonnet  Fast, good for most agents (recommended)
+  opus    Smartest, for complex reasoning
+  haiku   Fastest and cheapest, for simple tasks
+
+
+YOUR AGENTS
+======================================================
+
+1) jira-bug-reporter
+   File:   .claude/agents/jira-bug-reporter.md
+   Model:  sonnet | Color: red
+
+   Interviews you about a bug in 5 quick batches:
+     1. Summary + Priority
+     2. App version, device, environment
+     3. Steps to reproduce, actual/expected result
+     4. Component, versions, labels
+     5. Reproducibility, regression, comparison table
+   Then previews the ticket and creates it in Jira
+   via the Atlassian MCP with all fields mapped.
+
+   Trigger examples:
+     "The login button doesn't work on iOS"
+     "File a bug: cart crashes on Pixel 7"
+
+------------------------------------------------------
+
+2) testpad-casecrafter
+   File:   .claude/agents/testpad-casecrafter.md
+   Model:  sonnet | Color: green
+
+   Converts feature specs or user stories into
+   structured test cases in TestPad format:
+
+     MODULE-01 | Test Title [P0]
+         Preconditions
+             User is logged in as admin
+         Actions
+             Navigate to settings
+             Tap the toggle
+         Expected
+             Toggle changes to ON
+             Success toast appears
+         API
+             GET /api/v1/settings - returns updated flag
+
+   Covers happy path, edge cases, and negative
+   scenarios. Output is plain text, ready to paste
+   directly into TestPad.
+
+   Trigger examples:
+     "Create test cases for the 2FA feature"
+     "Convert these user stories into test cases"
+
+
+PRO TIP
+-------
+  Agent not behaving the way you want?
+  Don't rewrite the whole prompt yourself.
+  Just tell Claude what's wrong and ask it to fix it.
+  "The bug reporter skips priority, fix the agent"
+  "Add a severity field to the test case agent"
+  This is where AI shines -- let it improve itself.
+
+======================================================

@@ -1,0 +1,617 @@
+RecommendedList 01 | Recommendations shelf displayed with all prerequisites met
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected and contains products
+        App has been launched and pre-loading completed
+    Actions
+        Navigate to pre-search screen
+        Wait for recommendations shelf to load
+    Expected
+        "Recommended products from active list" shelf is displayed
+        Products carousel shows recommended products
+        "See all" button is visible
+        Shelf uses same design as popular products carousel
+        Products are based on items in active shopping list
+    API
+        GET /api/recommendations/active-list - Returns list of recommended products
+RecommendedList 02 | Shelf hidden when personalization policy not accepted
+    Preconditions
+        User is logged in
+        Personalization policy is NOT accepted
+        Shopping list is selected and contains products
+    Actions
+        Navigate to pre-search screen
+        Wait for page to load
+    Expected
+        "Recommended products from active list" shelf is NOT displayed
+        No API call is made to recommendations endpoint
+        Other product shelves display normally
+RecommendedList 03 | Shelf hidden when user is not logged in
+    Preconditions
+        User is NOT logged in (guest user)
+    Actions
+        Navigate to pre-search screen
+    Expected
+        "Recommended products from active list" shelf is NOT displayed
+        No API call is made to recommendations endpoint
+        Other available shelves display normally
+RecommendedList 04 | Shelf hidden when no shopping list is selected
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        No shopping list is currently selected
+    Actions
+        Navigate to pre-search screen
+        Wait for page to load
+    Expected
+        "Recommended products from active list" shelf is NOT displayed
+        No API call is made to recommendations endpoint
+        Other product shelves display normally
+RecommendedList 05 | Shelf hidden when selected shopping list is empty
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected but contains zero products
+    Actions
+        Navigate to pre-search screen
+        Wait for page to load
+    Expected
+        "Recommended products from active list" shelf is NOT displayed
+        No API call is made to recommendations endpoint
+        Other product shelves display normally
+RecommendedList 06 | Shelf hidden when API returns empty product list
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected and contains products
+        Recommendations API returns empty array
+    Actions
+        Navigate to pre-search screen
+        Wait for recommendations API response
+    Expected
+        "Recommended products from active list" shelf is NOT displayed
+        API call is made but returns empty results
+        Other product shelves display normally
+    API
+        GET /api/recommendations/active-list - Returns empty array []
+RecommendedList 07 | Shelf only displayed in pre-search, not in search results
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected and contains products
+        Recommendations shelf visible in pre-search
+    Actions
+        Enter any search query in search field
+        Wait for search results to load
+    Expected
+        "Recommended products from active list" shelf disappears
+        Search results are displayed
+        Shelf reappears when search field is cleared and returning to pre-search
+RecommendedList 08 | See all button opens product list page
+    Preconditions
+        User is logged in
+        Shopping list is selected and contains products
+        Recommendations shelf is displayed
+    Actions 
+        Tap "See all" button on recommendations shelf
+        Wait for product list page to load
+    Expected
+        Product list page opens showing all recommended products
+        Same loading state as other product shelf see-all pages
+        Products can be scrolled through
+        Each product shows add to list button
+    API
+        Same recommendations endpoint data is used
+RecommendedList 09 | Error state displayed when API call fails
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected and contains products
+        Recommendations API returns error (500, network error, etc.)
+    Actions
+        Navigate to pre-search screen
+        Wait for API error
+    Expected
+        Error state is displayed for recommendations shelf
+        Same error UI as used for popular products shelf
+        User can retry by pulling to refresh
+        Other product shelves continue to function
+    API
+        GET /api/recommendations/active-list - Returns error status
+RecommendedList 10 | Skeleton loader displayed while loading
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected and contains products
+        API response is delayed
+    Actions
+        Navigate to pre-search screen
+        Observe loading state
+    Expected
+        Skeleton loader is displayed while recommendations load
+        Loading state matches other product shelves
+        Products appear once API responds
+        No empty state flicker
+    API
+        GET /api/recommendations/active-list - Response delayed
+RecommendedList 11 | Products reload after 1 hour cache invalidation
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected and contains products
+        Recommendations loaded successfully 1 hour ago
+    Actions
+        Wait for 1 hour to pass
+        Navigate to pre-search screen or trigger refresh
+    Expected
+        Skeleton loader is displayed
+        API call is made to fetch fresh recommendations
+        New products may be displayed based on updated recommendations
+    API
+        GET /api/recommendations/active-list - Called again after 1 hour
+RecommendedList 12 | Products reload when shopping list changed locally
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+    Actions
+        Navigate away from pre-search
+        Change the selected shopping list to a different one
+        Navigate back to pre-search screen
+    Expected
+        Skeleton loader is displayed
+        API call is made with new shopping list context
+        Recommendations update based on new shopping list
+    API
+        GET /api/recommendations/active-list - Called with new list context
+RecommendedList 13 | Products reload when shopping list changed remotely
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+        Shopping list changed from another device
+    Actions
+        Wait for remote sync to detect shopping list change
+        Observe recommendations shelf
+    Expected
+        Skeleton loader is displayed
+        API call is made to fetch updated recommendations
+        Recommendations update based on remotely changed shopping list
+    API
+        GET /api/recommendations/active-list - Called after remote change detected
+RecommendedList 14 | Products reload when user logs in
+    Preconditions
+        User is logged out
+        App on pre-search screen
+    Actions
+        Log in with valid credentials
+        Navigate to pre-search screen
+        Select a shopping list with products
+    Expected
+        Recommendations shelf appears after login
+        Skeleton loader is displayed
+        API call is made to fetch personalized recommendations
+        Products are displayed
+    API
+        GET /api/recommendations/active-list - Called after successful login
+RecommendedList 15 | Products reload when adding item from popular products shelf
+    Preconditions
+        User is logged in with recommendations displayed
+        Shopping list is selected
+    Actions
+        Add a product to shopping list from "Popular products" shelf
+        Observe recommendations shelf
+    Expected
+        Skeleton loader is displayed on recommendations shelf
+        Full reload triggered with skeleton loader
+        API call is made to fetch updated recommendations
+        Recommendations may update based on newly added product
+    API
+        GET /api/recommendations/active-list - Called after product addition
+RecommendedList 16 | Products reload when adding item from search results
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected
+        Recommendations were visible in pre-search
+    Actions
+        Search for a product
+        Add product to shopping list from search results
+        Navigate back to pre-search
+    Expected
+        Recommendations shelf displays skeleton loader
+        Full reload triggered
+        API call is made to fetch updated recommendations
+        Recommendations may update based on search addition
+    API
+        GET /api/recommendations/active-list - Called after returning to pre-search
+RecommendedList 17 | Products reload when removing item from shopping list view
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+        Shopping list is selected and contains products
+    Actions
+        Navigate to shopping list view
+        Remove a product from the shopping list
+        Navigate back to pre-search screen
+    Expected
+        Skeleton loader is displayed on recommendations shelf
+        Full reload triggered
+        API call is made to fetch updated recommendations
+        Recommendations update based on removed product
+    API
+        GET /api/recommendations/active-list - Called after product removal
+RecommendedList 18 | Products reload when items changed remotely
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+        Products added/removed from shopping list on another device
+    Actions
+        Wait for remote sync to detect changes
+        Observe recommendations shelf
+    Expected
+        Skeleton loader is displayed
+        Full reload triggered
+        API call is made to fetch updated recommendations
+        Recommendations update based on remote changes
+    API
+        GET /api/recommendations/active-list - Called after remote sync
+RecommendedList 19 | No reload when adding product from recommendations shelf itself
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+        Shopping list is selected
+    Actions
+        Add a product to shopping list from "Recommended products from active list" shelf
+        Observe recommendations shelf
+    Expected
+        No skeleton loader is displayed
+        No reload is triggered
+        Products remain stable and unchanged
+        Added product shows updated state (e.g., quantity controls)
+        Shelf continues to display same products
+    API
+        No additional GET /api/recommendations/active-list call made
+RecommendedList 20 | NO reload when adding product from recommendations see-all page
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected
+        User is on recommendations "See all" page
+    Actions
+        Add multiple products to shopping list from see-all page
+        Observe product list
+    Expected
+        No skeleton loader is displayed
+        No reload is triggered
+        Products remain stable on the page
+        Added products show updated state
+        User can continue browsing same product list
+    API
+        No additional GET /api/recommendations/active-list call made
+RecommendedList 21 | NO reload when removing product from recommendations shelf
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+        Shopping list contains products from recommendations
+    Actions
+        Remove a product from shopping list via recommendations shelf
+        Observe recommendations shelf
+    Expected
+        No skeleton loader is displayed
+        No reload is triggered
+        Products remain stable and unchanged
+        Removed product shows updated state (e.g., add button)
+        Shelf continues to display same products
+    API
+        No additional GET /api/recommendations/active-list call made
+RecommendedList 22 | Pre-loading recommendations on app launch
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected and contains products
+        App is being launched fresh
+    Actions
+        Launch the app
+        Wait for app initialization
+        Navigate to pre-search screen
+    Expected
+        Recommendations are pre-loaded during app launch
+        When pre-search is opened, data is already available or loading
+        Minimal delay in displaying recommendations shelf
+        Skeleton loader shows briefly if data still loading
+    API
+        GET /api/recommendations/active-list - Called during app initialization
+RecommendedList 23 | Shopping list source tracking from recommendations carousel
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list is selected
+        Recommendations shelf is displayed
+    Actions
+        Add a product to shopping list from recommendations carousel
+        Check analytics/tracking data
+    Expected
+        Product is added successfully
+        Shopping list source is tracked correctly
+        Android: source is "android_recommendations_from_active_list"
+        iOS: source is "ios_recommendations_from_active_list"
+    API
+        POST /api/shopping-list/items - Request includes platform-specific source
+RecommendedList 24 | Shopping list source tracking from see-all page
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        User is on recommendations see-all page
+    Actions
+        Add a product to shopping list from see-all page
+        Check analytics/tracking data
+    Expected
+        Product is added successfully
+        Shopping list source is tracked correctly
+        Android: source is "android_recommendations_from_active_list"
+        iOS: source is "ios_recommendations_from_active_list"
+        Analytics event includes correct source parameter
+    API
+        POST /api/shopping-list/items - Request includes platform-specific source
+RecommendedList 25 | Product details opened from recommendations carousel
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+        Shopping list is selected
+    Actions
+        Tap on a product card in recommendations carousel
+        Wait for product details to load
+    Expected
+        Product details page opens
+        All product information is displayed correctly
+        User can add product from details page
+        Back navigation returns to pre-search with recommendations visible
+    API
+        GET /api/products/{product_id} - Fetches product details
+RecommendedList 26 | Product details opened from see-all page
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        User is on recommendations see-all page
+    Actions
+        Tap on a product in the list
+        Wait for product details to load
+    Expected
+        Product details page opens
+        All product information is displayed correctly
+        Back navigation returns to see-all page
+        See-all page maintains scroll position
+    API
+        GET /api/products/{product_id} - Fetches product details
+RecommendedList 27 | Personalization policy is not needed to show recommended products
+    Preconditions
+        User is logged in
+        Personalization policy is NOT accepted
+        Shopping list is selected with products
+        User is on pre-search screen without recommendations
+    Actions
+        Navigate to settings/privacy
+        Accept personalization policy
+        Navigate back to pre-search screen
+        Go back to consent
+        Revoke policy
+        Navigate to pre-search screen
+    Expected
+        Recommendations shelf appears in both cases
+        Skeleton loader is displayed
+        API call is made to fetch recommendations
+        Products are displayed
+    API
+        GET /api/recommendations/active-list - Called 
+RecommendedList 28 | User revokes personalization policy during session
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Recommendations shelf is displayed
+    Actions
+        Navigate to settings/privacy
+        Revoke personalization policy
+        Navigate back to pre-search screen
+    Expected
+        Recommendations shelf is hidden
+        No API calls are made for recommendations
+        Other product shelves remain visible
+        Shelf stays hidden until policy is accepted again
+    API
+        No recommendations API calls after policy revocation
+RecommendedList 29 | Multiple shopping lists with different content
+    Preconditions
+        User is logged in with multiple shopping lists
+        List A contains dairy products
+        List B contains meat products
+        Personalization policy is accepted
+    Actions
+        Select List A and view pre-search recommendations
+        Note displayed recommendations
+        Switch to List B
+        View pre-search recommendations again
+    Expected
+        Recommendations for List A are relevant to dairy products
+        Skeleton loader displays when switching lists
+        Recommendations for List B are relevant to meat products
+        Each list gets contextual recommendations
+    API
+        GET /api/recommendations/active-list - Called separately for each list context
+RecommendedList 30 | App backgrounded and foregrounded after 1+ hour
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+        App is sent to background for over 1 hour
+    Actions
+        Background the app
+        Wait for over 1 hour
+        Foreground the app
+        Navigate to pre-search if not already there
+    Expected
+        Skeleton loader is displayed for recommendations
+        Cache is invalidated due to time elapsed
+        API call is made to fetch fresh recommendations
+        Updated recommendations are displayed
+    API
+        GET /api/recommendations/active-list - Called after foregrounding
+RecommendedList 31 | Network connectivity lost and restored
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+        Network connection is active
+    Actions
+        Disable network connection
+        Add product to shopping list from another shelf
+        Re-enable network connection
+        Observe recommendations shelf
+    Expected
+        During offline: Cached recommendations remain visible
+        After reconnection: Skeleton loader displays
+        API call is made to fetch updated recommendations
+        Error handling gracefully manages offline state
+    API
+        GET /api/recommendations/active-list - Called after network restoration
+RecommendedList 32 | Recommendations persist during navigation within pre-search
+    Preconditions
+        User is logged in with recommendations displayed
+        Personalization policy is accepted
+    Actions
+        Scroll through pre-search content
+        View other product shelves
+        Scroll back to recommendations shelf
+    Expected
+        Recommendations remain stable
+        No reload is triggered by scrolling
+        Products maintain their display state
+        Scroll position is maintained
+    API
+        No additional API calls during scrolling
+RecommendedList 33 | Concurrent modifications to shopping list
+    Preconditions
+        User is logged in with recommendations displayed
+        Shopping list is being modified on another device simultaneously
+    Actions
+        Add product from recommendations shelf locally
+        Simultaneously add different product remotely
+        Wait for sync
+    Expected
+        Local addition does not trigger reload
+        Remote sync triggers reload after local operation completes
+        All changes are reflected correctly
+        No data loss occurs
+    API
+        Sync endpoint handles concurrent changes
+        GET /api/recommendations/active-list - Called after remote sync
+RecommendedList 34 | Empty shopping list scenario - adding first product
+    Preconditions
+        User is logged in
+        Shopping list is selected but empty
+        Recommendations shelf is hidden
+    Actions
+        Add first product to shopping list from popular products
+        Observe pre-search screen
+    Expected
+        Skeleton loader appears for recommendations shelf
+        API call is made to fetch recommendations
+        Recommendations shelf becomes visible
+        Products relevant to added item are displayed
+    API
+        GET /api/recommendations/active-list - Called after first product added
+RecommendedList 35 | Performance with large shopping lists
+    Preconditions
+        User is logged in
+        Shopping list contains 100+ products
+    Actions
+        Navigate to pre-search screen
+        Wait for recommendations to load
+        Add product from recommendations
+    Expected
+        Recommendations load within acceptable time
+        No performance degradation
+        UI remains responsive
+        Product addition completes quickly without triggering reload
+    API
+        GET /api/recommendations/active-list - Response time is acceptable
+RecommendedList 36 | Shelf position in pre-search layout
+    Preconditions
+        User is logged in
+        Shopping list is selected and contains products
+    Actions
+        Navigate to pre-search screen
+        Scroll through all product shelves
+    Expected
+        Recommendations shelf appears in designated position
+        Shelf position follows Contentful configuration
+        Layout is consistent with other product shelves
+        Proper spacing and alignment maintained
+    API
+        GET /api/contentful - Returns shelf configuration
+RecommendedList 37 | Recommendations shelf with mixed product availability
+    Preconditions
+        User is logged in
+        Personalization policy is accepted
+        Shopping list contains products
+        API returns mix of in-stock and out-of-stock products
+    Actions
+        Navigate to pre-search screen
+        Observe recommendations shelf
+        Attempt to add both in-stock and out-of-stock products
+    Expected
+        Both product types are displayed
+        In-stock products can be added to list
+        Out-of-stock products show appropriate state
+        Visual distinction between stock statuses is clear
+    API
+        GET /api/recommendations/active-list - Returns products with varying stock status
+RecommendedList 38 | Recommendations shelf update when deleting item from list ( not empty list)
+    Actions
+        Delete item from list
+    Expected
+        Upon deleting items recommended products is called and new list is loaded
+        If the list is empty , recommended products is hidden
+RecommendedList 39 | Recommendations shelf update when replacing unspecified item from list
+    Actions
+        Replace unspecified items
+    Expected
+        Recomended products list is shown
+        API is called
+RecommendedList 40 | Recommendations shelf is hidden when having only unspecified items
+RecommendedList 41 | Recommendations shelf shows when moving all items to bought
+RecommendedList 42 | Recommendations shelf reloads when moving all items to not bought
+RecommendedList 43 | Recommendations shelf updates with active list changing
+    Actions
+        choose another remote list
+        Open the device from backgroun
+    Expected
+        Upon changing to active list ,the recommended list is changed
+RecommendedList 44 | Recommendations shelf updates from all sources
+    Actions
+        Add item via Search ( global search) 
+        Add item via Search ( shopping list detail page search) 
+        Add item via scanner
+        Add item via Butik 
+        Add items via recipes
+        Add items from newspapers
+        Add items from favorites both in front page or from other sources ( search for items)
+        Add items from popular products
+        Add items from products for you
+        Add items from inspirational prodcuts
+        Add items from product details 
+        Add items via unspecified from search or recipes 
+        Add items from unspecified in newspapers
+    Expected
+        Each time the item is added from the source, the recommended products list is updated with the correct data.
+RecommendedList 45 | Recommendations shelf shows first time when users log in
+    Actions
+        Login 
+    Expected
+        Recommended products list is fetched correctly
+RecommendedList 46 | Recommendations shelf supports multiple pages
+    Actions
+        Add products to shopping list so that recommended products has multiple page
+    Expected
+        User is able to navigate through different pages
+RecommendedList 47 | Recommendations shelf reloads when checking second page multiple pages
+RecommendedList 48 | Recommendations shelf pages do not reload when going to see all 
+RecommendedList 49 | Recommendations shelf page stops when the next page return error 
+

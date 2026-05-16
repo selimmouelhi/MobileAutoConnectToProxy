@@ -1,0 +1,282 @@
+MEGETMERE-01 | Verify Meget Mere screen displays all primary elements
+    Preconditions
+        User is logged in to the Rema mobile app
+        User has navigated to the Meget Mere (More) tab
+    Actions
+        Observe the screen content
+    Expected
+        Profile section displays at top with user icon
+        Star rating section shows "Dine stjerner" label with 5 stars display
+        "Indstillinger" button appears with gear icon and dark blue background
+        "Server: Preprod" button appears with server icon and orange background
+        Menu card displays with all items: Vigo, Dine indkøbsopgaver, Butikker og åbningstider, Aviser, Varescanner
+        Each menu item shows appropriate icon
+        Bottom navigation bar is visible with Meget mere tab active
+    API
+        N/A
+
+MEGETMERE-02 | Verify user profile section displays correctly
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Observe the profile section at top of screen
+    Expected
+        User icon displays with initials or avatar
+        Profile section is positioned at the top of the screen
+        Profile section is tappable/interactive
+    API
+        N/A
+
+MEGETMERE-03 | Verify star rating display functionality
+    Preconditions
+        User is logged in with an active loyalty account
+        User is on the Meget Mere screen
+    Actions
+        Observe the star rating section
+    Expected
+        "Dine stjerner" (Your stars) label is displayed
+        Star count shows the user's current star balance
+        Star display uses 5-star rating visualization
+        Star section is clearly visible below profile section
+    API
+        N/A
+
+MEGETMERE-04 | Navigate to Indstillinger (Settings) screen
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Tap "Indstillinger" button
+    Expected
+        App navigates to the Settings screen
+        Settings screen displays configuration options
+        Back navigation is available to return to Meget Mere screen
+    API
+        N/A
+
+MEGETMERE-05 | Verify Server environment indicator displays
+    Preconditions
+        User is on the Meget Mere screen
+        App is connected to Preprod environment
+    Actions
+        Observe "Server: Preprod" button
+    Expected
+        Button displays "Server: Preprod" text
+        Button shows server icon
+        Button has orange background color
+        Button is positioned below Indstillinger button
+    API
+        N/A
+
+MEGETMERE-06 | Navigate to Vigo screen
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Tap "Vigo" menu item
+    Expected
+        App navigates to the Vigo screen
+        Shopping bag icon is visible on menu item
+        Navigation transition occurs smoothly
+    API
+        N/A
+
+MEGETMERE-07 | Navigate to Dine indkøbsopgaver (Shopping Tasks)
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Tap "Dine indkøbsopgaver" menu item
+    Expected
+        App navigates to the Shopping Tasks screen
+        User's assigned shopping tasks are displayed
+        Basket icon is visible on menu item
+    API
+        N/A
+
+MEGETMERE-08 | Navigate to Butikker og åbningstider (Stores and Hours)
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Tap "Butikker og åbningstider" menu item
+    Expected
+        App navigates to the Stores and Opening Hours screen
+        Store location information is displayed
+        Location icon is visible on menu item
+    API
+        N/A
+
+MEGETMERE-09 | Navigate to Aviser (Flyers) screen
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Tap "Aviser" menu item
+    Expected
+        App navigates to the Flyers screen
+        Current promotional flyers are displayed
+        Newspaper icon is visible on menu item
+    API
+        N/A
+
+MEGETMERE-10 | Navigate to Varescanner (Product Scanner)
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Scroll down to reveal "Varescanner" menu item
+        Tap "Varescanner" menu item
+    Expected
+        App navigates to the Product Scanner screen
+        Camera permission is requested if not already granted
+        Scanner interface is displayed
+        Barcode icon is visible on menu item
+    API
+        N/A
+
+MEGETMERE-11 | Navigate to Nyhedsbreve (Newsletters)
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Scroll down to reveal "Nyhedsbreve" menu item
+        Tap "Nyhedsbreve" menu item
+    Expected
+        App navigates to the Newsletters screen
+        Newsletter subscription options are displayed
+        Mail icon is visible on menu item
+    API
+        N/A
+
+MEGETMERE-12 | Verify scroll behavior on Meget Mere screen
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Scroll down on the screen
+    Expected
+        Profile section and star rating scroll out of view
+        Additional menu items become visible (Varescanner, Nyhedsbreve)
+        "Kontakt kundeservice" button becomes visible
+        "Vilkår & samtykke" link becomes visible
+        Bottom navigation remains fixed at bottom
+        Scroll behavior is smooth and responsive
+    API
+        N/A
+
+MEGETMERE-13 | Verify scroll-up behavior returns to top
+    Preconditions
+        User is logged in to the Rema mobile app
+        User has scrolled down on the Meget Mere screen
+    Actions
+        Scroll up to the top of the screen
+    Expected
+        Profile section becomes visible again
+        Star rating section becomes visible
+        "Indstillinger" and "Server: Preprod" buttons are fully visible
+        Screen returns to initial state
+    API
+        N/A
+
+MEGETMERE-14 | Contact customer service from Meget Mere screen
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Scroll down to reveal "Kontakt kundeservice" button
+        Tap "Kontakt kundeservice" button
+    Expected
+        App navigates to Customer Service screen or opens contact options
+        Customer service contact methods are displayed
+        Button has blue background color
+    API
+        N/A
+
+MEGETMERE-15 | Navigate to Vilkår & samtykke (Terms & Consent)
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Scroll down to reveal "Vilkår & samtykke" link
+        Tap "Vilkår & samtykke" link
+    Expected
+        App navigates to Terms and Consent screen
+        Terms of service and consent information are displayed
+        Link text is displayed in blue color
+    API
+        N/A
+
+MEGETMERE-16 | Verify bottom navigation bar remains fixed during scroll
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Scroll down through the entire screen content
+        Scroll back up to the top
+    Expected
+        Bottom navigation bar remains fixed at bottom of screen throughout scroll
+        Meget mere tab remains highlighted as active
+        All five navigation tabs remain visible and accessible
+        Navigation bar does not overlap with scrollable content
+    API
+        N/A
+
+MEGETMERE-17 | Navigate to other tabs from Meget Mere screen
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Tap "Hjem" tab in bottom navigation
+    Expected
+        App navigates to Hjem (Home) screen
+        Hjem tab becomes highlighted as active
+        Meget mere tab is no longer highlighted
+        User can navigate back to Meget Mere by tapping its tab
+    API
+        N/A
+
+MEGETMERE-18 | Verify menu card visual styling and grouping
+    Preconditions
+        User is logged in to the Rema mobile app
+        User is on the Meget Mere screen
+    Actions
+        Observe the menu items section
+    Expected
+        All menu items are contained within a white card container
+        Menu items are vertically stacked with consistent spacing
+        Each item has left-aligned text with right-aligned icon
+        Card has rounded corners and subtle shadow/border
+        Visual hierarchy separates menu card from buttons above
+    API
+        N/A
+
+MEGETMERE-19 | Verify screen when user has no stars accumulated
+    Preconditions
+        User is logged in with zero stars in loyalty account
+        User is on the Meget Mere screen
+    Actions
+        Observe the star rating section
+    Expected
+        "Dine stjerner" label is still displayed
+        Star count shows 0 or empty state
+        Star section remains visible with appropriate zero-state styling
+        Section does not cause layout issues
+    API
+        N/A
+
+MEGETMERE-20 | Verify offline behavior on Meget Mere screen
+    Preconditions
+        User is logged in to the Rema mobile app
+        User has navigated to Meget Mere screen
+    Actions
+        Disable device network connection
+        Pull to refresh or observe screen behavior
+    Expected
+        Cached content remains visible if previously loaded
+        Error message displays if data cannot be refreshed
+        Offline indicator may appear
+        User can still navigate to other screens
+    API
+        N/A

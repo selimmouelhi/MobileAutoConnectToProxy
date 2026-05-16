@@ -1,0 +1,52 @@
+Browse and Search Shop Items
+    Preconditions
+        --user is logged in or guest
+    Actions
+        Open Butik tab
+        Swipe through categories or use grid selector
+        Tap on a category → View sub-category list
+        Select sub category 
+        Use the search bar to look for a specific product (e.g., “mælk”)
+        Apply a filter { øko)
+    Expected
+        Categories and sub-categories are displayed correctly
+        Subcategories display the right product numbers if applied
+        Product list updates with correct results
+        Filtered results are applied accurately
+        Items have name, price, image, and label where relevant
+        Empty search results are handled
+Add and Remove Products from Shopping List
+    Preconditions
+        --Product list is visible
+    Actions
+        Swipe right to add an item to the shopping list
+        Swipe left to remove the same item
+        Check the total price and item count at the bottom
+    Expected
+        Item is added or removed with animation
+        Shopping list total is correctly updated
+        In app notification is shown while adding item
+        Tapping on the notification takes to shopping list and shows syncing animation if user is logged in
+        Product count reflects correct quantity
+View Product Details and Add from Detail View
+    Actions
+        Tap on a product to open the Product Details screen
+        Open øko product ( search Øko)
+        Open weight product ( search for selv vej)
+        Open alcohol  items
+        Open items wiht max purchase option ( check in newspapers)
+        Open items with limited availability (check in newspapers)
+        Open items with disconted price
+        Open Tobacco items ( search for malboro)
+        Open private parties items ( search in newspapers)
+        Open item with multiple labels - search for MINIMÆLK 0,4% ( it has 6 labels)
+        Tap add ot the shopping list 
+        Go back and confirm item on the list
+    Expected
+        All product information is displayed correctly
+        Weigh info appears for weighted items
+        Red box appears for limited availability
+        Yellow box appears for max purchase restriction or any other general information
+        Alcohol product shows age label
+        Tobacco shows age label
+        Item is successfully added to the shopping list

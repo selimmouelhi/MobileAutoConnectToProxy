@@ -1,0 +1,192 @@
+FRA-01 | Both payment methods enabled - Happy path selection
+    Preconditions
+        User is logged in and has items in cart
+        Feature flags app.android.payments.mobilePay and app.android.payments.worldline are set to true
+    Actions
+        Navigate to checkout screen
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+        Select MobilePay from the bottom sheet
+        Tap confirm/continue to proceed with checkout
+    Expected
+        Payment method bottom sheet displays with modern UI design
+        Both MobilePay and Worldline buttons are enabled and selectable
+        No disabled state messages are shown
+        Selected payment method (MobilePay) is applied to the order
+        User can proceed to complete the order
+    API
+        GET /api/feature-flags - Returns mobilePay and worldline flags as true
+
+FRA-02 | MobilePay disabled via feature flag
+    Preconditions
+        User is logged in and has items in cart
+        Feature flag app.android.payments.mobilePay is set to false
+        Feature flag app.android.payments.worldline is set to true
+    Actions
+        Navigate to checkout screen
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+        Attempt to interact with MobilePay option
+        Select Worldline as payment method
+    Expected
+        Payment method bottom sheet displays
+        MobilePay button shows disabled state
+        Disabled message displays: "MobilePay kan ikke benyttes i øjeblikket. Benyt et andet betalingsmiddel."
+        Worldline button remains enabled and selectable
+        User can only select Worldline to proceed
+    API
+        GET /api/feature-flags - Returns mobilePay as false, worldline as true
+
+FRA-03 | Worldline disabled via feature flag
+    Preconditions
+        User is logged in and has items in cart
+        Feature flag app.android.payments.mobilePay is set to true
+        Feature flag app.android.payments.worldline is set to false
+    Actions
+        Navigate to checkout screen
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+        Attempt to interact with Worldline option
+        Select MobilePay as payment method
+    Expected
+        Payment method bottom sheet displays
+        Worldline button shows disabled state
+        Disabled message displays: "Betalingskort kan ikke benyttes i øjeblikket. Benyt et andet betalingsmiddel."
+        MobilePay button remains enabled and selectable
+        User can only select MobilePay to proceed
+    API
+        GET /api/feature-flags - Returns mobilePay as true, worldline as false
+
+FRA-04 | Both payment methods disabled via feature flags
+    Preconditions
+        User is logged in and has items in cart
+        Feature flags app.android.payments.mobilePay and app.android.payments.worldline are both set to false
+    Actions
+        Navigate to checkout screen
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+        Attempt to interact with any payment option
+    Expected
+        Payment method bottom sheet displays
+        Both MobilePay and Worldline buttons show disabled state
+        Critical error message displays: "Det er ikke muligt at lave ordre i øjeblikket. Prøv venligst igen senere."
+        No payment methods are selectable
+        User cannot proceed with checkout
+    API
+        GET /api/feature-flags - Returns both mobilePay and worldline as false
+
+FRA-05 | Feature flag refresh when app returns from background
+    Preconditions
+        User is logged in with items in cart
+        Payment method bottom sheet was previously shown with both methods enabled
+        User sends app to background
+        Feature flag app.android.payments.mobilePay is changed to false while app is backgrounded
+    Actions
+        Bring app back to foreground
+        Navigate back to checkout screen
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+    Expected
+        Feature flags are re-fetched when bottom sheet is presented
+        Payment method bottom sheet reflects updated flag state
+        MobilePay now shows disabled state with appropriate message
+        Worldline remains enabled
+        User sees current feature flag configuration, not cached values
+    API
+        GET /api/feature-flags - Returns updated mobilePay as false, worldline as true
+
+FRA-06 | API failure defaults to payment methods enabled
+    Preconditions
+        User is logged in and has items in cart
+        Feature flag API endpoint returns error or timeout
+    Actions
+        Navigate to checkout screen
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+        Select any payment method
+    Expected
+        Payment method bottom sheet displays despite API failure
+        Both MobilePay and Worldline buttons are enabled (default behavior)
+        No disabled state messages are shown
+        User can select either payment method
+        Checkout flow continues normally with fallback enabled state
+    API
+        GET /api/feature-flags - Returns error/timeout (fallback to default true)
+
+FRA-07 | Feature flags missing from API response
+    Preconditions
+        User is logged in and has items in cart
+        Feature flag API returns success but payment method flags are not included in response
+    Actions
+        Navigate to checkout screen
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+        Select MobilePay
+        Complete checkout process
+    Expected
+        Payment method bottom sheet displays normally
+        Both MobilePay and Worldline default to enabled state
+        No disabled state messages appear
+        User can select either payment method
+        Order completes successfully with default enabled behavior
+    API
+        GET /api/feature-flags - Returns success response without mobilePay/worldline flags
+
+FRA-08 | Bottom sheet dismissal preserves feature flag state
+    Preconditions
+        User is logged in with items in cart
+        Feature flag app.android.payments.worldline is set to false
+    Actions
+        Navigate to checkout screen
+        Tap the payment method selector
+        Observe Worldline disabled state in bottom sheet
+        Dismiss the bottom sheet without selecting
+        Tap the payment method selector again
+    Expected
+        First presentation shows Worldline disabled with appropriate message
+        Bottom sheet dismisses successfully
+        Second presentation maintains the same feature flag state
+        Worldline remains disabled with same message
+        Feature flags are consistent across multiple presentations
+    API
+        GET /api/feature-flags - Returns worldline as false (checked on each presentation)
+
+FRA-09 | Click & Collect flow respects feature flags
+    Preconditions
+        User is logged in with items in cart
+        User has selected Click & Collect delivery method
+        Feature flag app.ios.payments.mobilePay is set to false
+    Actions
+        Navigate to Click & Collect checkout screen
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+        Verify MobilePay disabled state
+        Select Worldline
+    Expected
+        Payment method bottom sheet displays in Click & Collect flow
+        MobilePay shows disabled state with appropriate message
+        Worldline is enabled and selectable
+        Feature flag behavior is identical to Vigo flow
+        Click & Collect order can proceed with Worldline
+    API
+        GET /api/feature-flags - Returns mobilePay as false, worldline as true
+
+FRA-10 | Platform-specific feature flag isolation
+    Preconditions
+        User is logged in with items in cart
+        On iOS platform
+        Feature flag app.ios.payments.mobilePay is set to false
+        Feature flag app.android.payments.mobilePay is set to true
+    Actions
+        Navigate to checkout screen on iOS device
+        Tap the payment method selector
+        Observe the payment method bottom sheet
+        Verify iOS-specific flag behavior
+    Expected
+        Payment method bottom sheet displays
+        MobilePay is disabled per iOS-specific flag
+        iOS app uses app.ios.payments.mobilePay flag, not Android flag
+        Platform-specific flags are correctly applied
+        Android flag setting does not affect iOS behavior
+    API
+        GET /api/feature-flags - Returns iOS-specific flags (app.ios prefix)

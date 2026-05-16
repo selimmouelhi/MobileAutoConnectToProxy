@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.lunch-menu-bot</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/mouelhi/Desktop/QA-Rema/lunch-menu-bot/.venv/bin/python</string>
+        <string>/Users/mouelhi/Desktop/QA-Rema/lunch-menu-bot/lunch_menu_slack.py</string>
+    </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>no_proxy</key>
+        <string>*</string>
+    </dict>
+
+    <!-- Tries every weekday at 07:00 — the script skips if already scheduled this week -->
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict>
+            <key>Weekday</key>
+            <integer>1</integer>
+            <key>Hour</key>
+            <integer>7</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>2</integer>
+            <key>Hour</key>
+            <integer>7</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>3</integer>
+            <key>Hour</key>
+            <integer>7</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>4</integer>
+            <key>Hour</key>
+            <integer>7</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+        <dict>
+            <key>Weekday</key>
+            <integer>5</integer>
+            <key>Hour</key>
+            <integer>7</integer>
+            <key>Minute</key>
+            <integer>0</integer>
+        </dict>
+    </array>
+
+    <key>StandardOutPath</key>
+    <string>/Users/mouelhi/Desktop/QA-Rema/lunch-menu-bot/logs/stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/mouelhi/Desktop/QA-Rema/lunch-menu-bot/logs/stderr.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

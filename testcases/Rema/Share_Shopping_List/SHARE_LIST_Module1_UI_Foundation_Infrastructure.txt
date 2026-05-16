@@ -1,0 +1,630 @@
+Share Shopping List - Module 1: UI Foundation & Infrastructure
+
+=== BOTTOM SHEET COMPONENT (FRA-739) ===
+
+SHARE_LIST-01 | Bottom sheet animates height to fit content [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Device is running a supported iOS or Android version
+        Share shopping list sheet is triggered from the shopping list screen
+    Actions
+        Navigate to a shopping list that contains items
+        Tap the share list button to present the share shopping list sheet
+        Observe the bottom sheet as it appears
+        Wait for the sheet content to fully load
+        Observe the sheet height after content is rendered
+    Expected
+        Bottom sheet appears with a smooth opening animation
+        Sheet height adjusts dynamically to match the size of its internal content
+        No visible layout jump or flickering occurs during the height transition
+        Animation plays smoothly with no stuttering or frame drops
+        Sheet does not extend beyond the visible screen area
+    API
+        N/A
+
+SHARE_LIST-02 | Bottom sheet height updates smoothly when content changes [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is currently presented and fully loaded
+        Sheet content is in a state that will trigger a height change (e.g. loading state transitions to loaded state)
+    Actions
+        Observe the sheet height while content is in its initial state
+        Wait for the sheet content to transition (e.g. from loading spinner to populated content)
+        Observe the sheet height during and after the transition
+    Expected
+        Sheet height changes in response to the content size update
+        Height transition is animated smoothly with no abrupt resizing
+        Content remains correctly laid out within the sheet at all sizes
+        No visual artifacts or clipping occur during the resize animation
+    API
+        N/A
+
+=== SHARE SHOPPING LIST SHEET UI (FRA-742) ===
+
+SHARE_LIST-03 | Present share sheet via share list button on shopping list screen [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list screen that contains items
+        Shopping list data has been fully fetched
+    Actions
+        Locate the share list button on the shopping list screen
+        Tap the share list button
+        Observe the sheet that appears
+        Verify the sheet header content
+    Expected
+        Share shopping list bottom sheet is presented over the current screen
+        Sheet header displays the title matching localization key app_share_list.title
+        Dismiss button (X) is visible in the sheet header
+        Sheet content is fully populated with no loading state shown
+    API
+        N/A
+
+SHARE_LIST-04 | Present share sheet via avatars on shopping list screen [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list screen that contains items
+        Shopping list data has been fully fetched
+        Avatar icons are visible on the shopping list screen
+    Actions
+        Locate the avatar icons on the shopping list screen
+        Tap the avatars
+        Observe the sheet that appears
+        Verify the sheet header content
+    Expected
+        Share shopping list bottom sheet is presented over the current screen
+        Sheet header displays the title matching localization key app_share_list.title
+        Dismiss button (X) is visible in the sheet header
+        Sheet content is fully populated with no loading state shown
+        Sheet appearance and behavior are identical regardless of entry point
+    API
+        N/A
+
+SHARE_LIST-05 | Sheet shows full loading state with Rema spinner when data is not yet fetched [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Shopping list data has NOT been fetched yet (e.g. app just launched or network is slow)
+        User navigates to or is on the shopping list screen
+    Actions
+        Trigger the share shopping list sheet before shopping list data finishes loading
+        Observe the sheet content immediately after presentation
+        Wait for the shopping list data fetch to complete
+        Observe the sheet content after data is available
+    Expected
+        Sheet is presented successfully while data is still loading
+        Full sheet loading state is displayed with the Rema spinner centered in the sheet
+        No partial or broken content is visible during the loading state
+        Once shopping list data is fetched, loading state is replaced by the populated sheet content
+        Transition from loading to populated state is smooth
+    API
+        N/A
+
+SHARE_LIST-06 | Dismiss share sheet by tapping the X button [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list bottom sheet is currently presented
+    Actions
+        Locate the dismiss button (X) in the sheet header
+        Tap the X button
+        Observe the sheet behavior
+    Expected
+        Sheet dismisses immediately upon tapping X
+        Dismiss animation plays smoothly
+        User returns to the shopping list screen
+        Shopping list screen state is preserved (scroll position, data unchanged)
+        No errors or visual glitches occur after dismissal
+    API
+        N/A
+
+SHARE_LIST-07 | Dismiss share sheet by tapping outside the sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list bottom sheet is currently presented
+    Actions
+        Tap on the area above or outside the bottom sheet (the dimmed background region)
+        Observe the sheet behavior
+    Expected
+        Sheet dismisses when tapping outside its boundaries
+        Dismiss animation plays smoothly
+        User returns to the shopping list screen
+        Shopping list screen state is preserved (scroll position, data unchanged)
+        No errors or visual glitches occur after dismissal
+    API
+        N/A
+
+SHARE_LIST-08 | Old share shopping list solution is removed and no longer accessible [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        App is updated to the version containing the new share shopping list implementation
+    Actions
+        Navigate to the shopping list screen
+        Attempt to trigger share functionality from any previously known entry points
+        Search for any UI elements or navigation paths related to the old share shopping list flow
+    Expected
+        No UI elements belonging to the old share shopping list solution are present
+        The only share shopping list entry points are the share list button and the avatars
+        Tapping share list button or avatars opens the new bottom sheet
+        No broken navigation, orphaned screens, or dead links remain from the previous implementation
+    API
+        N/A
+
+=== DEEP LINKING (FRA-779) ===
+
+SHARE_LIST-09 | Deep link opens app and navigates to shopping list invitation - iOS [P0]
+    Preconditions
+        User has the Rema 1000 app installed on an iOS device
+        apple-app-site-association file is configured on the server for the shop.rema1000.dk domain
+        A valid invitation link has been generated (e.g. https://shop.rema1000.dk/shopping-list-invitation-link/<invitation-id>)
+    Actions
+        Open the valid deep link URL from Safari or an external source such as Messages or email
+        Observe whether the app opens
+        Observe the screen the app navigates to after opening
+    Expected
+        iOS system recognizes the deep link and opens the Rema 1000 app
+        App opens directly without requiring the user to launch it manually
+        App navigates to the shopping list invitation destination associated with the invitation-id in the URL
+        No error screen or blank state is displayed
+    API
+        N/A
+
+SHARE_LIST-10 | Deep link opens app and navigates to shopping list invitation - Android [P0]
+    Preconditions
+        User has the Rema 1000 app installed on an Android device
+        Android Manifest is configured with the correct intent filter to handle the deep link path https://shop.rema1000.dk/shopping-list-invitation-link/<invitation-id>
+        A valid invitation link has been generated
+    Actions
+        Open the valid deep link URL from Chrome or an external source such as Messages or email
+        Observe whether the app opens or a disambiguation dialog appears
+        If disambiguation appears, select the Rema 1000 app
+        Observe the screen the app navigates to after opening
+    Expected
+        Android system recognizes the deep link and opens the Rema 1000 app (or presents app chooser)
+        App opens directly to the shopping list invitation destination associated with the invitation-id
+        No error screen or blank state is displayed
+        If app chooser is shown, selecting Rema navigates correctly to the invitation
+    API
+        N/A
+
+SHARE_LIST-11 | Deep link with invalid or expired invitation-id shows appropriate error [P1]
+    Preconditions
+        User has the Rema 1000 app installed
+        A deep link URL is constructed with an invalid or expired invitation-id
+    Actions
+        Open the deep link URL containing the invalid or expired invitation-id from an external source
+        Observe the app behavior after it opens
+    Expected
+        App opens successfully without crashing
+        App navigates to an error or empty state that clearly indicates the invitation is invalid or has expired
+        User is not left on a blank or loading screen indefinitely
+        User can dismiss the error and navigate to the main app content
+    API
+        N/A
+
+SHARE_LIST-12 | Deep link works when app is in background [P1]
+    Preconditions
+        User has the Rema 1000 app installed and currently running in the background
+        A valid shopping list invitation deep link is available
+    Actions
+        Open the valid deep link URL from Messages, email, or browser while the app is in the background
+        Observe whether the app comes to the foreground
+        Observe the screen the app displays after coming to foreground
+    Expected
+        App transitions from background to foreground
+        App navigates to the shopping list invitation destination
+        Previous app state does not interfere with the deep link navigation
+        No errors or crashes occur
+    API
+        N/A
+
+SHARE_LIST-13 | Deep link works when app is fully closed [P1]
+    Preconditions
+        User has the Rema 1000 app installed but fully closed (force quit)
+        A valid shopping list invitation deep link is available
+    Actions
+        Open the valid deep link URL from Messages, email, or browser while the app is closed
+        Observe whether the app launches
+        Observe the screen the app displays after launch
+    Expected
+        App launches from a closed state in response to the deep link
+        App navigates to the shopping list invitation destination after launch completes
+        If authentication is required, user is prompted to log in before being taken to the invitation
+        No errors or crashes occur during the deep link launch sequence
+    API
+        N/A
+
+SHARE_LIST-14 | Deep link URL path format is correctly handled [P2]
+    Preconditions
+        User has the Rema 1000 app installed
+        Multiple deep link URLs are available with variations in the invitation-id value
+    Actions
+        Open a deep link with a standard alphanumeric invitation-id
+        Dismiss and return to home
+        Open a deep link with a UUID-style invitation-id
+        Dismiss and return to home
+        Open a deep link with an invitation-id containing special path characters
+    Expected
+        App correctly parses the invitation-id from each URL regardless of format
+        Navigation to the correct invitation destination succeeds for valid IDs
+        Invalid or malformed invitation-id values are caught and an appropriate error is shown
+        App does not crash on any URL format variation
+    API
+        N/A
+
+=== KMP WORKFLOW SETUP - iOS (FRA-738) ===
+
+SHARE_LIST-15 | Verify KMP shared code compiles and runs on iOS [P0]
+    Preconditions
+        Development environment is set up per FRA-738 documentation
+        SKIE integration is configured
+        Xcode Kotlin plugin is installed
+        JetBrains Toolbox and required Java version are installed
+        Kdoctor shows no blocking issues
+        iOS app target is configured to consume KMP shared module
+    Actions
+        Build the iOS app target in Xcode that includes the KMP shared module
+        Launch the app on an iOS Simulator or physical device
+        Navigate to a screen that exercises shared KMP code (e.g. share shopping list logic)
+        Verify the feature behaves as expected
+    Expected
+        iOS build completes successfully with no KMP-related compilation errors
+        App launches without crashing
+        KMP shared code executes correctly on the iOS target
+        Feature behavior matches the expected specification
+        No runtime exceptions originate from the KMP layer
+    API
+        N/A
+
+SHARE_LIST-16 | Verify Artifactory dependency resolution for KMP modules [P1]
+    Preconditions
+        Artifactory is configured as documented in FRA-738
+        Development environment has network access to the Artifactory instance
+        KMP module dependencies are declared in the project build configuration
+    Actions
+        Perform a clean build of the project (clear all caches first)
+        Observe the dependency resolution output during the build
+        Verify all KMP-related dependencies are resolved from Artifactory
+    Expected
+        All KMP module dependencies resolve successfully from the configured Artifactory instance
+        No dependency resolution errors or version conflicts occur
+        Build completes successfully after resolving dependencies
+        No fallback to local or unauthorized artifact sources occurs
+    API
+        N/A
+
+=== CROSS-CUTTING AND REGRESSION ===
+
+SHARE_LIST-17 | Sheet title displays correctly in Danish localization [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        App language is set to Danish
+        Share shopping list sheet is triggered from the shopping list screen
+    Actions
+        Navigate to a shopping list screen
+        Tap the share list button to present the share sheet
+        Observe the title text in the sheet header
+    Expected
+        Sheet header title displays the correct Danish text as defined by localization key app_share_list.title
+        Title text is not truncated and is fully readable
+        No raw localization key string (e.g. app_share_list.title) is displayed in place of the translated value
+    API
+        N/A
+
+SHARE_LIST-18 | Share sheet dismiss button (X) is visually consistent and accessible [P2]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list bottom sheet is currently presented
+    Actions
+        Observe the dismiss button (X) in the sheet header
+        Verify its position relative to the sheet title
+        Tap the X button and observe the visual feedback before dismissal
+    Expected
+        X button is positioned consistently in the sheet header (top-right or per design spec)
+        Button size and tap target are large enough for reliable touch interaction
+        Button provides a visible pressed or highlighted state on tap
+        Sheet dismisses reliably on every tap
+        X button appearance is consistent across iOS and Android
+    API
+        N/A
+
+SHARE_LIST-19 | Share sheet behaves correctly on small screen devices [P2]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Test device has a smaller screen size (e.g. iPhone SE, compact Android device)
+        Share shopping list sheet is triggered
+    Actions
+        Navigate to the shopping list screen on the small device
+        Tap the share list button to present the sheet
+        Observe the sheet layout and content visibility
+        Scroll within the sheet if content exceeds the visible area
+    Expected
+        Bottom sheet renders without content being clipped or overflowing off-screen
+        Sheet height adjusts correctly to the smaller viewport
+        All sheet content is accessible via scrolling if the sheet cannot display everything at once
+        Title and dismiss button remain visible and usable at all scroll positions
+        No layout overlap or visual breakage occurs
+    API
+        N/A
+
+SHARE_LIST-20 | Share sheet and deep link do not interfere with each other [P2]
+    Preconditions
+        User has the Rema 1000 app installed and is logged in
+        A valid shopping list invitation deep link is available
+        User can access the shopping list screen with the share button
+    Actions
+        Present the share shopping list sheet from the shopping list screen
+        While the sheet is open, open a valid deep link from an external source (e.g. notification or browser)
+        Observe app behavior and navigation
+        Dismiss any presented screens and verify the app returns to a stable state
+    Expected
+        App handles the deep link arrival without crashing
+        If the deep link triggers navigation, the sheet is dismissed cleanly before navigation occurs
+        No duplicate sheets, stuck navigation states, or visual glitches result from the interaction
+        App returns to a stable and usable state after the sequence completes
+    API
+        N/A
+
+=== AVATAR DISPLAY ON SHOPPING LIST SCREEN (FRA-735) ===
+
+SHARE_LIST-21 | Unshared list displays "Del liste" button instead of avatars [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list that is not shared with any other user
+        Shopping list data has been fully fetched
+    Actions
+        Observe the share area on the shopping list screen
+        Verify no avatar icons are present
+        Verify the share list button is displayed
+        Tap the share list button
+    Expected
+        The share list button labeled "Del liste" is displayed in the share area
+        No avatar icons are visible anywhere on the shopping list screen
+        Tapping "Del liste" presents the share shopping list bottom sheet
+    API
+        N/A
+
+SHARE_LIST-22 | Shared list displays avatars for all users when two or three people have access [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list that is shared with one or two other users (total 2 or 3 people including current user)
+        Shopping list data has been fully fetched
+    Actions
+        Observe the share area on the shopping list screen
+        Verify the number of avatar icons matches the total number of people with access
+        Verify no "Del liste" button is visible
+        Note the order in which avatars are displayed
+    Expected
+        Avatar icons are displayed instead of the "Del liste" button
+        The current user's avatar is shown first (leftmost position)
+        Remaining avatars are sorted alphabetically by name
+        Each avatar displays the user's profile picture if one is set
+        Total number of avatars shown equals the total number of people with access to the list
+    API
+        N/A
+
+SHARE_LIST-23 | Avatar overflow indicator shows "+x" when more than three people have access [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list that is shared with three or more other users (total 4 or more people including current user)
+        Shopping list data has been fully fetched
+    Actions
+        Observe the share area on the shopping list screen
+        Count the visible avatar slots
+        Verify the content of the third avatar position
+    Expected
+        Exactly two individual avatar icons are displayed (current user first, then the next user alphabetically)
+        The third position displays an overflow indicator showing "+x" where x equals the number of people not individually shown
+        The value of x equals total people with access minus two (the two avatars rendered individually)
+        No more than three avatar slots are rendered in total
+    API
+        N/A
+
+SHARE_LIST-24 | Avatars display initials fallback when a user has no profile picture [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least one other user
+        At least one user with access to the list does not have a profile picture set
+        Shopping list data has been fully fetched
+    Actions
+        Observe the avatar icons on the shopping list screen
+        Locate the avatar belonging to the user without a profile picture
+        Verify the text displayed inside that avatar
+    Expected
+        The avatar for the user without a profile picture displays their initials (first letter of first name followed by first letter of last name)
+        The initials are clearly legible against the avatar background color
+        Users who do have a profile picture display their photo as normal
+        No broken image placeholder or blank circle is shown in place of the initials
+    API
+        N/A
+
+SHARE_LIST-25 | Second and third avatar positions use distinct background colors per design spec [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least two other users (total 3 or more people)
+        At least the second and third avatar positions are visible
+        Shopping list data has been fully fetched
+    Actions
+        Observe the avatar icons on the shopping list screen
+        Note the background color of the avatar in the second position
+        Note the background color of the avatar or overflow indicator in the third position
+        Compare both colors to each other and to the first avatar
+    Expected
+        The background color of the second-position avatar differs from the first-position avatar
+        The background color of the third-position avatar or overflow indicator differs from both the first and second positions
+        The colors match the values defined in the Figma design specification
+        Background colors remain consistent on repeated visits to the shopping list screen
+    API
+        N/A
+
+SHARE_LIST-26 | Tapping avatars produces a highlight state and presents the share sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list that is shared with at least one other user
+        Avatar icons are visible on the shopping list screen
+    Actions
+        Tap and hold on the avatar area briefly to observe the pressed state before releasing
+        Release the tap on the avatar area
+        Observe the screen after release
+    Expected
+        The avatar icons display a visible highlight or pressed state while the tap is held
+        Upon release the share shopping list bottom sheet is presented
+        Sheet header displays the title matching localization key app_share_list.title
+        Sheet content is identical in structure and behavior to the sheet opened via the "Del liste" button
+    API
+        N/A
+
+SHARE_LIST-27 | Share area transitions smoothly from "Del liste" to avatars after access data loads [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list that is shared with at least one other user
+        The fetch of who has access has not yet completed (e.g. network is slow or artificially throttled)
+    Actions
+        Observe the share area on the shopping list screen immediately upon arrival
+        Verify the share list button is present during the loading period
+        Tap the "Del liste" button while the access data is still loading
+        Dismiss the share sheet and return to the shopping list screen
+        Wait for the who has access fetch to complete
+        Observe the share area after the fetch resolves
+    Expected
+        The "Del liste" button is displayed while the who has access data is still being fetched
+        Tapping "Del liste" during this period successfully presents the share shopping list sheet
+        Once the fetch completes and the list is confirmed as shared the "Del liste" button fades out and avatar icons fade in
+        The fade transition between button and avatars is smooth with no abrupt visual swap or flicker
+    API
+        N/A
+
+SHARE_LIST-28 | Avatars update to reflect current shared users each time the shopping list screen is presented [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has a shopping list that is currently shared with one other user
+        A second user is added to the shopping list between the two screen presentations (via another device or test setup)
+    Actions
+        Navigate to the shopping list screen and note the avatars currently displayed
+        Navigate away from the shopping list screen
+        Confirm that the shared list now has an additional member
+        Navigate back to the shopping list screen
+        Observe the avatars displayed
+    Expected
+        On the first visit the avatar count and identities reflect the original number of shared users
+        On the second visit the avatar area updates to include the newly added user
+        The avatar order is correct: current user first, remaining users sorted alphabetically by name
+        No stale or cached avatar state from the previous visit is shown
+    API
+        N/A
+
+=== SHOPPING LIST REPOSITORY REFRESH (FRA-899) ===
+
+SHARE_LIST-29 | Shopping list repository refresh is triggered when shopping list screen is opened [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has a shopping list that is shared with at least one other user
+        Another user has been added to or removed from the list since the shopping list screen was last viewed
+    Actions
+        Navigate to the shopping list screen
+        Observe network activity or proxy logs for a refresh call to the shopping list repository
+        Wait for the refresh to complete
+        Observe the share area on the shopping list screen
+    Expected
+        A refresh request is fired on the shopping list repository when the shopping list screen is opened
+        The refresh returns updated access information reflecting the current shared-list state
+        The avatar display updates to match the refreshed data without requiring a manual app restart or pull-to-refresh gesture
+        No duplicate or redundant refresh requests are fired for a single screen presentation
+    API
+        N/A
+
+=== ERROR HANDLING - FETCH WHO HAS ACCESS FAILURE (FRA-997) ===
+
+SHARE_LIST-30 | Share sheet stays on loading state when fetch who has access fails [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list screen
+        The endpoint that returns who has access is configured to fail (e.g. via network throttling or simulated server error)
+    Actions
+        Tap the share list button or avatars to present the share shopping list sheet
+        Wait for the fetch who has access request to fail
+        Observe the share sheet content after the failure
+    Expected
+        The share shopping list sheet is presented successfully
+        The sheet displays the full loading state with the Rema spinner while the request is in flight
+        After the request fails the sheet remains on the loading state and does not display partial or broken content
+        The Rema spinner continues to be visible in the sheet until the error alert is addressed by the user
+    API
+        N/A
+
+SHARE_LIST-31 | Error alert displays correct title, message, and action buttons on fetch failure [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and the fetch who has access request has failed
+        The error alert has not yet been dismissed
+    Actions
+        Observe the error alert that appears on top of the share sheet
+        Read the title text of the alert
+        Read the message text of the alert
+        Verify the presence and labels of the two action buttons
+    Expected
+        An error alert is presented on top of the share shopping list sheet
+        The alert title displays the text defined by localization key app_share_list.who_has_access_error_title (fallback: "Der skete en fejl")
+        The alert message displays the text defined by localization key app_share_list.who_has_access_error_message (fallback: "Brugerne som har adgang til listen kunne ikke hentes. Prøv igen.")
+        A dismiss button is visible with the label defined by localization key app_share_list.who_has_access_error_dismiss (fallback: "Luk")
+        A retry button is visible with the label defined by localization key app_share_list.who_has_access_error_retry (fallback: "Prøv igen")
+        No raw localization key strings are rendered in place of translated values
+    API
+        N/A
+
+SHARE_LIST-32 | Tapping the dismiss button on the error alert closes both the alert and the share sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and the fetch who has access request has failed
+        The error alert is currently displayed on top of the share sheet
+    Actions
+        Locate the dismiss button on the error alert (labeled per localization key app_share_list.who_has_access_error_dismiss)
+        Tap the dismiss button
+        Observe the error alert
+        Observe the share sheet
+        Observe the shopping list screen after both are dismissed
+    Expected
+        The error alert is dismissed immediately upon tapping the dismiss button
+        The share shopping list sheet is also dismissed as a direct result of tapping the dismiss button
+        User is returned to the shopping list screen
+        Shopping list screen state is preserved (scroll position and existing data remain unchanged)
+        No errors or visual glitches occur after both the alert and sheet are removed
+    API
+        N/A
+
+SHARE_LIST-33 | Tapping the retry button dismisses the alert and retries the request with sheet still open [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and the fetch who has access request has failed
+        The error alert is currently displayed on top of the share sheet
+    Actions
+        Locate the retry button on the error alert (labeled per localization key app_share_list.who_has_access_error_retry)
+        Tap the retry button
+        Observe the error alert
+        Observe the share sheet content immediately after the retry is triggered
+        Wait for the retried request to complete (success or failure)
+    Expected
+        The error alert is dismissed immediately upon tapping the retry button
+        The share shopping list sheet remains open and returns to the full loading state with the Rema spinner
+        A new fetch who has access request is issued by the app
+        If the retried request succeeds the loading state is replaced by the fully populated share sheet content
+        If the retried request fails again the error alert is presented a second time with the same correct title, message, and action buttons
+    API
+        N/A
+
+SHARE_LIST-34 | Successive retry failures do not degrade sheet state or responsiveness [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and the fetch who has access endpoint is configured to fail consistently
+    Actions
+        Wait for the initial fetch to fail and the error alert to appear
+        Tap the retry button
+        Wait for the second request to fail and the error alert to reappear
+        Tap the retry button again
+        Wait for the third request to fail and the error alert to reappear
+        Tap the dismiss button
+    Expected
+        Each retry cycle follows the same sequence: alert is dismissed, sheet returns to loading state, a new request is fired, and the alert reappears on failure
+        The error alert title and message remain accurate and correctly localized on every reappearance
+        The share sheet does not crash, become unresponsive, or display corrupted content after multiple consecutive retry cycles
+        Tapping the dismiss button after any number of retries successfully closes both the alert and the share sheet
+        User returns to a stable and usable shopping list screen
+    API
+        N/A

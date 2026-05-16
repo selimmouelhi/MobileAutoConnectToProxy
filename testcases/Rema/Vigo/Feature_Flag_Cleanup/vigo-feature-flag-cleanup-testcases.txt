@@ -1,0 +1,403 @@
+VIGO-01 | Verify rating stars section is removed from settings
+    Preconditions
+        User is logged in as a Customer
+        App is updated to version without vigoShowRatingStars flag
+    Actions
+        Navigate to Settings screen
+        Scroll through all settings sections
+        Search for any rating or stars related UI elements
+    Expected
+        Rating stars section is NOT displayed anywhere in settings
+        No UI elements related to rating functionality are present
+        Settings screen displays normally without errors
+    API
+        N/A
+VIGO-02 | Verify Vigo menu item is removed from Meget mere screen
+    Preconditions
+        User is logged in as a Customer
+        App is updated to version without vigoMenu flag
+    Actions
+        Navigate to Meget mere (More) screen
+        Scroll through entire menu list
+        Check for any Vigo-related menu items
+    Expected
+        No Vigo menu item is displayed
+        Meget mere screen renders correctly with other menu items
+        No empty spaces or layout issues where Vigo menu was previously
+    API
+        N/A
+VIGO-03 | Verify the text få dine varer leveret is removed from the order button in shopping list detail page
+    Preconditions
+        User is logged in as a Customer
+        Shopping list contains items
+    Actions
+        Navigate to Shopping List screen
+        Scroll through the entire shopping list view
+        Search for button with text "Få dine varer leveret"
+        Check bottom action buttons area
+    Expected
+        Button "Få dine varer leveret" is NOT present
+        Shopping list displays normally without layout gaps
+        All other shopping list buttons function correctly
+    API
+        N/A
+VIGO-04 | Verify Vigo-indkøber tab is removed from settings
+    Preconditions
+        User is logged in with Scan Selv account
+        App is updated to version without Vigo settings tab
+    Actions
+        Navigate to Settings screen
+        Check all available tabs
+        Swipe horizontally to view all tab options
+    Expected
+        "Vigo-indkøber" tab is NOT displayed
+        Settings tabs display correctly without the removed tab
+        No navigation errors or crashes occur
+    API
+        N/A
+VIGO-05 | Verify Vigo settings moved to Vigo screen for Scan Selv users
+    Preconditions
+        User is logged in with Scan Selv account
+        App is updated to latest version
+    Actions
+        Navigate to Vigo screen
+        Check for settings options within Vigo screen
+        Verify previously hidden settings are now visible
+    Expected
+        Vigo-related settings appear within Vigo screen
+        Settings are accessible and functional
+        No "Vigo-indkøber" tab exists in main Settings
+    API
+        N/A
+VIGO-06 | Verify no Vigo feature flags on app launch
+    Preconditions
+        App is freshly installed or cleared from memory
+        Network monitoring tool is active
+    Actions
+        Launch the app
+        Monitor network traffic during launch
+        Check for feature flag API calls
+    Expected
+        No API calls requesting vigoShowRatingStars flag
+        No API calls requesting vigoMenu flag
+        No API calls requesting app.android.vigo or app.ios.vigo flags
+    API
+        GET /api/v1/feature-flags - Should NOT contain Vigo flags in response
+VIGO-07 | Verify no Vigo feature flags on login
+    Preconditions
+        User is logged out
+        Network monitoring tool is active
+    Actions
+        Enter valid credentials
+        Tap Login button
+        Monitor network traffic during login process
+        Wait for home screen to load
+    Expected
+        Login completes successfully
+        No Vigo feature flag API calls are made
+        No references to Vigo flags in API responses
+    API
+        POST /api/v1/auth/login - Should NOT trigger Vigo flag fetches
+VIGO-08 | Verify no Vigo feature flags on account switch
+    Preconditions
+        User is logged in with first account
+        Second account is available for switching
+        Network monitoring tool is active
+    Actions
+        Navigate to account switching screen
+        Select different account
+        Monitor network traffic during switch
+        Wait for account switch to complete
+    Expected
+        Account switch completes successfully
+        No Vigo feature flag API calls are made
+        New account loads without fetching Vigo flags
+    API
+        POST /api/v1/account/switch - Should NOT trigger Vigo flag fetches
+VIGO-09 | Verify no Vigo feature flags on app resume
+    Preconditions
+        App is running in background
+        Network monitoring tool is active
+    Actions
+        Bring app to foreground from background
+        Monitor network traffic during resume
+        Wait for app to fully resume
+    Expected
+        App resumes successfully
+        No Vigo feature flag API calls are made
+        App state refreshes without fetching Vigo flags
+    API
+        N/A
+VIGO-14 | Verify no conditional Vigo flag patterns 
+    Preconditions
+        Access to complete codebase (Android and iOS)
+        Code search with regex support available
+    Actions
+        Search for patterns: if (vigoFlag), if vigo_flag, guard vigoFlag
+        Search for: isVigoEnabled, vigoFeatureEnabled, checkVigoFlag
+        Review feature flag handler/manager classes
+    Expected
+        No conditional statements checking Vigo flags
+        No helper methods for Vigo flag evaluation
+        All Vigo-related conditional logic removed
+    API
+        N/A
+
+VIGO-15 | Verify dead code blocks removed after flag cleanup
+    Preconditions
+        Access to codebase with version control history
+        Code analysis tools available
+    Actions
+        Review code blocks previously wrapped in Vigo flag conditions
+        Check for unreachable code or commented blocks related to Vigo
+        Run static code analysis for dead code detection
+    Expected
+        No dead code blocks related to Vigo flags
+        No commented-out Vigo feature code
+        Codebase is clean without orphaned flag logic
+    API
+        N/A
+
+VIGO-17 | Verify login flow works correctly after flag removal - Android
+    Preconditions
+        App is installed on Android Pixel 7 Pro running Android 15
+        User has valid Customer account credentials
+        App is logged out
+    Actions
+        Launch the app
+        Enter valid username and password
+        Tap Login button
+        Wait for home screen to load
+        Navigate through main app sections
+    Expected
+        Login completes successfully without errors
+        Home screen loads correctly
+        No crashes or performance issues
+        All main features are accessible
+    API
+        POST /api/v1/auth/login - Returns 200 with auth token
+
+VIGO-18 | Verify login flow works correctly after flag removal - iOS
+    Preconditions
+        App is installed on iPhone 16 Pro running iOS 18
+        User has valid Customer account credentials
+        App is logged out
+    Actions
+        Launch the app
+        Enter valid username and password
+        Tap Login button
+        Wait for home screen to load
+        Navigate through main app sections
+    Expected
+        Login completes successfully without errors
+        Home screen loads correctly
+        No crashes or performance issues
+        All main features are accessible
+    API
+        POST /api/v1/auth/login - Returns 200 with auth token
+
+VIGO-19 | Verify account switching works correctly after flag removal
+    Preconditions
+        User is logged in with Customer account
+        Store account is available for switching
+        App is running on Android or iOS preprod environment
+    Actions
+        Navigate to profile or account settings
+        Tap on account switcher
+        Select Store account
+        Wait for account switch to complete
+        Verify Store account features load
+    Expected
+        Account switch completes without errors
+        Store account loads correctly
+        No feature flag errors in logs
+        All Store-specific features are accessible
+    API
+        POST /api/v1/account/switch - Returns 200 with new account context
+
+VIGO-20 | Verify shopping list functionality after flag removal
+    Preconditions
+        User is logged in as Customer
+        Shopping list exists with items
+    Actions
+        Navigate to Shopping List
+        Add new item to shopping list
+        Remove an item from shopping list
+        Mark items as completed
+        Verify list synchronizes correctly
+    Expected
+        Shopping list displays correctly
+        Add, remove, and mark operations work without errors
+        No "Få dine varer leveret" button is present
+        List synchronizes properly with backend
+    API
+        GET /api/v1/shopping-list - Returns current shopping list
+        POST /api/v1/shopping-list/items - Adds items successfully
+
+VIGO-21 | Verify checkout flow works correctly after flag removal
+    Preconditions
+        User is logged in as Customer
+        Cart contains items
+    Actions
+        Navigate to Cart
+        Proceed to checkout
+        Select delivery method
+        Enter payment information
+        Complete order
+    Expected
+        Checkout flow completes successfully
+        No Vigo-related errors or UI glitches
+        Order confirmation is displayed
+        No performance degradation observed
+    API
+        POST /api/v1/checkout - Returns 200 with order confirmation
+
+VIGO-22 | Verify no memory leaks after flag removal - Android
+    Preconditions
+        App is running on Android Pixel 7 Pro
+        Memory profiling tool is active
+        User is logged in
+    Actions
+        Navigate through Settings, Meget mere, Shopping List, Cart
+        Monitor memory usage during navigation
+        Return to home screen multiple times
+        Check memory allocation and garbage collection
+    Expected
+        No memory leaks detected
+        Memory usage remains stable
+        Garbage collection occurs normally
+        No retained Vigo flag objects in memory
+    API
+        N/A
+
+VIGO-23 | Verify no memory leaks after flag removal - iOS
+    Preconditions
+        App is running on iPhone 16 Pro
+        Memory profiling tool is active
+        User is logged in
+    Actions
+        Navigate through Settings, Meget mere, Shopping List, Cart
+        Monitor memory usage during navigation
+        Return to home screen multiple times
+        Check memory allocation and deallocation
+    Expected
+        No memory leaks detected
+        Memory usage remains stable
+        Objects are properly deallocated
+        No retained Vigo flag objects in memory
+    API
+        N/A
+
+VIGO-24 | Verify app performance after flag removal - Cold start
+    Preconditions
+        App is completely closed and cleared from memory
+        Performance monitoring tool is active
+    Actions
+        Launch the app
+        Measure time to home screen
+        Monitor CPU and memory usage during launch
+        Compare with pre-cleanup performance metrics
+    Expected
+        App launches successfully
+        Launch time is equal or improved compared to pre-cleanup
+        No performance degradation
+        CPU and memory usage are optimal
+    API
+        N/A
+
+VIGO-25 | Verify Settings screen for Store account type after cleanup
+    Preconditions
+        User is logged in with Store account
+        App is updated to version without Vigo flags
+    Actions
+        Navigate to Settings screen
+        Check all available settings options
+        Verify no Vigo-related settings or tabs
+    Expected
+        Settings screen displays correctly for Store account
+        No "Vigo-indkøber" tab is present
+        No rating stars section is present
+        All Store-specific settings are functional
+    API
+        N/A
+
+VIGO-26 | Verify Settings screen for Old delivery account type after cleanup
+    Preconditions
+        User is logged in with Old delivery account (if exists)
+        App is updated to version without Vigo flags
+    Actions
+        Navigate to Settings screen
+        Check all available settings options
+        Verify no Vigo-related settings or tabs
+    Expected
+        Settings screen displays correctly for Old delivery account
+        No "Vigo-indkøber" tab is present
+        No rating stars section is present
+        All delivery-specific settings are functional
+    API
+        N/A
+
+VIGO-27 | Verify no Vigo string resources remain in app - Android
+    Preconditions
+        Access to Android string resources (strings.xml)
+        Code search functionality available
+    Actions
+        Search strings.xml for "Få dine varer leveret"
+        Search for "Vigo-indkøber" string
+        Search for other Vigo-related Danish strings
+    Expected
+        "Få dine varer leveret" string is removed
+        "Vigo-indkøber" string is removed
+        No orphaned Vigo-related strings remain
+    API
+        N/A
+
+VIGO-28 | Verify no Vigo string resources remain in app - iOS
+    Preconditions
+        Access to iOS string resources (Localizable.strings)
+        Code search functionality available
+    Actions
+        Search Localizable.strings for "Få dine varer leveret"
+        Search for "Vigo-indkøber" string
+        Search for other Vigo-related Danish strings
+    Expected
+        "Få dine varer leveret" string is removed
+        "Vigo-indkøber" string is removed
+        No orphaned Vigo-related strings remain
+    API
+        N/A
+
+VIGO-29 | Verify backend does not send removed flags in response
+    Preconditions
+        App is connected to preprod environment
+        Network traffic monitoring is active
+    Actions
+        Perform app launch, login, and account switch
+        Capture all API responses
+        Check feature flags endpoint responses
+        Search responses for Vigo flag keys
+    Expected
+        API responses do not contain vigoShowRatingStars
+        API responses do not contain vigoMenu
+        API responses do not contain app.android.vigo or app.ios.vigo
+        Feature flags endpoint is clean of Vigo flags
+    API
+        GET /api/v1/feature-flags - Response should NOT include Vigo flags
+
+VIGO-30 | Verify app stability with multiple operations after cleanup
+    Preconditions
+        User is logged in as Customer
+        App is running on preprod environment
+    Actions
+        Perform login and logout 3 times
+        Switch between Customer and Store accounts twice
+        Navigate to Settings, Shopping List, Cart multiple times
+        Add items to cart and remove them
+        Monitor app for crashes or errors
+    Expected
+        App remains stable throughout all operations
+        No crashes or fatal errors occur
+        No feature flag errors appear in logs
+        All operations complete successfully
+    API
+        N/A

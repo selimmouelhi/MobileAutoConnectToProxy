@@ -1,0 +1,75 @@
+======================================================
+  CLAUDE CODE & MCP SERVERS - SETUP GUIDE
+======================================================
+
+INSTALL CLAUDE CODE
+-------------------
+  brew install claude-code
+  claude                        # first launch = browser auth
+  claude --version              # verify
+
+
+WHAT ARE MCPs?
+--------------
+Plugins that connect Claude to external services
+(Jira, Notion, Proxyman, etc.) so it can use them.
+
+Add one with:  claude mcp add <name> [options]
+Check all:     claude mcp list
+
+
+ADD YOUR MCPs
+======================================================
+
+1) Atlassian (Jira & Confluence)
+   claude mcp add atlassian --type sse --url https://mcp.atlassian.com/v1/sse
+   -> First use opens browser to authenticate.
+
+2) Notion
+   claude mcp add notion --type http --url https://mcp.notion.com/mcp
+   -> First use opens browser to authenticate.
+
+3) Linear
+   claude plugin install linear
+   -> First use opens browser to authenticate.
+
+4) Proxyman (requires Proxyman app running)
+   brew install --cask proxyman
+   Open Proxyman -> Menu -> MCP Server -> Enable
+   claude mcp add proxyman --type stdio -- /Applications/Proxyman.app/Contents/MacOS/mcp-server
+
+5) Appium (requires Node.js + Appium)
+   npm install -g appium
+   appium driver install uiautomator2      # Android
+   appium driver install xcuitest          # iOS
+   claude mcp add appium --type stdio -- npx @gavrix/appium-mcp
+   -> Start Appium separately: appium
+	Install appium from Claude itself, consider using appium mcp as well https://github.com/appium/appium-mcp
+
+
+VERIFY EVERYTHING
+-----------------
+  claude mcp list
+
+  All servers should show "Connected".
+  If not: cloud MCPs = re-authenticate,
+  Proxyman = open the app, Appium = run appium.
+
+
+USEFUL COMMANDS
+---------------
+  claude mcp list              List all MCPs
+  claude mcp get <name>        Details of one MCP
+  claude mcp remove <name>     Remove an MCP
+  brew upgrade claude-code     Update Claude Code
+
+
+PRO TIP
+-------
+  Something not working? Don't debug it yourself.
+  Just tell Claude what went wrong and ask it to fix it.
+  "Appium won't connect, help me fix it"
+  "My Atlassian MCP shows disconnected, troubleshoot"
+  This is where AI shines -- let it diagnose and solve.
+
+======================================================

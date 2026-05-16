@@ -1,0 +1,820 @@
+imCORE Mobile App - Test Cases
+
+Installation & Compatibility
+    INSTALL-01 | Install app from fresh install
+        Preconditions
+            User has a compatible device with appropriate OS version
+            App is available in distribution channel
+            Device has sufficient storage space
+        Actions
+            Download the app from distribution channel
+            Install the app on the device
+            Launch the app from the device home screen
+            Verify the first-run state and login screen display
+        Expected
+            Installation completes successfully with "Open" button appearing
+            App launches without crash and splash screen appears
+            User lands on Login screen with no prior session present
+            User is logged out and no cached data exists
+        API
+            N/A
+
+    INSTALL-02 | Unable to install app on devices below minimum OS version
+        Preconditions
+            User has a device with OS version below the minimum required
+            App installation is attempted via distribution channel
+        Actions
+            Navigate to the app in the distribution channel
+            Attempt to install the app if Install button is visible
+            Observe any error messages or installation blocking behavior
+        Expected
+            Installation is blocked by the distribution platform
+            No compatibility or OS-related error is shown within the app
+            User cannot proceed with installation on incompatible device
+        API
+            N/A
+
+Authentication
+    AUTH-01 | Log in using a valid email and password
+        Preconditions
+            User has valid imCORE account credentials
+            App is installed and launched for the first time
+            User is on the login screen
+        Actions
+            Launch the app from device home screen
+            Verify first login screen displays email field and disabled Continue button
+            Enter a valid email address in the email field
+            Tap the "Continue" button
+            Verify second login screen displays password field and magic link option
+            Enter a valid password in the password field
+            Tap the "Log in" button
+        Expected
+            App opens successfully and login screen is shown
+            Email is accepted with no validation error
+            App navigates to login page with password field and "Forgot password?" link
+            Password is masked and accepted without error
+            Loading indicator shown during authentication
+            User is logged in successfully and app navigates to News feed
+        API
+            POST /api/v1/auth/login - Authenticates user with email and password
+
+    AUTH-02 | Request a magic link email
+        Preconditions
+            User has a valid imCORE account with registered email
+            App is installed and user is on the login screen
+        Actions
+            Launch the app from device home screen
+            Enter a valid email address in the email field
+            Tap the "Continue" button
+            Verify magic link option is present and enabled by default
+            Tap the "Send magic link" button
+        Expected
+            App opens successfully and login screen is shown
+            Email is accepted with no validation error
+            App navigates to login page with password field
+            Magic link option is present and enabled by default
+            Loading spinner shown and confirmation message displayed
+            Magic link email is sent to the user's inbox
+        API
+            POST /api/v1/auth/magic-link - Sends magic link to user email
+
+    AUTH-03 | Log in using a valid verification code sent via email
+        Preconditions
+            User has requested a magic link via email
+            Magic link email has been received on the same device
+            User has access to the email containing the 6-digit code
+        Actions
+            Open the received magic link email on the same device
+            Copy the 6-digit verification code to clipboard
+            Return to the app and verify magic link confirmation screen
+            Enter fewer than 6 digits in the code input field
+            Enter or paste the valid 6-digit verification code
+            Tap the "Confirm and Continue" button
+        Expected
+            Email arrives with magic link and 6-digit verification code
+            Code is successfully copied to clipboard
+            Magic link confirmation screen displayed with code input field
+            Code input accepts partial entry but submit button remains disabled
+            Submit button becomes enabled when 6-digit code is entered
+            Submit button shows loading spinner and verification is processed
+            User is logged in successfully and app navigates to News feed
+        API
+            POST /api/v1/auth/verify-code - Verifies 6-digit code and authenticates user
+
+    AUTH-04 | Log in using a magic link sent via email
+        Preconditions
+            User has requested a magic link via email
+            Magic link email has been received on the same device
+            Magic link has not expired (within 5 minutes)
+        Actions
+            Open the received magic link email on the same device
+            Tap the magic link URL in the email body
+            Wait for the app to open automatically
+        Expected
+            Email arrives with magic link and 6-digit code
+            App opens automatically when magic link is tapped
+            Link is validated successfully (one-time use, expires after 5 minutes)
+            User is logged in successfully and app navigates to News feed
+        API
+            GET /api/v1/auth/magic-link/validate - Validates magic link token
+
+    AUTH-05 | Successfully reset password and log in with new password
+        Preconditions
+            User has a valid imCORE account with registered email
+            User has forgotten their password and needs to reset it
+        Actions
+            Launch app from device home screen and enter valid email
+            Tap "Continue" button to navigate to password field screen
+            Tap the "Forgot Password" link
+            Verify the email is pre-filled on password reset screen
+            Tap "Send reset link" button
+            Open the password reset email on the same device
+            Tap the reset password link from the email
+            Enter a new password with fewer than 8 characters
+            Enter password with mismatched confirmation
+            Enter valid new password (minimum 8 characters) and confirm
+            Submit the new password
+            Attempt to log in using the old password
+            Log in using the newly created password
+        Expected
+            App opens and login screen is displayed
+            Password reset screen is displayed with pre-filled email
+            Loading spinner shown, confirmation message displayed, reset email sent
+            Email arrives with reset password link (expires after 5 minutes)
+            Browser opens with "Create new password" screen
+            Validation error shown: "Your password is too weak"
+            Validation error shown: "Passwords do not match"
+            Password is updated successfully with confirmation message
+            Login fails with old password and error message is displayed
+            User is successfully logged in with new password and navigates to News feed
+        API
+            POST /api/v1/auth/forgot-password - Sends password reset email
+            POST /api/v1/auth/reset-password - Updates user password
+
+    AUTH-06 | Log in with username and password via SAML (Roche SSO)
+        Preconditions
+            User has a valid @roche.com email address
+            User has valid Roche SSO credentials
+            SAML authentication is configured for the app
+        Actions
+            Launch app from device home screen
+            Enter a @roche.com email address
+            Tap the "Sign in with SAML" button
+            Enter valid SSO credentials on SAML authentication screen
+            Grant required permissions/consent if prompted
+            Wait for app to return after SSO authentication
+        Expected
+            App opens and login screen is displayed
+            Continue button changes to "Sign in with SAML" for @roche.com email
+            User is redirected to SAML authentication screen
+            Authentication completes successfully with SSO provider
+            User accepts permissions and consent is granted
+            App opens automatically after successful SSO authentication
+            User is logged in and app navigates to News feed
+        API
+            GET /api/v1/auth/saml/login - Initiates SAML authentication flow
+            POST /api/v1/auth/saml/callback - Handles SAML callback
+
+News Feed
+    FEED-01 | Browse News feed and load additional posts on scroll
+        Preconditions
+            User is logged into the app
+            User has access to News feed with multiple pages of content
+        Actions
+            Navigate to the News Feed screen
+            Verify initial feed load displays list of posts
+            Scroll down through the feed
+            Reach the bottom of the currently loaded list
+            Verify additional posts are appended below existing posts
+            Repeat pagination by scrolling to bottom at least one more time
+        Expected
+            Feed loads successfully with posts displayed
+            Posts display titles, images, timestamps with no empty/error state
+            Scrolling is smooth and existing posts remain visible
+            Loading spinner displayed when bottom is reached and next page is requested
+            New posts appear below existing with no duplicates in correct order
+            Each time bottom is reached, next page loads correctly
+        API
+            GET /api/v1/feeds/{feed_id}/posts - Returns paginated list of posts
+
+    FEED-02 | View Post Details from News feed
+        Preconditions
+            User is logged into the app
+            User is on the News Feed screen with visible posts
+        Actions
+            Navigate to the News Feed screen
+            Select a post from the feed
+            Verify header media renders correctly
+            Verify post metadata displays title and timestamp
+            Verify body content is displayed and readable
+            Verify attachments section shows PDF files with filenames
+            Tap on a PDF attachment to view
+        Expected
+            Feed loads successfully with posts displayed
+            App navigates to post details screen
+            Image/video/placeholder shown correctly in header
+            Post title and correctly formatted timestamp are visible
+            Body text is displayed, readable, with smooth scrolling and no overlapping
+            PDF attachments listed with filenames at bottom
+            PDF opens successfully, user can scroll/zoom, and return to post
+        API
+            GET /api/v1/feeds/{feed_id}/posts/{post_id} - Returns full post details
+
+    FEED-03 | Share Post using native share sheet
+        Preconditions
+            User is logged into the app
+            User is viewing a post details screen
+        Actions
+            Tap the Share icon from the title bar
+            Select a share target from the native share sheet
+            Complete or cancel the share action
+        Expected
+            Native share sheet is displayed with available share options
+            Selected target opens and post information is passed correctly
+            If completed: share is executed successfully; If cancelled: user returns to post details
+        API
+            N/A
+
+    FEED-04 | Like and unlike post from News feed
+        Preconditions
+            User is logged into the app
+            User is on the News Feed screen with posts that support likes
+        Actions
+            Navigate to the News Feed screen
+            Locate an article with heart icon and like counter
+            Tap the heart icon to like the article
+            Tap on the article to view details
+            Verify the article is marked as liked in details view
+            Return back to news feed
+            Tap the heart icon again to unlike the article
+            Tap on the article to view details again
+            Verify the article is no longer marked as liked
+        Expected
+            Feed loads successfully with articles displayed
+            Heart icon is visible with current like counter
+            Heart becomes filled and counter increments by +1
+            App navigates to article details screen
+            Heart icon is filled and counter shows updated likes
+            Article remains marked as liked on news feed
+            Heart becomes unfilled and counter decrements by 1
+            Heart icon is unfilled and article is not marked as liked
+        API
+            POST /api/v1/feeds/{feed_id}/posts/{post_id}/like - Likes a post
+            DELETE /api/v1/feeds/{feed_id}/posts/{post_id}/like - Unlikes a post
+
+    FEED-05 | Add comment to a post from post details screen
+        Preconditions
+            User is logged into the app
+            User is viewing a post details screen that supports comments
+        Actions
+            Navigate to a post details screen from News feed
+            Locate the comment input field
+            Tap on the comment input field
+            Type a comment message in the field
+            Tap the submit/send button
+            Verify the new comment appears in the comment list
+            Close and reopen the post to verify persistence
+        Expected
+            Post details loads with comment section visible
+            Comment input field is present with placeholder text
+            Keyboard appears and field becomes active
+            Text is entered, visible in real-time, and wraps appropriately
+            Loading indicator shown, comment submitted, keyboard dismisses
+            Comment is displayed with user name, profile picture, and timestamp
+            Comment is still visible after reopening post and comment count incremented
+        API
+            POST /api/v1/feeds/{feed_id}/posts/{post_id}/comments - Creates a new comment
+
+    FEED-06 | Pull to refresh News feed to load latest posts
+        Preconditions
+            User is logged into the app
+            User is on the News Feed screen
+        Actions
+            Navigate to the News feed screen
+            Note the current posts and timestamps
+            Perform pull-to-refresh gesture
+            Wait for refresh to complete
+            Verify feed content after refresh
+            Perform pull-to-refresh when no new content exists
+        Expected
+            News feed loads with posts displayed
+            First few posts are visible with timestamps noted
+            Pull-to-refresh indicator appears and feed begins refreshing
+            Loading indicator disappears when refresh completes
+            New posts appear at top if available with no duplicates
+            Refresh works smoothly with no errors and existing posts unchanged
+        API
+            GET /api/v1/feeds/{feed_id}/posts - Returns latest posts
+
+    FEED-07 | Handle network error when loading News feed
+        Preconditions
+            User is logged into the app with active network
+            User is on the News Feed screen
+        Actions
+            Navigate to the News feed
+            Disable network connectivity (enable Airplane mode)
+            Pull to refresh or navigate away and back
+            Verify error handling and error message display
+            Verify retry mechanism is available
+            Re-enable network connectivity
+            Tap retry or pull to refresh again
+        Expected
+            News feed loads with posts displayed
+            Network is disabled successfully
+            Refresh is attempted and loading indicator appears
+            Appropriate error message displayed (e.g., "No internet connection")
+            "Retry" button is available and tapping attempts reload
+            Network is restored successfully
+            Feed reloads successfully and error message disappears
+        API
+            GET /api/v1/feeds/{feed_id}/posts - Returns posts when network available
+
+    FEED-08 | Bookmark a post and access bookmarks
+        Preconditions
+            User is logged into the app
+            User is viewing a post details screen
+        Actions
+            Navigate to the News feed screen
+            Select a post to view details
+            Locate the bookmark icon in the title bar
+            Tap the bookmark icon to bookmark the post
+            Navigate away and return to verify bookmark persists
+            Navigate to the bookmarks section
+            Verify the bookmarked post appears in the list
+            Return to post and tap bookmark icon again to remove
+            Navigate to bookmarks section again
+        Expected
+            News feed loads with posts displayed
+            Post details screen opens successfully
+            Bookmark icon is visible in unbookmarked state
+            Icon changes to bookmarked state with visual feedback
+            Bookmark icon remains in bookmarked state
+            Bookmarks section is accessible and opens successfully
+            Bookmarked post is visible with title, image, and metadata
+            Icon changes to unbookmarked state
+            Previously unbookmarked post no longer appears in bookmarks list
+        API
+            POST /api/v1/posts/{post_id}/bookmark - Bookmarks a post
+            DELETE /api/v1/posts/{post_id}/bookmark - Removes bookmark
+            GET /api/v1/bookmarks - Returns list of bookmarked posts
+
+    FEED-09 | Play video content from post details screen
+        Preconditions
+            User is logged into the app
+            User is viewing a post that contains video content
+        Actions
+            Navigate to a post that contains video content
+            Verify video player interface with play button and thumbnail
+            Tap play button to start video playback
+            Verify playback controls are available during playback
+            Tap the fullscreen button
+            Verify fullscreen playback and controls
+            Exit fullscreen mode
+            Test volume controls and mute/unmute functionality
+        Expected
+            Post details loads with video thumbnail visible
+            Play button overlay, thumbnail preview, and duration are visible
+            Video plays with audio and button changes to pause
+            Pause works, progress bar shows position, user can scrub timeline
+            Video enters fullscreen mode with controls available
+            Video continues playing, controls accessible, exit button visible
+            Video returns to inline player and playback continues
+            Volume control is accessible, adjusting changes level, mute/unmute works
+        API
+            GET /api/v1/feeds/{feed_id}/posts/{post_id} - Returns post with video URL
+
+    FEED-10 | View post attachments and download PDF files
+        Preconditions
+            User is logged into the app
+            User is viewing a post that contains PDF attachments
+        Actions
+            Navigate to a post that contains PDF attachments
+            Verify attachments section displays PDF files
+            Tap on a PDF attachment to view
+            Verify PDF viewing functionality with scroll and zoom
+            Locate download or share option in PDF viewer
+            Tap download button to save the PDF
+            Verify download completion and confirmation
+            Verify downloaded file is accessible in downloads folder
+        Expected
+            Post details loads with attachments section visible
+            PDF files listed with filenames, file size, and download icon
+            Loading indicator shown, PDF viewer opens, content displayed
+            User can scroll, zoom, and page navigation is available
+            Download/share icon is visible in toolbar
+            Permission prompt if needed, download begins with progress indicator
+            Download completes with confirmation message and no errors
+            PDF is present in downloads folder and file opens successfully
+        API
+            GET /api/v1/feeds/{feed_id}/posts/{post_id} - Returns post with PDF attachment URLs
+
+Directories
+    DIR-01 | Browse Directory feed with default style
+        Preconditions
+            User is logged into the app
+            User has access to a Directory feed with site-based grouping
+        Actions
+            Navigate to a Directory feed
+            Verify lead site-based grouping is displayed
+            Verify project list displays title and image for each project
+            Scroll through the project directory feed
+        Expected
+            Directory feed loads successfully
+            Projects are grouped under Lead site name with site headers visible
+            Each project displays title and image with consistent layout
+            Scrolling is smooth and all groups load correctly
+        API
+            GET /api/v1/directories/{directory_id} - Returns directory with site grouping
+
+    DIR-02 | View Directory Details
+        Preconditions
+            User is logged into the app
+            User is on the Project Directory feed
+        Actions
+            Navigate to the Project Directory feed
+            Select a project from the feed
+            Verify project header information displays correctly
+            Verify project details are readable and scrollable
+        Expected
+            Project Directory loads with projects displayed
+            App navigates to Project Details screen
+            Title and image displayed correctly, associated with correct site
+            Description and info displayed, content readable, user can scroll
+        API
+            GET /api/v1/directories/{directory_id}/projects/{project_id} - Returns project details
+
+    DIR-03 | Browse Member feed and load additional members on scroll
+        Preconditions
+            User is logged into the app
+            User has access to the Member feed
+        Actions
+            Navigate to the Member feed
+            Verify alphabetical grouping with letter headers
+            Verify members are sorted alphabetically by name within each group
+            Verify member information displays full name and profile photo
+            Verify profile photo placeholder for members without photos
+            Scroll through the member list
+            Reach the bottom of currently loaded list
+            Verify additional members are appended below existing
+            Repeat pagination at least one more time
+        Expected
+            Member feed loads successfully
+            Members are grouped under letter headers (A, B, C, etc.)
+            Members are sorted alphabetically by name within each group
+            Full name is displayed with profile photo if available
+            Members without photo show default placeholder
+            Scrolling is smooth and all letter groups load correctly
+            Loading spinner displayed and app requests next page
+            New members appear below existing with no duplicates
+            Each time bottom is reached, next page loads correctly
+        API
+            GET /api/v1/members - Returns paginated list of members with alphabetical grouping
+
+    DIR-04 | View Member Details From Member Directory
+        Preconditions
+            User is logged into the app
+            User is on the Member Directory feed
+        Actions
+            Navigate to the Member Directory feed
+            Select a member from the list
+            Verify member name is displayed clearly
+            Verify member email is displayed with valid format
+            Verify member role is displayed correctly
+            Verify member institution is displayed correctly
+            Verify overall layout is readable and scrollable
+            Navigate back to the Member Directory
+        Expected
+            Member Directory loads successfully
+            App navigates to Member Details screen
+            Member's full name is displayed clearly
+            Email address is displayed with valid format
+            Member's role is displayed correctly
+            Member's institution is displayed correctly
+            All fields are visible, information is readable, screen is scrollable
+            User successfully returns to directory feed
+        API
+            GET /api/v1/members/{member_id} - Returns member details
+
+    DIR-05 | View Directory Details with carousel style
+        Preconditions
+            User is logged into the app
+            User has access to the Site Directory from More menu
+        Actions
+            Select "Site Directory" from the More menu
+            Verify Site Directory feed loads
+            Verify regional grouping with region headers
+            Verify site card content displays image, name, location
+            Scroll through the Site Directory feed
+            Select a site to view details (if applicable)
+            Navigate back to More menu
+        Expected
+            App navigates to Site Directory screen
+            List of sites displayed with no empty/error state
+            Sites are grouped under region headers (e.g., Asia, Europe)
+            Each site displays image/placeholder, name, and location
+            Scrolling is smooth and all regions and sites load correctly
+            App navigates to Site Details screen (if applicable)
+            Navigation back to More menu works correctly
+        API
+            GET /api/v1/directories/sites - Returns sites with regional grouping
+
+    DIR-06 | View and filter Project Directory by project status
+        Preconditions
+            User is logged into the app
+            User is on the Project Directory feed
+        Actions
+            Navigate to the Project Directory feed
+            Verify initial project list displays all projects
+            Locate the filter or status selector option
+            Tap the filter/status selector
+            Select "Active" status filter
+            Verify filtered results show only active projects
+            Change filter to "Completed" status
+            Verify no results scenario if applicable
+            Clear filter or select "All" status
+        Expected
+            Project Directory loads with projects displayed
+            All projects visible with title, image, site, and status indicator
+            Filter icon or dropdown is visible
+            Filter menu opens with status options (Active, Completed, Planned)
+            Active status is selected and highlighted
+            Only Active projects are displayed, others are hidden
+            Directory updates to show only completed projects
+            Appropriate empty state message shown if no matches
+            All projects displayed regardless of status
+        API
+            GET /api/v1/directories/projects?status=active - Returns filtered projects
+
+Profile & User Management
+    PROFILE-01 | View User Profile From More Menu
+        Preconditions
+            User is logged into the app
+            User is on the More menu screen
+        Actions
+            Tap the profile thumbnail from More menu
+            Verify locked (read-only) fields are displayed
+            Verify professional information fields are displayed
+            Verify interests and research information are displayed
+            Verify overall layout and usability
+            Return to the More menu
+        Expected
+            App navigates to user profile screen
+            Name, Surname, Institution, Role, Email visible and non-editable
+            Specialisation and Tumor type fields are displayed
+            Major area of interest, additional area, research type displayed
+            All fields with values visible, empty fields hidden, screen is scrollable
+            User can navigate back to More menu
+        API
+            GET /api/v1/users/me - Returns current user profile
+
+    PROFILE-02 | Update profile photo by selecting image from library
+        Preconditions
+            User is logged into the app
+            User is on their profile screen
+            Device has photos in photo library
+        Actions
+            Tap profile photo or edit (pencil) icon
+            Select "Choose from library" from action sheet
+            Select a valid image from the device photo library
+            Confirm/save the profile photo update
+            Verify updated profile photo is displayed
+            Reopen profile to verify photo persists
+        Expected
+            Action sheet is displayed with photo selection options
+            Device photo library opens successfully
+            Image is previewed or applied with no error
+            Profile photo update is processed successfully
+            New photo is displayed, correctly cropped/scaled
+            Updated photo persists after navigating away and returning
+        API
+            POST /api/v1/users/me/photo - Uploads new profile photo
+
+    PROFILE-03 | View own user profile and verify profile information
+        Preconditions
+            User is logged into the app
+            User has a complete profile with all information
+        Actions
+            Log into app and navigate to main screen
+            Navigate to user profile (via menu, profile icon, or settings)
+            Verify profile header section displays photo, name, title
+            Verify contact information displays email and phone
+            Verify organizational information displays site and department
+            Verify additional profile sections are accessible
+            Verify profile completeness and data accuracy
+        Expected
+            App opens and user is logged in
+            Profile screen opens successfully
+            Profile photo, full name, and job title are visible
+            Email and phone number are displayed correctly
+            Site/location and department are visible
+            Bio and preferences sections are accessible
+            All expected fields contain data or appropriate placeholders
+        API
+            GET /api/v1/users/me - Returns current user profile with all fields
+
+    PROFILE-04 | Edit profile photo by taking new photo with camera
+        Preconditions
+            User is logged into the app
+            User is on their profile screen
+            Device has functioning camera
+        Actions
+            Navigate to user profile screen
+            Tap on profile photo or edit profile button
+            Select "Take Photo" or "Camera" option
+            Grant camera permission if prompted
+            Verify camera interface opens successfully
+            Take a photo using the device camera
+            Confirm or approve the captured photo
+            Verify photo cropping/editing interface if available
+            Save the new profile photo
+            Verify updated profile photo is displayed correctly
+        Expected
+            Profile screen loads with current photo visible
+            Edit options appear with "Take Photo" option available
+            Camera permission prompt appears (if needed) and permission granted
+            Device camera opens with preview visible and capture button present
+            Photo is captured successfully and preview is shown
+            "Use Photo" button is available and photo is confirmed
+            Cropping interface appears with save button present (if applicable)
+            Loading indicator shown and photo is uploaded successfully
+            New photo is displayed, appears correctly, and updated across app
+        API
+            POST /api/v1/users/me/photo - Uploads new profile photo from camera
+
+    PROFILE-05 | View member profile details from Member Directory
+        Preconditions
+            User is logged into the app
+            User is on the Member Directory feed
+        Actions
+            Navigate to the Member Directory feed
+            Tap on a member from the directory
+            Verify profile header information is displayed
+            Verify contact information section displays email
+            Verify organizational details are displayed
+            Verify profile navigation and back button functionality
+        Expected
+            Member Directory loads with members displayed alphabetically
+            App navigates to member profile screen
+            Profile photo, member name, and job title are visible
+            Email is displayed, tappable, and phone shown if available
+            Site/location and department are displayed
+            User can scroll and back button returns to Member Directory
+        API
+            GET /api/v1/members/{member_id}/profile - Returns member profile details
+
+Navigation & Search
+    NAV-01 | View More Menu and access additional feeds
+        Preconditions
+            User is logged into the app
+            User is on the main navigation screen
+        Actions
+            Launch the app from device home screen
+            Tap the "More" menu tab (Burger icon)
+            Verify menu content displays additional feeds
+            Select an additional feed from the list
+            Return to the More menu
+        Expected
+            App launches and main navigation is displayed
+            More menu opens and menu list is displayed
+            Additional feeds are listed with Profile option visible and clear labels/icons
+            App opens selected feed as overlay and feed loads successfully
+            User can navigate back to More menu
+        API
+            GET /api/v1/navigation_items - Returns available menu items
+
+    NAV-02 | Search within feeds using the search input
+        Preconditions
+            User is logged into the app
+            User is on a feed that supports search functionality
+        Actions
+            Navigate to a feed that supports search
+            Tap on the search input field
+            Enter a valid search term
+            Verify filtered search results display
+            Verify empty search result behavior
+            Clear the search input
+            Repeat steps for each supported feed
+        Expected
+            Feed loads successfully with search input visible
+            Keyboard is displayed and search field becomes active
+            Search term is accepted and feed filters results in real-time
+            Only matching items are displayed, non-matching items hidden
+            If no matches, appropriate empty state message is shown
+            Search is cleared and full unfiltered feed is restored
+            Search behaves consistently across all supported feeds
+        API
+            GET /api/v1/feeds/{feed_id}/search?q={query} - Returns filtered search results
+
+    NAV-03 | Open universal links and navigate to correct in-app destination
+        Preconditions
+            User has the app installed on the device
+            User is logged into the app
+        Actions
+            Launch app from device home screen
+            Open deep link: imcore://feeds/63
+            Open deep link: imcore://feeds/63/posts/868
+            Open deep link: imcore://feeds/63/search/ASAN Medical Center
+            Open deep link: imcore://users/1036
+        Expected
+            App opens and login screen is shown
+            App navigates to specified feed (ID: 63)
+            App navigates to feed post details screen
+            App navigates to feed search view with query pre-filled
+            App navigates to user profile for user ID 1036
+        API
+            N/A
+
+    NAV-04 | Verify navigation using dynamically loaded navigation items
+        Preconditions
+            User has the app installed on the device
+            User is logging into the app
+        Actions
+            Launch app from device home screen
+            Verify navigation items request is made on app open
+            Verify only first 4 items are rendered in navigation UI
+            Tap each of the 4 navigation items
+        Expected
+            App opens and login screen is shown
+            App makes GET api/v1/navigation_items request on launch
+            Navigation displays exactly 4 items matching API response
+            Each item navigates to correct destination when tapped
+        API
+            GET /api/v1/navigation_items - Returns dynamically loaded navigation menu items
+
+Engagement & Notifications
+    ENGAGE-01 | View notification center and notification list
+        Preconditions
+            User is logged into the app
+            User has received notifications
+        Actions
+            Log into the app
+            Locate notification icon or bell icon
+            Tap the notification icon
+            Verify notification list structure and ordering
+            Verify notification types displayed
+            Tap on a notification item
+            Return to notification center
+            Verify mark all as read functionality if available
+        Expected
+            App opens and user is logged in
+            Notification icon is visible with badge shown if unread
+            Notification center opens with list of notifications displayed
+            Notifications listed newest first with icon, title, and timestamp
+            Post notifications, comment notifications, and system notifications shown
+            App navigates to relevant content, notification marked read, badge decrements
+            Previously tapped notification appears as read
+            Option is present to mark all as read, badge clears when used
+        API
+            GET /api/v1/notifications - Returns list of user notifications
+            PUT /api/v1/notifications/{notification_id}/read - Marks notification as read
+
+Consent & Compliance
+    CONSENT-01 | Show disclaimer pop-up when user has not accepted latest terms
+        Preconditions
+            User has a valid imCORE account
+            User has previously accepted older terms (or never accepted)
+            Test user's consent has been removed via API
+        Actions
+            Log in to the app with test user
+            Remove disclaimer consent using DELETE api/v1/consent_disclaimer/latest
+            Fully close the app and relaunch it
+            Verify the Disclaimer pop-up is displayed immediately
+            Verify user cannot continue without accepting
+            Accept the disclaimer
+            Relaunch the app once more to verify no pop-up shown
+        Expected
+            User can access app normally if previously accepted
+            API responds successfully to DELETE request
+            App launches successfully after relaunch
+            Disclaimer appears immediately and blocks access until action taken
+            User cannot proceed to main content without accepting
+            Consent is saved, pop-up closes, user is allowed into app
+            Disclaimer pop-up is not shown again after being accepted
+        API
+            GET /api/v1/consent_disclaimer/latest - Returns latest disclaimer version
+            DELETE /api/v1/consent_disclaimer/latest - Removes user consent (testing only)
+            POST /api/v1/consent_disclaimer/accept - Records user acceptance
+
+Content Filtering
+    FILTER-01 | Filter content by site or location in feeds
+        Preconditions
+            User is logged into the app
+            User is on a feed that supports site filtering
+        Actions
+            Navigate to a feed that supports site filtering
+            Locate the filter or site selector option
+            Tap on the filter/site selector
+            Select a specific site from the list
+            Verify filtered results display only selected site
+            Verify filter persistence after navigating away
+            Clear filter or select "All sites"
+        Expected
+            Feed loads with mixed content from various sites
+            Filter icon or dropdown is visible
+            Filter menu opens and list of available sites is displayed
+            Site is selected and highlighted
+            Only content from selected site is displayed, others hidden
+            Filter remains applied after navigating away and returning
+            Full unfiltered content is restored
+        API
+            GET /api/v1/feeds/{feed_id}?site={site_id} - Returns filtered feed by site

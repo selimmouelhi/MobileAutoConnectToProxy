@@ -1,0 +1,182 @@
+COMPAT-01 | v6.4 user shares with v6.5 user - Auto-accept legacy flow
+    Preconditions
+        User A is on app version 6.4.x (logged in, has active shopping list)
+        User B is on app version 6.5 (logged in)
+    Actions
+        User A opens their shopping list
+        User A taps "Share" and generates a share link
+        User A sends the share link to User B
+        User B opens the share link in their v6.5 app
+    Expected
+        User B's invitation is auto-accepted using the v6.4 sharing mechanism
+        User B immediately sees User A's shopping list in their lists
+        User B can view and edit items in the shared list
+        Both users see the same items and real-time sync works
+    API
+        POST /api/v3/invitation-links/{id} - Legacy auto-accept flow
+        GET /api/v1/shoppinglists/polling - Syncs shared list data
+
+COMPAT-02 | v6.5 user shares with v6.4 user - Backend auto-accept on polling
+    Preconditions
+        User A is on app version 6.5 (logged in, has active shopping list)
+        User B is on app version 6.4.x (logged in)
+    Actions
+        User A opens their shopping list
+        User A taps "Share" and generates a share link
+        User A sends the share link to User B
+        User B opens the share link (opens in browser or external handler)
+        User B opens the REMA app and navigates to shopping lists
+    Expected
+        User B does not see invitation UI (v6.4 lacks this feature)
+        The polling endpoint detects User B's v6.4.x user-agent
+        The invitation is automatically accepted server-side during polling
+        User B sees User A's shared shopping list appear in their lists
+        User B can view and edit items in the shared list
+    API
+        POST /api/v3/invitation-links/{id} - Creates pending invitation
+        GET /api/v1/shoppinglists/polling - Detects v6.4 user-agent and auto-accepts invitation
+        GET /api/v3/users/{id}/shopping-list-invitations - Shows pending invitation before auto-accept
+
+COMPAT-03 | v6.4 user receives invitation - Verify user-agent detection
+    Preconditions
+        User A is on app version 6.5 (logged in)
+        User B is on app version 6.4.x with user-agent "REMA1000App/6.4.x (iOS 26.2; iPhone17,1)"
+        User A has shared their shopping list with User B
+    Actions
+        Monitor network traffic for User B's app
+        User B pulls to refresh the shopping lists screen
+        Observe the polling request headers and response
+    Expected
+        The polling request includes user-agent header with version 6.4.x
+        Server recognizes v6.4 user-agent and triggers auto-accept logic
+        Polling response includes the newly shared shopping list
+        User B sees the shared list without any manual action
+    API
+        GET /api/v1/shoppinglists/polling - User-agent header: REMA1000App/6.4.x
+
+COMPAT-04 | Bidirectional sharing - v6.4 and v6.5 users share with each other
+    Preconditions
+        User A is on app version 6.4.x (has shopping list "List A")
+        User B is on app version 6.5 (has shopping list "List B")
+    Actions
+        User A shares "List A" with User B
+        User B opens the link and accepts (auto-accepted on v6.5)
+        User B shares "List B" with User A
+        User A opens the link and refreshes their shopping lists
+    Expected
+        User B receives "List A" immediately via legacy auto-accept
+        User A receives "List B" via polling auto-accept after app refresh
+        Both users see both shared lists in their shopping lists
+        Items sync correctly in both directions across both lists
+        No duplicate lists or orphaned invitations
+    API
+        POST /api/v3/invitation-links/{id} - Both directions
+        GET /api/v1/shoppinglists/polling - Auto-accepts v6.5 invitation for v6.4 user
+
+COMPAT-05 | v6.4 user with pending invitation - Cold app start
+    Preconditions
+        User A is on app version 6.5 (has shared a list)
+        User B is on app version 6.4.x (app is closed/force-quit)
+        User B has a pending invitation from User A
+    Actions
+        User B force-quits the REMA app completely
+        User B opens the share link (browser or deep link)
+        User B launches the REMA app fresh
+        User B navigates to shopping lists screen
+    Expected
+        The app makes a polling request on launch or list screen load
+        The backend detects v6.4 user-agent and auto-accepts the invitation
+        User B sees User A's shared list without manual intervention
+        No error messages or invitation prompts appear
+    API
+        GET /api/v1/shoppinglists/polling - Auto-accepts on cold start
+        GET /api/v3/users/{id}/shopping-list-invitations - Pending invitation cleared
+
+COMPAT-06 | Multiple v6.5 invitations to single v6.4 user
+    Preconditions
+        User A, User B, User C are on app version 6.5 (each has a shopping list)
+        User D is on app version 6.4.x
+    Actions
+        User A shares their list with User D
+        User B shares their list with User D
+        User C shares their list with User D
+        User D opens the REMA app and navigates to shopping lists
+    Expected
+        All three pending invitations exist server-side
+        The polling endpoint auto-accepts all invitations in batch or sequentially
+        User D sees all three shared lists appear in their shopping lists
+        No invitations are skipped or lost
+        User D can access and edit all three shared lists
+    API
+        GET /api/v1/shoppinglists/polling - Handles multiple pending invitations for v6.4 user
+        GET /api/v3/users/{id}/shopping-list-invitations - Shows all pending before auto-accept
+
+COMPAT-07 | v6.4 user-agent spoofing - Verify backend validation
+    Preconditions
+        User A is on app version 6.5 (has shared a list)
+        User B is on app version 6.5 but modifies user-agent to "REMA1000App/6.4.0 (iOS 26.2; iPhone17,1)"
+    Actions
+        User B receives invitation from User A
+        User B makes polling request with spoofed v6.4 user-agent
+        Observe server behavior and response
+    Expected
+        Server processes the spoofed user-agent as v6.4
+        Invitation is auto-accepted via polling endpoint
+        User B sees the shared list (same outcome as real v6.4 user)
+        No errors or unexpected behavior occurs
+    API
+        GET /api/v1/shoppinglists/polling - Processes based on user-agent header
+
+COMPAT-08 | Real-time sync after auto-accept - v6.5 to v6.4
+    Preconditions
+        User A is on app version 6.5 (has shared list "Groceries")
+        User B is on app version 6.4.x (invitation auto-accepted via polling)
+        Both users have the shared list open
+    Actions
+        User A adds item "Milk" to the shared list
+        User A marks item "Bread" as completed
+        User B pulls to refresh or waits for auto-sync
+        User B adds item "Eggs" to the shared list
+        User A pulls to refresh or waits for auto-sync
+    Expected
+        User B sees "Milk" appear in the list
+        User B sees "Bread" marked as completed
+        User A sees "Eggs" appear in the list
+        Real-time sync works bidirectionally between v6.4 and v6.5
+        No data loss or sync conflicts occur
+    API
+        GET /api/v1/shoppinglists/polling - Syncs changes between versions
+
+COMPAT-09 | v6.4 user removes shared list - Verify cleanup
+    Preconditions
+        User A is on app version 6.5 (has shared a list with User B)
+        User B is on app version 6.4.x (invitation auto-accepted, list visible)
+    Actions
+        User B opens the shared list
+        User B deletes or leaves the shared list (if v6.4 supports this)
+        User A checks the "Who has access" screen (v6.5)
+    Expected
+        User B's removal is synced to the backend
+        User A's "Who has access" screen no longer shows User B
+        User B no longer sees the shared list in their lists
+        No orphaned data or broken references remain
+    API
+        DELETE /api/v1/shoppinglists/{id} - User B removes access
+        GET /api/v1/shoppinglists/polling - Syncs removal state
+
+COMPAT-10 | v6.5 user revokes access from v6.4 user
+    Preconditions
+        User A is on app version 6.5 (has shared list with User B)
+        User B is on app version 6.4.x (invitation auto-accepted, list visible)
+    Actions
+        User A opens "Who has access" screen in v6.5
+        User A taps remove/revoke access for User B
+        User B opens the REMA app and navigates to shopping lists
+    Expected
+        User B's access is revoked server-side
+        User B no longer sees User A's shared list in their lists
+        User B receives appropriate feedback (list removed or no longer accessible)
+        Polling endpoint reflects the revocation
+    API
+        DELETE /api/v3/shopping-lists/{id}/members/{userId} - Revoke access
+        GET /api/v1/shoppinglists/polling - User B's list removed from response

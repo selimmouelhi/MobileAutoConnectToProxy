@@ -1,0 +1,28 @@
+Recipe Flow – View, Add to List, Cook, Share
+    Preconditions
+        --user is guest or logged in
+    Actions
+        Open the Recipes tab
+        Search for a recipe
+        Applly filter
+        Select a recipe
+        Check recipe details
+        Tap on info icon next to products
+        Tap “Add to shopping list”
+        Start step-by-step cooking flow
+        Navigate between steps
+        Tap to disable screen is on
+        Let screen sit idle during a step
+        Tap Share icon to share recipe link
+    Expected
+        Recipe opens with full content (title, image, ingredients)
+        User is able to check product details and perform the normal actions ( add  - favorite - delete)
+        Items are added to the shopping list with correct values
+        Step flow works and steps display properly
+        Lottie animation is shown for the current step
+        Screen stays active (doesn’t auto-lock during cooking flow)
+        Shared link can be opened and added to current shopping list
+Favorite Recipes - View add remove from recipes
+    Actions
+    
+    Expected

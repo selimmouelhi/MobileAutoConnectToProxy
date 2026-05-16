@@ -1,0 +1,122 @@
+FRA-01 | Default suggested stores displayed without GPS fallback
+    Preconditions
+        User is logged in with a registered delivery address
+        GPS permission not yet requested
+    Actions
+        Navigate to Køb & Hent checkout screen
+        Wait for suggested stores to load
+    Expected
+        Default suggested stores endpoint is called
+        3 suggested stores are displayed
+        Button text shows "Vælg butik"
+        GPS permission is not requested
+    API
+        GET /api/v3/stores/suggested - Returns non-empty list of stores
+
+FRA-02 | GPS fallback triggered when default suggestions are empty
+    Preconditions
+        User is logged in
+        Default suggested stores endpoint returns empty list
+        GPS permission not yet granted
+    Actions
+        Navigate to Køb & Hent checkout screen
+        Wait for default stores API response
+        Grant GPS permission when prompted
+        Wait for location to be acquired
+    Expected
+        GPS permission dialog is displayed
+        Loading indicator shows while acquiring location
+        Nearby stores endpoint is called with latitude and longitude coordinates
+        3 GPS-based suggested stores are displayed
+        Button text shows "Vælg butik"
+    API
+        GET /api/v3/stores/suggested - Returns empty list
+        GET /api/v3/stores?filter[near_coordinates]=<latitude>,<longitude>&filter[is_click_and_collect_active]=true&per_page=3 - Returns stores near user location
+
+FRA-03 | GPS permission denied by user
+    Preconditions
+        User is logged in
+        Default suggested stores endpoint returns empty list
+        GPS permission not yet granted
+    Actions
+        Navigate to Køb & Hent checkout screen
+        Wait for GPS permission dialog
+        Deny GPS permission
+    Expected
+        GPS permission dialog is displayed
+        Empty state is shown after permission denial
+        Message indicates no stores available or manual selection needed
+        Button text shows "Vælg en anden butik"
+        No GPS-based stores API call is made
+    API
+        GET /api/v3/stores/suggested - Returns empty list
+
+FRA-04 | GPS timeout handling after 3 seconds
+    Preconditions
+        User is logged in
+        Default suggested stores endpoint returns empty list
+        GPS permission is granted
+        GPS location acquisition takes longer than 3 seconds
+    Actions
+        Navigate to Køb & Hent checkout screen
+        Grant GPS permission if prompted
+        Wait for 3 second timeout to elapse
+    Expected
+        Loading indicator shows for up to 3 seconds
+        After timeout, empty state is displayed
+        Button text shows "Vælg en anden butik"
+        User can manually select store from full list
+    API
+        GET /api/v3/stores/suggested - Returns empty list
+
+FRA-05 | GPS disabled on device
+    Preconditions
+        User is logged in
+        Default suggested stores endpoint returns empty list
+        GPS permission is granted but GPS is disabled in device settings
+    Actions
+        Navigate to Køb & Hent checkout screen
+        Wait for GPS acquisition attempt
+    Expected
+        Empty state is displayed
+        Message indicates location services unavailable
+        Button text shows "Vælg en anden butik"
+        User can proceed to manual store selection
+    API
+        GET /api/v3/stores/suggested - Returns empty list
+
+FRA-06 | No stores found even with GPS coordinates
+    Preconditions
+        User is logged in in a remote area with no nearby stores
+        Default suggested stores endpoint returns empty list
+        GPS permission is granted and location is available
+    Actions
+        Navigate to Køb & Hent checkout screen
+        Grant GPS permission if prompted
+        Wait for GPS-based stores API response
+    Expected
+        GPS permission is granted successfully
+        Nearby stores endpoint is called with valid coordinates
+        Empty state is displayed with no stores available message
+        Button text shows "Vælg en anden butik"
+    API
+        GET /api/v3/stores/suggested - Returns empty list
+        GET /api/v3/stores?filter[near_coordinates]=<latitude>,<longitude>&filter[is_click_and_collect_active]=true&per_page=3 - Returns empty list
+
+FRA-07 | GPS permission already granted from previous session
+    Preconditions
+        User is logged in
+        GPS permission was granted in a previous session
+        Default suggested stores endpoint returns empty list
+    Actions
+        Navigate to Køb & Hent checkout screen
+        Wait for GPS location acquisition
+    Expected
+        GPS permission dialog is not shown
+        Location is acquired automatically
+        Nearby stores endpoint is called with coordinates
+        3 GPS-based suggested stores are displayed
+        Button text shows "Vælg butik"
+    API
+        GET /api/v3/stores/suggested - Returns empty list
+        GET /api/v3/stores?filter[near_coordinates]=<latitude>,<longitude>&filter[is_click_and_collect_active]=true&per_page=3 - Returns stores near user location

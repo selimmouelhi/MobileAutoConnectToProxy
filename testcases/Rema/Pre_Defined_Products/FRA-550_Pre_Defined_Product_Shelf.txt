@@ -1,0 +1,209 @@
+Pre-defined Product Shelf - FRA-550
+
+PREDEF-01 | Verify pre-defined product shelf displays on front page [P0]
+    Preconditions
+        User is on the front page (home screen)
+        Content editors have configured a pre-defined product shelf in Contentful
+    Actions
+        Scroll through the front page modules
+        Locate the pre-defined product shelf module
+    Expected
+        The pre-defined product shelf is displayed on the front page
+        The shelf uses the same carousel UI as popular products
+        The shelf title from Contentful is displayed above the carousel
+        Products are shown in a horizontal scrollable carousel with image, name, and price
+        "Se alle" button is visible
+PREDEF-02 | Verify pre-defined product shelf displays on pre-search screen [P0]
+    Preconditions
+        User is on the search screen before entering any search query
+        Content editors have configured a pre-defined product shelf in Contentful
+    Actions
+        Tap the search bar to enter pre-search view
+        Scroll to locate the pre-defined product shelf
+    Expected
+        The pre-defined product shelf is displayed on the pre-search screen
+        Same products, title, and layout as on the front page
+        "Se alle" button is visible
+PREDEF-03 | Verify "Se alle" opens product list page [P0]
+    Preconditions
+        User is on front page or pre-search
+        Pre-defined product shelf is visible
+    Actions
+        Tap the "Se alle" button on the pre-defined product shelf
+    Expected
+        Product list page opens
+        All products from the shelf are displayed
+        Page title matches the shelf title from Contentful
+        User can scroll through the full product list
+PREDEF-04 | Verify back navigation from "Se alle" page [P1]
+    Preconditions
+        User has opened the "Se alle" page from the pre-defined product shelf
+    Actions
+        Tap the back button
+    Expected
+        User returns to the previous screen (front page or pre-search)
+        The pre-defined product shelf is still visible
+        Shelf content and scroll position are preserved
+PREDEF-05 | Verify tapping a product in the carousel opens product details [P0]
+    Preconditions
+        Pre-defined product shelf is visible on front page or pre-search
+    Actions
+        Tap on a product card in the pre-defined product shelf carousel
+    Expected
+        Product details screen opens for the selected product
+        Product information (name, price, image) is displayed
+PREDEF-06 | Verify back navigation from product details to shelf [P1]
+    Preconditions
+        User has tapped a product in the pre-defined shelf and is on the product details screen
+    Actions
+        Tap the back button
+    Expected
+        User returns to the previous screen (front page or pre-search)
+        The pre-defined product shelf is still visible
+        Carousel scroll position is preserved
+PREDEF-07 | Verify adding product to shopping list from carousel uses correct source [P0]
+    Preconditions
+        User is logged in with an active shopping list
+        Pre-defined product shelf carousel is visible
+    Actions
+        Tap the add button on a product in the pre-defined shelf carousel
+    Expected
+        Product is added to the shopping list
+        Shopping list source is "android_predefined_products" (Android) or "ios_predefined_products" (iOS)
+        Add button shows success feedback (checkmark or quantity)
+    API
+        POST /api/v3/shopping-list/items - Includes source field with platform-specific value
+PREDEF-08 | Verify adding product to shopping list from "Se alle" page uses correct source [P0]
+    Preconditions
+        User is logged in with an active shopping list
+        User has opened the "Se alle" page from pre-defined product shelf
+    Actions
+        Tap the add button on a product in the list
+    Expected
+        Product is added to the shopping list
+        Shopping list source is "android_predefined_products" (Android) or "ios_predefined_products" (iOS)
+        Add button shows success feedback
+    API
+        POST /api/v3/shopping-list/items - Includes source field with platform-specific value
+PREDEF-09 | Verify adding a product already in shopping list increments quantity [P1]
+    Preconditions
+        User is logged in with an active shopping list
+        A product from the pre-defined shelf is already in the shopping list
+    Actions
+        Tap the add button on the same product in the carousel
+    Expected
+        Product quantity increments in the shopping list
+        Shopping list source remains "android_predefined_products" (Android) or "ios_predefined_products" (iOS)
+        Quantity indicator updates on the product card
+    API
+        POST /api/v3/shopping-list/items - Includes source field with platform-specific value
+PREDEF-10 | Verify all users see the same products (not personalized) [P1]
+    Preconditions
+        Two different user accounts exist (User A and User B)
+        Both users have different shopping history and preferences
+    Actions
+        Log in as User A and note the products in the pre-defined shelf
+        Log out and log in as User B
+        Navigate to front page and observe the pre-defined shelf
+    Expected
+        Both users see the exact same products in the same order
+        No personalization is applied based on user behavior or history
+PREDEF-11 | Verify product list reloads hourly when modules page is reloaded [P1]
+    Preconditions
+        User has loaded the front page with the pre-defined product shelf
+        At least 1 hour has passed since the initial load
+    Actions
+        Pull to refresh on the front page
+        Observe the pre-defined product shelf
+    Expected
+        Modules data is re-fetched from Contentful
+        If content editors changed products, updated list is displayed
+        Shelf title updates if changed in Contentful
+PREDEF-12 | Verify no reload within 1-hour window [P2]
+    Preconditions
+        User has loaded the front page with the pre-defined product shelf
+        Less than 1 hour has passed since the initial load
+    Actions
+        Pull to refresh on the front page
+    Expected
+        Cached product data is displayed
+        No new fetch is triggered for the pre-defined shelf module
+        Shelf content remains the same as initial load
+PREDEF-13 | Verify shelf disappears when entering a search query from pre-search [P1]
+    Preconditions
+        User is on pre-search screen
+        Pre-defined product shelf is visible
+    Actions
+        Tap the search bar and enter a search query
+        Observe the screen as search results load
+    Expected
+        The pre-defined product shelf disappears when search results are shown
+        Search results are displayed normally
+        Shelf reappears when clearing the search and returning to pre-search
+PREDEF-14 | Verify carousel scrolling behavior [P1]
+    Preconditions
+        Pre-defined product shelf is visible with multiple products
+    Actions
+        Swipe left on the carousel to scroll through products
+        Swipe right to scroll back
+    Expected
+        Carousel scrolls smoothly in both directions
+        Partial view of the next product is visible to indicate scrollability
+        Scrolling behavior matches the popular products carousel
+PREDEF-15 | Verify shelf displays correctly with single product [P2]
+    Preconditions
+        Content editors have configured a pre-defined shelf with exactly 1 product
+    Actions
+        Navigate to front page
+        Observe the pre-defined product shelf
+    Expected
+        Shelf is displayed with the single product
+        "Se alle" button is still visible
+        No horizontal scrolling since there is only one item
+PREDEF-16 | Verify Contentful module format includes all required fields [P1]
+    Preconditions
+        A pre-defined product shelf module exists in Contentful
+    Actions
+        Load the front page and inspect the modules API response
+    Expected
+        Module contains "id" with unique identifier
+        Module contains "type" with expected value
+        "fields" object contains "title" string and "products" array
+        "products" array contains v3 product objects
+        Module contains "updated_at" and "created_at" timestamps
+PREDEF-17 | Verify shelf title matches Contentful configuration [P1]
+    Preconditions
+        Content editors have set a specific title for the shelf in Contentful
+    Actions
+        Navigate to front page and observe the shelf title
+        Tap "Se alle" and observe the page title
+    Expected
+        Shelf title on front page matches exactly the Contentful title
+        "Se alle" page title also matches the Contentful title
+PREDEF-18 | Verify no loading state is shown [P2]
+    Preconditions
+        App is freshly launched
+    Actions
+        Navigate to front page
+        Observe the pre-defined product shelf area during page load
+    Expected
+        No skeleton loader, spinner, or placeholder is shown for the shelf
+        The shelf appears with products or is not rendered at all
+PREDEF-19 | Verify no pre-loading occurs [P2]
+    Preconditions
+        App is freshly launched
+    Actions
+        Monitor network requests during app startup
+        Navigate to front page
+    Expected
+        Pre-defined products module is not fetched during app startup
+        Data is fetched only when front page or pre-search is accessed
+PREDEF-20 | Verify shelf handles invalid product data gracefully [P2]
+    Preconditions
+        Contentful returns a pre-defined shelf module with malformed product objects
+    Actions
+        Load the front page
+    Expected
+        The shelf is not rendered if products are invalid
+        No app crash occurs
+        Other modules on the page load normally

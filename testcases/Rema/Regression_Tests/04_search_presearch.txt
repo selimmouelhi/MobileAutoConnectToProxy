@@ -1,0 +1,59 @@
+Pre search Module
+    Modules load on cold app start
+        Actions
+            Open search screen as logged out user
+            Open search screen as logged in user
+        Expected
+            Popular products & Infobox is shown when loggedo ut
+            Popular products ,Recommended products, info box, consent or products for you is shown if paplied
+    Popular products” module is visible
+        Actions
+            Open search screen
+        Expected
+            Popular prodcuts are loaded in the screen , no loading state
+            Item state is synced between modules
+    Consent is shown if applied
+        Actions
+            Open search
+        Expected
+            For users who didnt accept policy, consent is shwon
+            Consent is not shown for users who accepted it
+            User is able to accept consent to show products for you
+    Products for you” shown only with consent
+        Actions
+            Open search screen
+        Expected
+            Popular products are shown 
+            If empty list, module is hidden
+            User is able to add items to shopping list
+            User is able to remove items from shopping list
+            Items show the same count such as favorites, shopping list and frequently bought if applied
+            Items show correct labels and disclaimers
+            User is able to tap see all to check full list, adding / deleting & favoriting applies
+            User is able to check item detail screen
+            User is able to swipe to get more items in front page, scroll down in see all
+            Items is rendered through pagination, and preloading happens between front page, see all , no loading if data is alrady loaded
+    Recommended Products shown always
+        Actions
+            Open search screen
+            Add to current shopping list
+            Add to current shopping list from recommended products carousel
+        Expected
+            Recommended  products are shown if current shopping list has item
+            If shopping list is empty or no shopping lists, the n module is hidden
+            Upon adding to current shopping list from different sources the recommended list is reloaded
+            List does not update if the user adds from recommended list
+            User is able to add items to shopping list
+            User is able to remove items from shopping list
+            Items show the same count such as favorites, shopping list and frequently bought if applied
+            Items show correct labels and disclaimers
+            User is able to tap see all to check full list, adding / deleting & favoriting applies
+            User is able to check item detail screen
+            User is able to swipe to get more items in front page, scroll down in see all
+            Items is rendered through pagination, and preloading happens between front page, see all , no loading if data is alrady loaded
+Search Module
+    Search works during pre-search loading
+    Typing shows real-time search results
+    Add item from search result
+    Search works if module API fails
+    Item labels & disclaimers work as expected

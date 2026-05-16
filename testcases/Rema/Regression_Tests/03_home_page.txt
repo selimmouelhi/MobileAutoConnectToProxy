@@ -1,0 +1,103 @@
+App loads front page and renders all modules
+    Actions
+        Fresh install the app
+        Open app as logged out user 
+        Observe the front page 
+        Log in
+        Observe the front page 
+    Expected
+        App launches to front page
+        Content loads correctly from backend
+        A new shopping list is created and selected ( 0 items) for logged out users
+        Entity modules (shopping list, order status, favorites, aviser, info box, popular products, inspirational shelft, consent) appear in correct order
+        Logged in users might see different modules ( for example become vigo ) 
+        Each module loads independently — no blocking if one fails
+        If an API fails, that module is hidden or shows fallback state ( try with network error)
+        Entities are ordered exactly as returned from the backend ( Test with 2 phones together)
+        User is able to pull to refresh to call entities front page modules
+Shopping list module diplays items
+    Expected
+        Shopping list is shown
+        Correct list is selected
+        Items are listed or empty state is visible
+Favorites module display items
+    Preconditions
+        User is logged in
+    Expected
+        Favorites carousel appears
+        Items have heart and correct number of occurnces
+        User is able to add / remove items
+        User is able to unheart items
+        User is able to see all favorites from icon or all items in the carousel
+        User is able to search in all favorites list
+Aviser module displays items
+    Actions
+        Tap on a magazine 
+        Browse items in the list
+        Tap on item
+        Tap on all items
+        Tap on avisvarer
+    Expected
+        Aviser carousel is shown
+        User is able to browse all items , and swipe between pages
+        User can see current magazines ,and upcoming with disabled items
+        User is able to add items to shopping list / mark them as favorite
+        User is able to see full list view of avisvarer with all items ,and search as well
+Info box is displayed with correct variant
+    Expected
+        Info box is visible (neutral, warning, or critical)
+        User is able to dismiss neutral or warning
+Popular products
+    Actions
+        As logged out users open front page
+        As logged in user open front page
+        OPen search from global search or inside shopping list detail page
+    Expected
+        Popular products are shown 
+        If empty, empty state is shown
+        User is able to add items to shopping list
+        User is able to remove items from shopping list
+        User is able to favorite items ( if logged out - user has to login )
+        Items show the same count such as favorites, shopping list and frequently bought if applied
+        Items show correct labels and disclaimers
+        User is able to tap see all to check full list, adding / deleting & favoriting applies
+        User is able to swipe to get more items in front page, scroll down in see all
+        Items is rendered through pagination, and preloading happens between front page, see all , no loading if data is alrady loaded
+Inspirational products
+    Actions
+        As logged in user open front page
+        OPen search from global search or inside shopping list detail page
+    Expected
+        Inspirational products are shown if consent is accepted
+        Inspirational products are hidden if consent is not accepted/revoked
+        If empty, module is hidden
+        User is able to add items to shopping list
+        User is able to remove items from shopping list
+        Items show the same count such as favorites, shopping list and frequently bought if applied
+        Items show correct labels and disclaimers
+        User is able to tap see all to check full list, adding / deleting & favoriting applies
+        User is able to swipe to get more items in front page, scroll down in see all
+        User is able to delete recommendations
+        Items is rendered through pagination, and preloading happens between front page, see all , no loading if data is alrady loaded
+Consent Module
+    Consent UI rendring
+        Actions
+            Open front page
+            Scroll to check the consent infobox
+        Expected
+            Consent is shown if the it comes from the backend
+            Consent info box is shown if the user did not accept the consent
+            Consent info box is hidden if the consent is accepted
+    Consent Action
+        Actions
+            Tap to accept consent
+            Revoke consent from vilkår
+        Expected
+            Upon accepting the consent, the infobox is hidden and frequently bought module shows in search
+            Upon revoking the consent, the infobox is shown again in front page, and frequently bought module is hidden
+Order card is shown
+    Expected
+        Order card appears with correct state and content
+        Oder card update the state syncing from the backend
+        User can rate the user from the order card
+        K&H orders go through 3 steps ( only possible to see first and last)

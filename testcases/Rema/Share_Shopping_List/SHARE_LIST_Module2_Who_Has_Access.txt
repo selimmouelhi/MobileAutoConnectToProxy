@@ -1,0 +1,377 @@
+Share Shopping List - Module 2: Who Has Access
+
+WHO_ACCESS-01 | Who has access section displays correct title [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section in the share sheet
+        Verify the section title text
+    Expected
+        The section displays a title matching localization key app_share_list.access_section_title
+        The title is clearly visible and not truncated
+        No raw localization key string is displayed
+    API
+        N/A
+WHO_ACCESS-02 | Who has access section shows correct subtitle when list is not shared [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list that is not shared with anyone
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section in the share sheet
+        Verify the subtitle text
+    Expected
+        The subtitle displays text matching localization key app_share_list.access_section_subtitle_not_shared
+        The subtitle is constrained to max 1 line
+        Only the current user's avatar is shown in the section
+    API
+        N/A
+WHO_ACCESS-03 | Who has access section shows correct subtitle when shared with one person [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with exactly one other person
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section in the share sheet
+        Verify the subtitle text
+    Expected
+        The subtitle displays "Dig og <shared person's full name>" matching localization key app_share_list.access_section_subtitle_shared_with_one
+        The shared person's name is correctly inserted into the string
+        The subtitle is constrained to max 1 line
+    API
+        N/A
+WHO_ACCESS-04 | Who has access section shows correct subtitle when shared with multiple people [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with two or more other people
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section in the share sheet
+        Verify the subtitle text
+        Note the number displayed
+    Expected
+        The subtitle displays "Dig og <number> andre" matching localization key app_share_list.access_section_subtitle_shared_with_many
+        The number correctly reflects the count of other users with access
+        The subtitle is constrained to max 1 line
+    API
+        N/A
+WHO_ACCESS-05 | Who has access section displays avatars with current user first [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least one other person
+        Share shopping list sheet is presented
+    Actions
+        Observe the avatars in the "Who has access" section
+        Note the order of avatars displayed
+    Expected
+        The current user's avatar is always shown first (leftmost position)
+        Additional user avatars follow the current user
+        Avatar size in this section matches the design specification (larger than shopping list screen avatars)
+    API
+        N/A
+WHO_ACCESS-06 | Tapping who has access section presents the access list [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented
+    Actions
+        Tap anywhere on the "Who has access" section
+        Observe the sheet transition
+    Expected
+        The sheet transitions to display the "Who has access" list view
+        The transition animation is smooth
+        The sheet title updates to match localization key app_share_list.access_list_title
+    API
+        N/A
+WHO_ACCESS-07 | Who has access list shows current user last with "Dig" label [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least one other person
+        Who has access list is displayed
+    Actions
+        Scroll to the bottom of the access list if needed
+        Locate the current user's entry in the list
+        Verify the label next to the current user's name
+    Expected
+        The current user is shown as the last item in the list
+        The label "Dig" (matching localization key app_share_list.access_list_you) is displayed to the right of the current user's name
+        The current user's avatar and name are displayed correctly
+    API
+        N/A
+WHO_ACCESS-08 | Who has access list sorts other users alphabetically by name [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least two other people
+        Who has access list is displayed
+    Actions
+        Observe the order of users in the list (excluding the current user)
+        Compare the order to alphabetical sorting by name
+    Expected
+        All users except the current user are sorted alphabetically by name
+        The current user remains at the bottom of the list regardless of alphabetical order
+        Sorting is consistent on repeated views
+    API
+        N/A
+WHO_ACCESS-09 | Who has access list user names can span two lines [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with a user who has a long name
+        Who has access list is displayed
+    Actions
+        Locate the user with a long name in the list
+        Observe how the name is displayed
+    Expected
+        Long user names wrap to a second line if needed
+        The name is not truncated or cut off
+        The list item layout adjusts to accommodate two-line names
+        No overlap occurs with other UI elements
+    API
+        N/A
+WHO_ACCESS-10 | Who has access list sheet height adjusts to fit number of users [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented
+    Actions
+        Tap on the "Who has access" section to open the list
+        Observe the sheet height transition
+        Note the final sheet height relative to the number of users
+    Expected
+        The bottom sheet height transitions smoothly when moving to the list view
+        The sheet height adjusts to fit the number of people who have access
+        If many users exist the sheet scrolls rather than exceeding screen bounds
+        The animation is smooth with no stuttering
+    API
+        N/A
+WHO_ACCESS-11 | Back button in access list returns to share sheet main view [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Who has access list is currently displayed
+    Actions
+        Locate the back button in the top left of the sheet
+        Tap the back button
+        Observe the sheet transition
+    Expected
+        The sheet transitions back to the main share shopping list view
+        The "Who has access" section is visible again
+        The transition animation is smooth
+        Sheet title reverts to the main share sheet title
+    API
+        N/A
+WHO_ACCESS-12 | X button in access list dismisses the entire share sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Who has access list is currently displayed
+    Actions
+        Locate the X button in the top right of the sheet
+        Tap the X button
+        Observe the result
+    Expected
+        The entire share shopping list sheet is dismissed
+        User returns to the shopping list screen
+        No intermediate views are shown
+        Dismiss animation plays smoothly
+    API
+        N/A
+WHO_ACCESS-13 | Remove button is displayed for each user with access except current user [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least one other person
+        Who has access list is displayed
+    Actions
+        Observe each user entry in the list
+        Check for the presence of a remove button ("Fjern")
+    Expected
+        Each user except the current user has a "Fjern" button displayed to the right
+        The current user's entry does not have a remove button
+        The remove button text is uppercased as per design specification
+    API
+        N/A
+WHO_ACCESS-14 | Tapping remove button presents withdraw access confirmation sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Who has access list is displayed with at least one other user
+    Actions
+        Locate a user's "Fjern" button
+        Tap the "Fjern" button
+        Observe the result
+    Expected
+        A confirmation sheet is presented on top of the share shopping list sheet
+        The confirmation sheet displays the selected user's avatar (image or initials)
+        The user's name is displayed in the confirmation sheet
+        The confirmation sheet has an action button to confirm withdrawal
+    API
+        N/A
+WHO_ACCESS-15 | Withdraw confirmation sheet displays user avatar with image or initials [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Withdraw access confirmation sheet is displayed
+    Actions
+        Observe the avatar in the confirmation sheet
+    Expected
+        If the user has a profile picture it is displayed in the avatar
+        If the user has no profile picture their initials are displayed
+        The avatar is clearly visible and properly sized
+    API
+        N/A
+WHO_ACCESS-16 | Withdraw confirmation sheet name and subtitle labels support two lines [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Withdraw access confirmation sheet is displayed for a user with a long name
+    Actions
+        Observe the name label in the confirmation sheet
+        Observe the subtitle label in the confirmation sheet
+    Expected
+        The name label can wrap to two lines if the name is long
+        The subtitle label can wrap to two lines if needed
+        No text is truncated or cut off
+        Layout adjusts properly to accommodate multi-line text
+    API
+        N/A
+WHO_ACCESS-17 | Tapping confirm withdrawal shows loading state in button [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Withdraw access confirmation sheet is displayed
+    Actions
+        Tap the action button to confirm withdrawal
+        Observe the button state immediately after tapping
+    Expected
+        The action button displays a loading indicator
+        The button remains visible but shows loading state
+        The request to remove the user is initiated
+    API
+        N/A
+WHO_ACCESS-18 | Confirmation sheet cannot be dismissed during loading [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Withdraw access confirmation sheet is displayed
+        The withdrawal request is in progress (loading state)
+    Actions
+        Attempt to tap outside the confirmation sheet to dismiss it
+        Attempt to tap the X button if present
+        Attempt to swipe down to dismiss
+    Expected
+        The confirmation sheet remains visible and cannot be dismissed
+        All dismiss gestures are blocked during loading
+        The loading state continues until the request completes
+    API
+        N/A
+WHO_ACCESS-19 | Successful withdrawal dismisses confirmation and shows snackbar [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Withdraw access confirmation sheet is displayed
+        Network conditions allow successful API response
+    Actions
+        Tap the action button to confirm withdrawal
+        Wait for the request to complete successfully
+        Observe the result
+    Expected
+        The confirmation sheet is dismissed after successful withdrawal
+        The share shopping list sheet remains open (user stays on who has access list)
+        A snackbar confirmation is displayed indicating the user was removed
+        The removed user no longer appears in the access list
+    API
+        N/A
+WHO_ACCESS-20 | Failed withdrawal shows error alert on confirmation sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Withdraw access confirmation sheet is displayed
+        Network conditions are configured to cause the withdrawal request to fail
+    Actions
+        Tap the action button to confirm withdrawal
+        Wait for the request to fail
+        Observe the result
+    Expected
+        An error alert is presented on top of the confirmation sheet
+        The confirmation sheet remains visible behind the error alert
+        The error alert title displays text matching localization key app_share_list.withdraw_user_error_title (fallback: "Der skete en fejl")
+        The error alert message displays text matching localization key app_share_list.withdraw_user_error_message (fallback: "Personen kunne ikke fjernes fra indkøbslisten. Prøv igen.")
+        The error alert has an action button matching localization key app_share_list.withdraw_user_error_message_dismiss (fallback: "OK")
+    API
+        N/A
+WHO_ACCESS-21 | Dismissing withdrawal error alert returns to confirmation sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Withdrawal error alert is displayed on top of the confirmation sheet
+    Actions
+        Tap the "OK" button on the error alert
+        Observe the result
+    Expected
+        The error alert is dismissed
+        The confirmation sheet is still visible
+        User can tap the action button to retry the withdrawal
+        The confirmation sheet is fully interactive again
+    API
+        N/A
+WHO_ACCESS-22 | Withdrawn user is removed from local database immediately [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has withdrawn access from another user successfully
+        The snackbar confirmation has been displayed
+    Actions
+        Navigate back to the share sheet main view
+        Observe the "Who has access" section
+        Navigate to the shopping list screen
+        Observe the avatar display
+        Navigate to the shopping lists overview if available
+    Expected
+        The withdrawn user no longer appears in the "Who has access" section
+        The withdrawn user's avatar no longer appears on the shopping list screen
+        All views in the app reflect the updated access list without requiring app restart
+        The local database has been updated with the current users from the server
+    API
+        N/A
+WHO_ACCESS-23 | Access list updates correctly after withdrawing a user [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has a shopping list shared with at least two other users
+        Who has access list is displayed
+    Actions
+        Note the current number of users in the list
+        Tap "Fjern" on one of the users
+        Confirm the withdrawal
+        Wait for successful completion
+        Observe the access list
+    Expected
+        The removed user disappears from the access list
+        The remaining users stay in correct alphabetical order
+        The current user remains at the bottom of the list
+        The user count in the section subtitle updates correctly
+        Sheet height adjusts if needed to fit the reduced list
+    API
+        N/A
+WHO_ACCESS-24 | Cannot withdraw access from yourself [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list they own or have access to
+        Who has access list is displayed
+    Actions
+        Locate the current user's entry in the list (last item with "Dig" label)
+        Check for any remove functionality
+    Expected
+        No "Fjern" button is present for the current user
+        There is no way to remove yourself from the access list
+        Only other users have the remove option available
+    API
+        N/A
+WHO_ACCESS-25 | Multiple successive withdrawals work correctly [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has a shopping list shared with at least three other users
+        Who has access list is displayed
+    Actions
+        Withdraw access from the first user
+        Wait for confirmation
+        Withdraw access from another user
+        Wait for confirmation
+        Observe the final state of the access list
+    Expected
+        Each withdrawal completes successfully
+        The access list updates correctly after each withdrawal
+        No duplicate entries or stale data appears
+        The app remains stable throughout multiple withdrawals
+        Snackbar confirmations appear for each successful withdrawal
+    API
+        N/A

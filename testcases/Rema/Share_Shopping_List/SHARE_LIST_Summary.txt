@@ -1,0 +1,134 @@
+Share Shopping List - Test Case Generation Summary
+==================================================
+
+Epic: FRA-734 - New Share Shopping List
+Jira: https://vigotech.atlassian.net/browse/FRA-734
+Release: 6.5 (Share shopping list) - Target: February 16, 2026
+
+COMPLETED MODULES
+-----------------
+
+Module 1: Share Shopping List Sheet
+    File: SHARE_LIST_Module1_Share_Shopping_List_Sheet.txt
+    Test Cases: 21
+    Tickets: FRA-735, FRA-739, FRA-742, FRA-899, FRA-997
+    Coverage:
+        - Avatar display (shared/unshared states, overflow, initials, colors)
+        - Share sheet presentation (via button and avatars)
+        - Sheet UI (title, dismiss button, loading state)
+        - Dismissal (X button and tap outside)
+        - Bottom sheet animations
+        - Data refresh on screen open
+        - Error handling (fetch failure, retry, dismiss)
+
+Module 2: Who Has Access
+    File: SHARE_LIST_Module2_Who_Has_Access.txt
+    Test Cases: 25
+    Tickets: FRA-747, FRA-806, FRA-1020
+    Coverage:
+        - Who has access section (title, subtitle variations, avatars)
+        - Who has access list (sorting, current user last with "Dig" label)
+        - Navigation (back button, X button dismissal)
+        - Sheet height transitions
+        - Withdraw access flow (remove button, confirmation sheet)
+        - Confirmation sheet UI (avatar, name, loading state)
+        - Cannot dismiss during loading
+        - Success flow (snackbar, list update)
+        - Error handling (error alert, retry)
+        - Database sync after withdrawal
+
+Module 3: Share Link
+    File: SHARE_LIST_Module3_Share_Link.txt
+    Test Cases: 25
+    Tickets: FRA-879, FRA-882, FRA-885
+    Coverage:
+        - Share link buttons display (QR code, Share link, Copy link)
+        - Button highlight state (Vigo button style)
+        - Button loading state with circle spinner
+        - Other buttons disabled during loading
+        - Share link flow (fetch link, native share sheet, dismiss on complete)
+        - Copy link flow (fetch link, copy to clipboard, dismiss)
+        - Cancel native share sheet behavior
+        - Error handling (fetch failure, error alert, retry)
+        - Snackbar confirmations (copy link, share link)
+        - Snackbar timing (after sheet dismiss)
+        - Snackbar no-tap behavior
+        - Snackbar visual style consistency
+        - No snackbar on cancel or error
+        - Rapid tap protection
+
+Module 4: QR Code
+    File: SHARE_LIST_Module4_QR_Code.txt
+    Test Cases: 28
+    Tickets: FRA-888
+    Coverage:
+        - QR code button loading state (circle spinner, other buttons disabled)
+        - Link fetch error handling (error alert, dismiss, retry)
+        - QR code screen presentation (fade in animation)
+        - QR code encodes share link URL
+        - Close button with fade out animation
+        - Closing does not dismiss share sheet or show snackbar
+        - Sleep prevention while QR code is displayed
+        - Sleep prevention removed on close
+        - QR code persists until user closes it
+        - Show/hide instructions toggle (button label, animations)
+        - Instructions content (title, subtitle, three bullet points)
+        - QR code resize and reposition animation with instructions
+        - Instructions fade in/out synchronized with QR code animation
+        - QR code scannable in both full and reduced size
+        - Rapid tap protection
+        - Cross-device scanning verification
+
+Module 5: Accept Invitation
+    File: SHARE_LIST_Module5_Accept_Invitation.txt
+    Test Cases: 42
+    Tickets: FRA-779, FRA-904, FRA-907, FRA-1001, FRA-1048
+    Coverage:
+        - Deep link handling (app not running, app in foreground, app in background)
+        - Deep link ignored during cookie consent and when invitation sheet already shown
+        - Invitation sheet loading state (title, close button, Rema spinner)
+        - Invitation content display (sender avatar, list name, body text, accept/decline buttons)
+        - Sender avatar (profile picture and initials fallback)
+        - Dismiss invitation sheet (X button and tap above sheet)
+        - Expired invitation error state (400 API response, localized text, dismiss button)
+        - Network error handling (error alert, cancel to dismiss, try again to retry)
+        - Successive retry failure resilience
+        - Login required flow (login button, create user button, both dismiss sheet and open auth)
+        - Invitation flow resume after login or account creation
+        - Accept flow (loading in button, API call, force sync, dismiss sheet, show shopping list)
+        - Accept error handling (error alert, dismiss and retry)
+        - Decline flow (dismiss sheet, no API call)
+        - Fetch pending invitations on app launch and foreground entry
+        - No duplicate invitation sheets
+        - Multiple pending invitations presented sequentially
+        - Only last accepted invitation's shopping list shown (multiple invitations)
+        - All declined results in no shopping list navigation
+        - Tracking disabled does not block invitation sheet (FRA-1001 bug fix)
+        - Localization fallback verification (invitation, expired, login required states)
+        - Accept button prevents decline interaction and sheet dismissal during loading
+
+REMAINING MODULES
+-----------------
+
+Module 6: Previously Shared With
+    Tickets: FRA-979, FRA-980, FRA-981
+    Requirements:
+        - Show previously shared users section
+        - Max 3 users displayed
+        - Invite previously shared user (confirmation sheet)
+        - Remove previously shared user (swipe to delete)
+        - Error handling for invite/remove
+
+TEST CASE FORMAT
+----------------
+
+- Platform agnostic (iOS and Android combined)
+- Error handling integrated into each module
+- No section headers within files
+- No blank lines between test cases
+- Priority tags: [P0] Critical, [P1] Important
+
+TO RESUME
+---------
+
+Tell Claude: "Continue with Module 6: Previously Shared With for the Share Shopping List test cases"

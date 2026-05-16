@@ -1,0 +1,200 @@
+faq_help_page-01 | FAQ button is visible on all relevant screens [P0]
+    Preconditions
+        User has the app installed with the latest version
+        User is logged into the app
+    Actions
+        Navigate to the main screen
+        Observe the bottom left corner of the screen
+        Navigate to each screen that previously had the FAQ button
+    Expected
+        FAQ button is visible in the bottom left corner on all relevant screens
+        FAQ button appearance is consistent across all screens
+        FAQ button is properly positioned and not overlapping other UI elements
+    API
+        N/A
+
+faq_help_page-02 | FAQ button stays in place when clicked (no animation) [P0]
+    Preconditions
+        User is on any screen with the FAQ button visible
+    Actions
+        Locate the FAQ button in the bottom left corner
+        Tap the FAQ button
+        Observe the button's position during and after the tap
+    Expected
+        FAQ button remains in the bottom left corner when tapped
+        FAQ button shows a highlight or pressed state when tapped
+        FAQ button does NOT animate or move to the top of the screen
+        In-app browser opens after the tap
+    API
+        N/A
+
+faq_help_page-03 | In-app browser opens with correct help page URL [P0]
+    Preconditions
+        User is on any screen with the FAQ button visible
+        Device has internet connectivity
+    Actions
+        Tap the FAQ button
+        Wait for the browser to load
+        Check the URL in the browser address bar
+        Observe the page content
+    Expected
+        In-app browser opens immediately after tapping FAQ button
+        URL displayed is https://madogdrikke.rema1000.dk
+        Help page content loads and is displayed correctly
+        Page content is readable and properly formatted
+    API
+        N/A
+
+faq_help_page-04 | Android device uses Chrome Custom Tabs [P1]
+    Preconditions
+        User is testing on an Android device
+        Chrome browser is installed on the device
+        User is on any screen with the FAQ button visible
+    Actions
+        Tap the FAQ button
+        Observe the browser interface that opens
+        Check for Chrome browser UI elements
+    Expected
+        Chrome Custom Tabs interface opens
+        Chrome browser UI is visible (address bar, menu options)
+        Chrome branding or indicators are present
+        Browser toolbar shows Chrome-specific controls
+    API
+        N/A
+
+faq_help_page-05 | iOS device uses Safari view controller [P1]
+    Preconditions
+        User is testing on an iOS device
+        User is on any screen with the FAQ button visible
+    Actions
+        Tap the FAQ button
+        Observe the browser interface that opens
+        Check for Safari browser UI elements
+    Expected
+        SFSafariViewController interface opens
+        Safari browser UI is visible with address bar
+        "Done" button is visible in the top corner
+        Safari-specific controls and navigation elements are present
+    API
+        N/A
+
+faq_help_page-06 | User can close browser and return to app [P0]
+    Preconditions
+        User has opened the help page via the FAQ button
+        In-app browser is currently displayed
+    Actions
+        Close the browser using the platform-specific close button (Done button on iOS, back button on Android)
+        Observe the screen after closing
+        Verify the app state
+    Expected
+        Browser closes successfully
+        User returns to the original screen where FAQ button was tapped
+        Original screen state is preserved (no data loss or reset)
+        FAQ button remains visible and functional
+    API
+        N/A
+
+faq_help_page-07 | App state preserved after navigating within help page [P1]
+    Preconditions
+        User has opened the help page via the FAQ button
+        In-app browser is currently displayed
+    Actions
+        Navigate to multiple pages within the help site (click internal links)
+        Use browser back/forward buttons within the help site
+        Close the browser
+        Observe the app screen
+    Expected
+        User can navigate freely within the help site
+        Browser navigation works correctly (back/forward buttons)
+        After closing browser, user returns to original app screen
+        Original app screen state is preserved completely
+    API
+        N/A
+
+faq_help_page-08 | FAQ button opens same URL from multiple screens [P1]
+    Preconditions
+        User is logged into the app
+        User has access to multiple screens with FAQ button
+    Actions
+        Open FAQ from the first screen with FAQ button
+        Note the URL that loads
+        Close the browser
+        Navigate to a different screen with FAQ button
+        Open FAQ from the second screen
+        Note the URL that loads
+        Repeat for at least 3 different screens
+    Expected
+        Same URL (https://madogdrikke.rema1000.dk) opens from all screens
+        Help page content is identical regardless of which screen FAQ was opened from
+        No screen-specific variations in the opened URL
+        Browser behavior is consistent across all screens
+    API
+        N/A
+
+faq_help_page-09 | FAQ button position consistent across screens [P2]
+    Preconditions
+        User is logged into the app
+        User has access to multiple screens with FAQ button
+    Actions
+        Navigate to the first screen with FAQ button
+        Note the exact position of FAQ button (bottom left corner)
+        Navigate to the second screen with FAQ button
+        Note the exact position of FAQ button
+        Repeat for all screens with FAQ button
+    Expected
+        FAQ button is in the bottom left corner on all screens
+        Button position relative to screen edges is consistent
+        Button size and appearance are identical across screens
+        Button does not overlap with other UI elements on any screen
+    API
+        N/A
+
+faq_help_page-10 | FAQ button tap responsiveness [P2]
+    Preconditions
+        User is on any screen with the FAQ button visible
+    Actions
+        Tap the FAQ button quickly
+        Observe the response time
+        Close the browser
+        Tap the FAQ button again
+        Measure the time from tap to browser opening
+    Expected
+        FAQ button responds immediately to tap (< 1 second)
+        Visual feedback (highlight/pressed state) is immediate
+        Browser opens within 1-2 seconds of tap
+        No delay or lag in button responsiveness
+    API
+        N/A
+
+faq_help_page-11 | FAQ functionality works without internet connection [P2]
+    Preconditions
+        User is on any screen with the FAQ button visible
+        Device internet connection is disabled
+    Actions
+        Disable internet connection on the device
+        Tap the FAQ button
+        Observe the behavior
+    Expected
+        FAQ button remains visible and tappable
+        Browser attempts to open
+        Appropriate error message is displayed indicating no internet connection
+        Error message is user-friendly and clear
+        App does not crash or become unresponsive
+    API
+        N/A
+
+faq_help_page-12 | FAQ button visual highlight state [P2]
+    Preconditions
+        User is on any screen with the FAQ button visible
+    Actions
+        Press and hold the FAQ button briefly
+        Observe the button's visual state during the press
+        Release the button
+        Observe the button's visual state after release
+    Expected
+        Button shows clear visual feedback when pressed (highlight, color change, or opacity change)
+        Pressed state is visible and distinct from unpressed state
+        Button returns to normal state after release
+        Visual feedback is consistent with app's design language
+    API
+        N/A

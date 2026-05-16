@@ -1,0 +1,36 @@
+Available & Current Jobs [TO TEST ON PREPROD] 
+    Preconditions
+        --user is of delivery type
+    Actions
+        Go to settings page 
+        Accept permission if prompted
+        Go back to settings
+        Observe the screen
+        Open vigo side 
+        Check ledige opgaver
+    Expected
+        Available jobs load correctly and are filtered by store + distance
+        "Hurtigst muligt" orders are marked with yellow line
+        Standard jobs are shown without indicators
+        Jobs grouped by day
+        User is able to see different labels and distance for the job
+        Current and past jobs are visible
+        Tapping a job opens full details (address, time, store, comment, map) + rating if the user has not rated
+        Job’s shopping list is visible
+Pick a Køb & Hent job [TO TEST ON PREPROD]  
+    Preconditions
+        --Login with butik type shop
+    Actions
+        Accept a K&H job ( job of this type will only show in mine opgaver)
+        View the shopping list
+        Start the job
+        Swipe items or use ScanSelv to mark as bought 
+        Mark any sold-out items and select alternative
+        Scan receipt
+        Confirm that shopping is done
+    Expected
+        Job flow works from start to finish
+        Order status for the shopper account  is updated accordingly to the delivery status
+        Items are updated correctly via swipe or scanner
+        Sold-out handling works
+        Job is marked completed

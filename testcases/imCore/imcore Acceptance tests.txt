@@ -1,0 +1,545 @@
+TC01 - Install app from fresh install
+    Actions
+        Download the app from distribution channel
+        Launch the app from the device home screen
+        Verify first-run state
+    Expected
+        Install completes successfully
+        "Open" button appears (or app is visible on home screen/app drawer)
+        App launches without crash
+        Splash screen appears
+        User lands on the Login screen
+        User is logged out
+        No prior user session is present
+TC02 - Unable to install app on devices below the minimum supported OS version
+    Actions
+        Attempt to install the app (if Install button is visible)
+    Expected
+        No compatibility or OS-related error is shown
+        Installation is blocked
+TC03 - App update on existing installation as a logged-in user
+    Actions
+        Locate the available update for the app's distribution channel
+        Tap "Update"
+        Launch the app from the device home screen
+        Verify user session and data
+        Verify app permissions after update
+    Expected
+        App is listed with an Update option (not Install)
+        Update downloads and installs successfully
+        Installation occurs over the existing app without uninstalling or clearing data
+        App launches without errors
+        User is not prompted to log in again
+        User remains logged in
+        App opens on the News feed
+        User-specific content is loaded correctly
+        Previously granted permissions remain enabled
+        App does not re-request already granted permissions
+        App features relying on those permissions function correctly
+TC04 - Request a magic link email
+    Actions
+        Launch the app from the device home screen
+        Verify first login screen
+        Enter a valid email address
+        Tap "Continue" button
+        Verify second login screen
+        Tap "Send magic link"
+    Expected
+        App opens successfully and login screen is shown
+        Email field is visible
+        "Continue" button is present and disabled by default
+        Email is accepted with no validation error
+        App navigates to login page with password field
+        Option to login with Magic link is present and enabled by default
+        Password field is visible with access to "Forgot password?"
+        "Login" with password button is present and disabled by default
+        The "Send Magic Link" button shows a loading spinner
+        Toast is shown to the user when tapping on send magic link
+        The loading spinner disappears once the request completes
+        A confirmation message is displayed "We emailed a magic link to [email address]"
+        Magic link email is sent successfully
+        APp calls  https://api-staging.imcore.roche.com/api/v1/sign_in/by_email 
+TC05 - Log in using a valid email and password
+    Actions
+        Launch the app from the device home screen
+        Verify first login screen
+        Enter a valid email address
+        Tap "Continue" button
+        Verify second login screen
+        Enter a valid password
+        Tap "Log in"
+    Expected
+        App opens successfully and login screen is shown
+        Email field is visible
+        "Continue" button is present and disabled by default
+        Email is accepted with no validation error
+        App navigates to login page with password field
+        Option to login with Magic link is present and enabled by default
+        Password field is visible with access to "Forgot password?"
+        "Login" with password button is present and disabled by default
+        Password is masked and accepted
+        Loading indicator is shown
+        Login request is sent successfully
+        User is logged in
+        App navigates to the News feed
+        User-specific content is loaded correctly
+TC06 - Log in using a valid verification code sent via email
+    Actions
+        Open the received email on the same device
+        Copy the 6 digit code to the clipboard
+        Return to the app
+        Enter fewer than 6 digits into the code field
+        Enter or paste a valid 6-digit verification code
+        Tap "Confirm and Continue"
+    Expected
+        Email arrives and contains a magic link and a 6 digit code
+        Code is added to the clipboard on the device
+        Magic link confirmation screen is displayed
+        Code input field is visible
+        Submit button is disabled by default
+        Code input is accepted
+        Submit button remains disabled with fewer than 6 digits
+        Submit button becomes enabled with 6 digits
+        6 digit code is accepted with no validation error
+        Submit button shows a loading spinner and is disabled while validating
+        Verification request is processed successfully
+        User is logged in
+        App navigates to the News feed
+        User-specific content is loaded correctly
+TC07 - Log in using a magic link sent via email
+    Actions
+        Open the received email on the same device
+        Tap the magic link
+    Expected
+        Email arrives and contains a magic link and a 6 digit code
+        App opens automatically
+        Link is validated successfully
+        Link expires after 5 minutes and can only be used once
+        User is logged in
+        App navigates to the News feed
+        User-specific content is loaded correctly
+TC08 - Log in with username and password via SAML (Roche Single-Sign On)
+    Actions
+        Launch the app from the device home screen
+        Verify first login screen
+        Enter a valid @roche.com email
+        Tap "Sign in with SAML" button
+        Authenticate with the SSO provider with username and password
+        Grant required permissions/consent (if prompted)
+        Return to the app
+    Expected
+        App opens successfully and login screen is shown
+        Email field is visible
+        "Continue" button is present and disabled by default
+        Email is accepted with no validation error
+        Continue button changes to "Sign in with SAML"
+        User is redirected to the SAML authentication screen
+        Correct provider branding is displayed
+        User enters valid SSO credentials or selects an existing account
+        Provider authentication completes successfully and user is navigated back to the app
+        User can review and accept permissions
+        Consent is accepted successfully
+        App opens automatically after successful SSO authentication
+        No error is displayed
+        User is logged in
+        App navigates to the News feed
+        User-specific content is loaded correctly
+TC09 - Successfully reset password and log in with the new password
+    Actions
+        Launch the app from the device home screen
+        Verify first login screen
+        Enter a valid email address
+        Tap "Continue" button
+        Verify second login screen
+        Tap "Forgot Password"
+        Verify the pre-filled email
+        Tap "Send reset link"
+        Open the password reset email on the same device
+        Tap the reset password link
+        Enter a new password with fewer than 8 characters, confirm it and tap "Submit"
+        Enter a new password with mismatched confirmation and tap "Submit"
+        Enter a valid new password (minimum 8 characters), confirm it and tap "Submit"
+        Attempt log in using the old password
+        Log in using the new password
+    Expected
+        App opens successfully and login screen is shown
+        Email field is visible
+        "Continue" button is present and disabled by default
+        Email is accepted with no validation error
+        App navigates to login page with password field
+        Option to login with Magic link is present and enabled by default
+        Password field is visible with access to "Forgot password?"
+        "Login" with password button is present and disabled by default
+        Password reset screen is displayed with email input field
+        Email matches the value entered previously
+        Email field is editable
+        Button shows a loading spinner while submitting
+        Confirmation message is displayed "We've sent instructions to [email address]"
+        Password reset email is sent successfully
+        Email arrives and contains a reset password link
+        Reset password link expires after 5 minutes
+        Reset link opens the browser
+        "Create new password" screen is displayed
+        No validation errors are shown
+        Password is updated successfully
+        Old password is no longer valid
+        Invalid email or password error is displayed
+        User is logged in with new password
+TC10 - Verify navigation using dynamically loaded navigation items
+    Actions
+        Launch the app from the device home screen
+        Verify the navigation items request is made on app open from force quit
+        Verify only the first 4 items are rendered in the navigation UI
+        Tap each of the 4 navigation items
+    Expected
+        App opens successfully and News feed is shown
+        App makes a network request to GET api/v1/navigation_items
+        Response contains a list of navigation items (ideally more than 4 for validation)
+        Navigation displays exactly 4 items
+        These items match the first 4 items in the response
+        Any items after the 4th are not shown in navigation
+        Each item navigates to the correct destination screen/feed
+        Destination loads successfully without errors
+TC11 - Navigation loads dynamically from backend
+    Actions
+        Mock navigations to return different navigation items
+        Open the app
+    Expected
+        News feed is mandatory so the app returns error
+        
+TC11 - Browse News feed and load additional posts on scroll
+    Actions
+        Navigate to the News Feed screen
+        Verify initial feed load
+        Scroll down through the feed towards the bottom
+        Reach the bottom of the currently loaded list
+        Verify additional posts are appended
+        Repeat pagination at least one more time (scroll to bottom again)
+    Expected
+        Feed loads successfully and posts are displayed
+        A list of posts is displayed (titles, images, timestamps)
+        No empty state is shown
+        No error banners are shown
+        Scrolling is smooth
+        Existing posts remain visible and stable
+        A loading spinner is displayed at the bottom
+        The app requests the next page of posts
+        New posts appear appended below the existing ones
+        Previously loaded posts remain in place
+        No duplicate posts appear
+        The post order remains correct (newest-to-oldest)
+        Each time the bottom is reached, the next page loads and appends correctly
+TC12 - Browse Directory feed with default style
+    Actions
+        Navigate to a Directory feed
+        Verify lead site-based grouping
+        Verify project list
+        Scroll through the project directory feed
+    Expected
+        The directory feed loads successfully
+        Projects are grouped under Lead site name
+        Site headers are visible and readable
+        Each project displays a title
+        Each project displays an image
+        Layout is consistent across projects
+        Scrolling is smooth
+        All site groups and projects load correctly
+        No visual glitches or overlapping elements
+TC13 - View Directory Details with carousel style
+    Actions
+        Select "Site Directory" from the More menu
+        Verify Site Directory feed loads successfully
+        Verify regional grouping
+        Verify site card content
+        Scroll through the Site Directory feed
+        Select a site (if applicable)
+        Navigate back to the More menu or previous screen
+    Expected
+        App navigates to the Site Directory screen
+        Screen title is displayed correctly
+        List of sites is displayed
+        No empty or error state is shown
+        Sites are grouped under clear region headers (e.g., Asia, Europe)
+        Region headers are displayed in the correct order
+        Each site displays an image or placeholder
+        Site name is visible
+        Site location (city/country) is displayed
+        Scrolling is smooth
+        All regions and sites load correctly
+        No visual glitches or overlapping content
+        App navigates to the Site Details screen
+        Correct site information is displayed
+        Navigation works correctly
+        User can return to the Site Directory or More menu without issues
+TC14 - View Post Details from News feed
+    Actions
+        Navigate to the News Feed screen
+        Select a post from the feed
+        Verify header media renders correctly
+        Verify post metadata
+        Verify body content
+        Verify attachments section
+        View a PDF attachment
+    Expected
+        Feed loads successfully and posts are displayed
+        App navigates to the post details screen
+        If the post has an image header, the image loads and displays correctly
+        If the post has a video header, a video player/thumbnail is shown and can be played
+        If the post does not have any media, a placeholder is shown
+        Post title is displayed
+        Timestamp is visible and correctly formatted (3 months ago, 1 year ago, etc)
+        Body text is displayed and readable
+        User can scroll through the content smoothly
+        No missing/overlapping text
+        PDF attachments are listed with filename at the bottom of the page
+        PDF opens successfully (in-app viewer or system viewer)
+        Calendar attachements can be opened
+        User can scroll/zoom the PDF
+        User can return back to the post details screen
+TC15 - Share Post using native share sheet
+    Actions
+        Tap the Share icon from the title bar
+        Select a share target from the native share sheet
+        Complete or cancel the share action
+    Expected
+        The device's native share sheet is displayed
+        Available share options are shown according to the device and installed apps
+        Selected share target opens successfully
+        Post information (e.g., link, title, preview) is passed correctly
+        If completed: share action is executed successfully
+        Article is opened upon tapping hte link 
+        If cancelled: user is returned to the post details screen without error
+TC16 - Like / unlike post from News feed
+    Actions
+        Navigate to the News Feed screen
+        Locate an article with a heart icon and like counter
+        Tap the heart icon to like the article
+        Tap on the article from the feed
+        Verify that the article is liked
+        Return back to news feed
+        Tap the heart icon again to unlike the article
+        Tap on the article from the feed
+        Verify that the article is unliked
+    Expected
+        Feed loads successfully and articles are displayed
+        Heart icon is visible
+        Like counter displays the current total number of likes
+        Heart icon becomes filled
+        Like counter increments by +1
+        Article is marked as liked by the user
+        App navigates to the article details screen
+        Heart icon is visible and filled on the details screen
+        Article is still marked as liked after returning to feed
+        Heart icon returns to the unfilled state
+        Like counter decrements by 1
+        Article is no longer marked as liked by the user
+        Heart icon is visible and unfilled on the details screen
+TC17 - View Directory Details
+    Actions
+        Navigate to the Project Directory feed
+        Select a project from the feed
+        Verify project header information
+        Verify project details
+    Expected
+        Project Directory feed loads successfully with projects
+        App navigates to the Project Details screen
+        Project title is displayed correctly
+        Project image is displayed correctly
+        Project is associated with the correct site (if shown)
+        Project description and related information are displayed
+        Content is readable and laid out correctly
+        User can scroll through the project details
+TC18 - View Member Details From Member Directory
+    Actions
+        Navigate to the Member Directory feed
+        Select a member from the list
+        Verify member name
+        Verify member email
+        Verify member role
+        Verify member institution
+        Verify overall layout and readability
+        Navigate back to the Member Directory
+    Expected
+        Member Directory feed loads successfully
+        App navigates to the Member Details screen
+        Member's full name is displayed clearly
+        Email address is displayed
+        Email format is valid (e.g., name@domain.com)
+        Member's role is displayed correctly
+        Member's institution is displayed correctly
+        All required fields are visible
+        Information is readable and not truncated
+        Screen can be scrolled if content exceeds viewport
+        User returns to the directory feed
+        Previous scroll position and grouping are preserved
+TC19 - View More Menu and access additional feeds
+    Actions
+        Launch the app from the device home screen
+        Tap the "More" menu tab (Burger icon)
+        Verify menu content
+        Select an additional feed from the list
+        Return to the More menu
+    Expected
+        App launches successfully and displays the main navigation
+        More menu opens successfully
+        Menu list is displayed without errors
+        Additional feeds are listed
+        Profile option is visible in title bar
+        Menu items have clear labels and icons
+        App opens to the selected feed as an overlay
+        Feed loads successfully and displays content
+        User can navigate back to the More menu
+TC20 - Update User Profile
+    Actions
+        Tap the "Edit profile" action (pencil icon)
+        Tap an editable profile field (Text field)
+        Update the selected field with a valid value
+        Tap a selectable field profile (Dropdown)
+        Select new value
+        Tap the "Save" action
+        Verify updated profile data
+    Expected
+        All profile fields become editable
+        Edit mode opens for the selected field
+        Input control (text field) is displayed
+        Input is accepted
+        Changes are reflected
+        Options of values are shown
+        Loading state is shown
+        Profile update request is processed successfully
+        All updated fields display the new values
+        Changes persist after navigating away and returning to the profile
+TC21 - Successfully update profile photo by selecting an image from device library
+    Actions
+        Tap the profile photo or edit (pencil) icon
+        Select "Choose from library"
+        Select a valid image from the library
+        Confirm/save the profile photo update
+        Verify updated profile photo
+        Reopen profile
+    Expected
+        Action sheet / bottom sheet is displayed
+        Options include: Choose from library, Delete photo, Cancel
+        Device photo library / file picker opens
+        User can browse available images
+        Selected image is previewed or applied to the profile photo area
+        No error is shown
+        Profile photo update request is processed successfully
+        New profile photo is displayed on the profile screen
+        Image is correctly cropped/scaled
+        Updated profile photo persists after navigating away and returning
+TC22 - Search within feeds using the search input
+    Actions
+        Navigate to a feed that supports search
+        Tap on the search input field
+        Enter a valid search term
+        Verify filtered search results
+        Verify empty search result behavior (if applicable)
+        Clear the search input
+        Repeat for each supported feed (News, Project Directory, Member Directory)
+    Expected
+        Feed loads successfully and search input is visible
+        Keyboard is displayed
+        Search field becomes active
+        Search term is accepted
+        Feed begins filtering results real-time
+        Only items matching the search term are displayed
+        Non-matching items are hidden
+        If feed has grouping (alphabetical or regional) the group is preserved in results
+        If no matches exist, an appropriate empty state message is displayed
+        No errors or crashes occur
+        Search field is cleared
+        Full, unfiltered feed is restored
+        Search behaves consistently across all feeds
+TC23 - Show disclaimer pop-up when user has not accepted latest terms
+    Actions
+        Log in to the app with the test user
+        Remove disclaimer consent using the API (Postman)
+        Fully close the app and relaunch it
+        Verify the Disclaimer pop-up is displayed
+        Verify user cannot continue without accepting
+        Accept the disclaimer
+        Relaunch the app once more (optional)
+    Expected
+        User can access the app normally and no disclaimer pop-up is shown (if previously accepted)
+        API responds successfully confirming consent is removed
+        App launches successfully
+        Disclaimer / Terms pop-up appears immediately after login/app entry
+        Pop-up blocks access to the app until action is taken
+        User cannot proceed to the app's main content without accepting the disclaimer
+        Consent is saved successfully
+        Pop-up closes
+        User is allowed into the app
+        Disclaimer pop-up is not shown again after it has been accepted
+TC24 - Open universal links and navigate to the correct in-app destination
+    Actions
+        Launch the app from the device home screen
+        Open the deep link: imcore://feeds/63
+        Open the deep link: imcore://feeds/63/posts/868
+        Open the deep link: imcore://feeds/63/search/ASAN Medical Center
+        Open the deep link: imcore://users/1036
+    Expected
+        App opens successfully and login screen is shown
+        App navigates to the specified feed (ID: 63)
+        Feed content loads successfully
+        App navigates directly to the feed post details
+        Correct post content is displayed
+        App navigates to the feed search view
+        Search field is populated with "ASAN Medical Center"
+        Feed displays filtered search results matching the query
+        App navigates to the user profile for user ID 1036
+        Profile information loads successfully
+TC25 - View User Profile From More Menu
+    Actions
+        Tap the profile thumbnail
+        Verify locked (read-only) fields
+        Verify professional information
+        Verify interests and research information
+        Verify overall layout and usability
+        Return to the More menu
+    Expected
+        App navigates to the user profile screen
+        Profile screen loads without errors
+        Name, Surname, Institution, imCore Role, and Email are visible
+        These fields are clearly marked as non-editable
+        Tapping these fields does not open an edit state
+        Specialisation field is displayed
+        Tumor type field is displayed
+        Major area of interest field is displayed
+        Additional area of interest field is displayed
+        Type of research field is displayed
+        Other fields of interest field is displayed
+        Public profile field is displayed
+        All fields with values are visible and readable
+        Empty fields are hidden
+        Screen supports scrolling if content exceeds viewport
+        No missing or overlapping content
+        User can navigate back to the More menu
+TC26 - Display user specific feed based on permissions
+    Actions
+        From the backend, remove some of the groups permission for a user
+        Login with 2 different accounts, one with limited permission and one with full permission
+    Expected
+        Accounts should have different data displayed
+TC27 - Show Terms and conditions for newly created users
+    Actions
+        Log in for the first time with normal account or with roche account
+    Expected
+        User is able to see and accept terms and conditions
+TC28 - Pull to refresh reloads data in all screens except More
+    Actions
+        Pull to refresh in news 
+        Pull to refresh in Project directory
+        Pull to refresh in Member directoy
+        Pull to refresh in My proposal submission
+    Expected
+        Pull to refresh reloads data
+TC29 - Error handling
+    Actions 
+        Mock API to return error for News/ directory/ navigation
+        Simulate no network behaviour / flight mode
+        Simulate expired token
+    Expected
+        When API is failing general error message is returned + retry again
+        Network error is handled 
+        Expired token leads to logout

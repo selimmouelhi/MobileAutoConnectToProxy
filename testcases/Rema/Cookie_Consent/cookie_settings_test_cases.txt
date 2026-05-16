@@ -1,0 +1,41 @@
+cookie_settings-01 | Verify accessing cookie settings from More menu
+    Actions
+        Navigate to More menu and tap cookie settings option
+    Expected
+        Cookie settings screen opens showing current preferences
+
+cookie_settings-02 | Verify viewing currently accepted cookies
+    Actions
+        Open cookie settings from More menu
+    Expected
+        Screen displays "Nødvendige" and "Funktionelle - fejlsøgning" toggles with correct states
+
+cookie_settings-03 | Verify necessary cookies toggle cannot be disabled
+    Actions
+        Attempt to turn OFF "Nødvendige" toggle
+    Expected
+        Toggle remains ON and does not respond to tap
+
+cookie_settings-04 | Verify enabling functional cookies
+    Actions
+        Turn ON "Funktionelle - fejlsøgning" toggle and save
+    Expected
+        Toggle changes to ON and preference is saved
+
+cookie_settings-05 | Verify disabling functional cookies
+    Actions
+        Turn OFF "Funktionelle - fejlsøgning" toggle and save
+    Expected
+        Toggle changes to OFF and preference is saved
+
+cookie_settings-06 | Verify cookie preferences persist after app restart
+    Actions
+        Change cookie preferences, save, close app, reopen and check settings
+    Expected
+        Previously saved preferences are maintained
+
+cookie_settings-07 | Verify canceling preference changes
+    Actions
+        Change toggle state and tap back without saving
+    Expected
+        Changes are discarded and original preferences remain

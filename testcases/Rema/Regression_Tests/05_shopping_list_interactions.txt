@@ -1,0 +1,138 @@
+Shopping list detail page UI visualisation
+    Actions
+        Open a shoping list which has items added 
+    Expected
+        Shopping list title shown
+        Items grouped by category
+        Order button os visible
+        “Købt” items displayed in correct department order
+        Unspecified items are shown at the bottom  and before bought items
+        Order button is enabled
+        Discoundted item show correct color in the price
+        All labels are shown 
+Shopping Lists interaction
+    Create new shopping list 
+        Actions 
+            Open the app
+            Tap on Mine lister
+            Tap on Opret ny
+            Select placeholder or enter new title
+            While having no lists , add products to shopping list
+        Expected
+            New list is created and selected
+            Correct item count is shown (0)
+            List name is correct 
+            Order button is hidden
+            If no lists are created and item is added to current shopping list ,a new list is created and selected ,while havign the new product
+            Recommended products in presearch is empty
+    Switch between lists
+        Actions
+            Tap on all lists
+            Select list from the all lists bottom sheet
+        Expected
+            Selected list changed
+            UI updates with new list title, items and count
+            On front page , favorites carousel count adapts if applied
+            New selected list is checked in all lists sheet
+            Choosing a differnt list with items will show recommended products module in Presearch
+    Modify list title
+        Actions
+            Tap on mine lister or tap on the current shop list
+            In all lists sheet tap on rediger
+            Tap on edit icon
+            Or from shopping list detail page tap on edit icon
+            Choose new title 
+        Expected
+            If the user has not changed the title, thn the previous title is saved
+            If the title is changed, then a syncing animation shows and the order button is enabled after some time
+            Sync is called
+    Delete current shopping list
+        Actions 
+            Tap on all lists
+            Delete current list
+        Expected
+            Next list is selected
+            The list is not found after reopening the app
+Add Products to shopping list from all sources
+    Actions 
+        Add item via Search ( global search) 
+        Add item via Search ( shopping list detail page search) 
+        Add item via scanner
+        Add item via Butik 
+        Add items via recipes
+        Add items from newspapers
+        Add items from favorites both in front page or from other sources ( search for items)
+        Add items from popular products
+        Add items from products for you
+        Add items from inspirational prodcuts
+        Add items from product details 
+        Add items via unspecified from search or recipes 
+        Add items from unspecified in newspapers
+    Expected
+        if no shopping lists are created, then a new one appears with the item
+        Items are added correctly and a blue in app notification shows
+        Tapping on the in app notification will navigate the user to the shopping list
+        Each time a product is added syncing animation appears and the order button is disabled in the shopping list detail page
+        Items as unspecified are shown in newspapers and added to current shopping list
+        Total is adjusted accordingly
+Edit Products in the shopping list 
+    Actions
+        Tap on item count and increase/decrease occurrences
+    Expected
+        Sync animation is shown and order button is disabled briefly until the sync is done
+        Number on the product is updated
+        If item occurences is decreased to 0, then the item is deleted
+Delete and buy products from shopping list
+    Actions
+        Swipe to the left to delete items
+        Swipe to right to buy items
+    Expected
+        Upon deleting items or marking as bought order button is disabled until the sync is over
+        If all items are deleted then the list goes to empty state
+        If there is only bought items then the order button shows in disabled state with 0 as count
+        If there is only unspecifeid items then order button is disabled with couunt of items
+Replace unspecified items
+    Actions
+        Add unspecified items
+        Tap on 3 dots 
+        Replace the unspecified item by selecting another item
+    Expected
+        The item is added to shopping list having 1 as count
+        Sync is displayed 
+Remote changes
+    Actions
+        Login with same account on 2 devices
+        Start interacting with the shopping list trigger different scenarios to update from  between devices
+        Create new list
+        Add items
+        Modify items
+        Delete items
+        Add from different sources 
+    Expected
+        Updates is reflected after the polling duration ( 1 min on prod - 10 seconds on preporod as max)
+        Added items are shown with UI yellow animation indicating the change
+        Deleted lists are removed and next list should be shown
+Share list through QR code. native share sheet or previously shared with
+    Preconditons
+        --2 diferent devices that have shared list ( better to test it on inter platforms)
+    Actions
+        Login with 2 devices 
+        Create new list
+        Invite the second account
+        Add items/ update / edit name of list
+    Expected
+        The user is able to choose one of the 3 options
+        In case of QR code, qr code gets scanned and the user is navigated to the app
+        In case of native share or copied link , user is also navigated to the app
+        Users who get the invited by previously shared, gets shown the invitation sheet
+        User is able to dimiss the invitation sheet
+        Dismissed sheets will show only upon backgrounding foregrounding the app, new invitations will be shown
+        User is able to accept or delcine the invitation
+        Accepted or declined invitation do not show again
+        Items that are modified in the list are synced between both the users and user is able to order
+        User is able to remove other users or leave the list themselves, list gets deleted for the removed user access
+        Newly accepted list is selected and show the items
+        User is able to share to more than 1 user
+(Active List) Primary list
+    Primary list is selected upon forgrounding  the app
+    Primary list is not updated in real time

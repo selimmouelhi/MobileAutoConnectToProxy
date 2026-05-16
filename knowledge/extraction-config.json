@@ -1,0 +1,228 @@
+{
+  "testcases_root": "testcases/Rema",
+  "output_root": "knowledge/rema",
+  "features": {
+    "Share Shopping List": {
+      "source_dir": "Share_Shopping_List",
+      "files": [
+        "SHARE_LIST_Module1_Share_Shopping_List_Sheet.txt",
+        "SHARE_LIST_Module1_UI_Foundation_Infrastructure.txt",
+        "SHARE_LIST_Module2_Who_Has_Access.txt",
+        "SHARE_LIST_Module3_Share_Link.txt",
+        "SHARE_LIST_Module4_QR_Code.txt",
+        "SHARE_LIST_Module5_Accept_Invitation.txt",
+        "SHARE_LIST_Backward_Compatibility_v6.4_v6.5.txt",
+        "SHARE_LIST_Summary.txt",
+        "FRA-747_View_Who_Has_Access.txt"
+      ],
+      "output": "features/share-shopping-list.md",
+      "screens": ["shopping-list"]
+    },
+    "Favorite Recipes": {
+      "source_dir": "Favorite_Recipes",
+      "files": ["FRA-549_favorite_recipes_test_cases.txt"],
+      "output": "features/favorite-recipes.md",
+      "screens": ["recipes"]
+    },
+    "Recommended Products": {
+      "source_dir": "Recommended_Products",
+      "files": ["FRA-555_Recommended_Products_Active_List.txt"],
+      "output": "features/recommended-products.md",
+      "screens": ["shopping-list"]
+    },
+    "Payment Methods": {
+      "source_dir": "Payment_Methods",
+      "files": ["FRA-220_Payment_Methods_Feature_Flags.txt"],
+      "output": "features/payment-methods.md",
+      "screens": ["checkout"]
+    },
+    "Vigo": {
+      "source_dir": "Vigo",
+      "files": [
+        "Shutdown_Release_1/vigo_shutdown_release_1_testcases.txt",
+        "Feature_Flag_Cleanup/vigo-feature-flag-cleanup-testcases-updated.txt"
+      ],
+      "output": "features/vigo.md",
+      "screens": ["meget-mere", "shopping-list"]
+    },
+    "Cookie Consent": {
+      "source_dir": "Cookie_Consent",
+      "files": [
+        "cookie_prompt_test_cases.txt",
+        "cookie_settings_test_cases.txt"
+      ],
+      "output": "features/cookie-consent.md",
+      "screens": ["cookie-consent"]
+    },
+    "Zendesk Help": {
+      "source_dir": "Zendesk_Help_Button",
+      "files": ["zendesk_help_button_test_cases.txt"],
+      "output": "features/zendesk-help.md",
+      "screens": ["meget-mere"]
+    },
+    "GPS Store Suggestions": {
+      "source_dir": "GPS_Store_Suggestions",
+      "files": ["FRA-572_GPS_Store_Suggestions.txt"],
+      "output": "features/gps-store-suggestions.md",
+      "screens": ["checkout", "store-selection"]
+    },
+    "Faster Picker Flow": {
+      "source_dir": "Faster_Picker_Flow",
+      "files": ["FRA-876_Faster_Picker_Flow_KH_Stores.txt"],
+      "output": "features/faster-picker-flow.md",
+      "screens": ["checkout"]
+    },
+    "Pre-Defined Products": {
+      "source_dir": "Pre_Defined_Products",
+      "files": ["FRA-550_Pre_Defined_Product_Shelf.txt"],
+      "output": "features/pre-defined-products.md",
+      "screens": ["shopping-list"]
+    },
+    "FAQ Help Page": {
+      "source_dir": "FAQ_Help_Page",
+      "files": ["faq_help_page_test_cases.txt"],
+      "output": "features/faq-help.md",
+      "screens": ["meget-mere"]
+    },
+    "Meget Mere": {
+      "source_dir": "Meget_Mere",
+      "files": ["testcases_megetmere_screen.txt"],
+      "output": "features/meget-mere.md",
+      "screens": ["meget-mere"]
+    },
+    "App Install & Update": {
+      "source_dir": "Regression_Tests",
+      "files": ["01_app_install_update.txt"],
+      "output": "features/regression-app-install.md",
+      "screens": [],
+      "parser": "regression"
+    },
+    "User Login & Signup": {
+      "source_dir": "Regression_Tests",
+      "files": ["02_create_new_user_login.txt"],
+      "output": "features/regression-login-signup.md",
+      "screens": ["login"],
+      "parser": "regression"
+    },
+    "Home Page": {
+      "source_dir": "Regression_Tests",
+      "files": ["03_home_page.txt"],
+      "output": "features/regression-home-page.md",
+      "screens": ["home"],
+      "parser": "regression"
+    },
+    "Search & Pre-search": {
+      "source_dir": "Regression_Tests",
+      "files": ["04_search_presearch.txt"],
+      "output": "features/regression-search.md",
+      "screens": ["search"],
+      "parser": "regression"
+    },
+    "Shopping List Interactions": {
+      "source_dir": "Regression_Tests",
+      "files": ["05_shopping_list_interactions.txt"],
+      "output": "features/regression-shopping-list.md",
+      "screens": ["shopping-list"],
+      "parser": "regression"
+    },
+    "Product Details": {
+      "source_dir": "Regression_Tests",
+      "files": ["06_product_details_page.txt"],
+      "output": "features/regression-product-details.md",
+      "screens": ["product-details"],
+      "parser": "regression"
+    },
+    "Butik (Virtual Store)": {
+      "source_dir": "Regression_Tests",
+      "files": ["07_butik_virtual_store.txt"],
+      "output": "features/regression-butik.md",
+      "screens": ["butik"],
+      "parser": "regression"
+    },
+    "Recipe Flow": {
+      "source_dir": "Regression_Tests",
+      "files": ["08_recipes.txt"],
+      "output": "features/regression-recipe-flow.md",
+      "screens": ["recipes"],
+      "parser": "regression"
+    },
+    "Order Flow": {
+      "source_dir": "Regression_Tests",
+      "files": ["09_order_flow_preprod.txt"],
+      "output": "features/regression-order-flow.md",
+      "screens": ["checkout"],
+      "parser": "regression"
+    },
+    "Job Picking": {
+      "source_dir": "Regression_Tests",
+      "files": ["10_pick_up_a_job_preprod.txt"],
+      "output": "features/regression-job-picking.md",
+      "screens": ["checkout"],
+      "parser": "regression"
+    },
+    "Notifications & Deeplinks": {
+      "source_dir": "Regression_Tests",
+      "files": ["11_notifications_app_links.txt"],
+      "output": "features/regression-notifications.md",
+      "screens": [],
+      "parser": "regression"
+    }
+  },
+  "screens": {
+    "home": {
+      "name": "Home",
+      "tab": "Hjem",
+      "description": "Main landing screen with offers, modules, and navigation"
+    },
+    "shopping-list": {
+      "name": "Shopping List",
+      "tab": "Indkøbsliste",
+      "description": "Shopping list management, item adding, sharing, and ordering"
+    },
+    "recipes": {
+      "name": "Recipes",
+      "tab": "Opskrifter",
+      "description": "Recipe browsing, search, favorites, and cooking flow"
+    },
+    "meget-mere": {
+      "name": "Meget mere",
+      "tab": "Meget mere",
+      "description": "More tab with profile, settings, help, etc."
+    },
+    "checkout": {
+      "name": "Checkout",
+      "tab": null,
+      "description": "Checkout flow: store selection, payment, order tracking"
+    },
+    "cookie-consent": {
+      "name": "Cookie Consent",
+      "tab": null,
+      "description": "Cookie consent bottom sheet on first launch"
+    },
+    "store-selection": {
+      "name": "Store Selection",
+      "tab": null,
+      "description": "Store picker and GPS-based store suggestions"
+    },
+    "butik": {
+      "name": "Butik",
+      "tab": "Butik",
+      "description": "Virtual store with categories, subcategories, product browsing, and search"
+    },
+    "search": {
+      "name": "Search",
+      "tab": null,
+      "description": "Search/pre-search screen with popular products, recommended, and consent modules"
+    },
+    "login": {
+      "name": "Login / Signup",
+      "tab": null,
+      "description": "Login, signup, MitID verification, and user management screens"
+    },
+    "product-details": {
+      "name": "Product Details",
+      "tab": null,
+      "description": "Product detail page with labels, pricing, add to list, and favorites"
+    }
+  }
+}

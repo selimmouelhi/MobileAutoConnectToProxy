@@ -1,0 +1,538 @@
+Vigo options rendering
+    VIGO-01 | Verify new app icon displays correctly after update
+        Preconditions
+            User has device (iOS/Android)
+            App is installed with updated version containing new icon
+        Actions
+            Navigate to device home screen
+            Locate the Rema app icon
+            Observe the app icon design
+        Expected
+            App icon displays without Vigo branding
+            Icon design matches the new approved design specification
+            Icon is clearly visible and properly rendered at all device resolutions
+    VIGO-02 | Verify new splash screen displays correctly in app switcher [test older versions of android]
+        Preconditions
+            User has device with Rema app installed
+            App is running in background
+        Actions
+            Open app
+        Expected
+            Correct splash is shown
+    VIGO-03 | Verify rating stars are hidden when Vigo flag is disabled
+        Preconditions
+            User is logged into the app [ shopper , delivery, butik]
+            Vigo feature flag is disabled
+        Actions
+            Navigate to any screen where ratings were previously displayed
+            Observe the location where rating stars would typically appear
+            Check product listings for rating display
+        Expected
+            No rating stars are visible anywhere in the app
+            UI layout adjusts appropriately to hide rating elements
+            No empty spaces or broken layouts where ratings were removed
+    VIGO-04 | Verify rating stars display when Vigo flag is enabled
+        Preconditions
+            User is logged into the app
+            Vigo feature flag is enabled
+        Actions
+            Navigate to screens where ratings should be displayed
+            Observe rating star elements
+            Check multiple products with ratings
+        Expected
+            Rating stars are visible and properly displayed
+            Star ratings show correct values
+            Rating functionality works as expected
+    VIGO-05 | Verify Vigo menu is visible for delivery account when flag is enabled
+        Preconditions
+            User is logged in as customer account (type field = "customer") [delivery]
+            Vigo feature flag is enabled
+        Actions
+            Navigate to main menu or navigation
+            Tap on vigo
+        Expected
+            Menu is accessible and can be tapped
+            User is able to access their previous tasks 
+            Menu displays Vigo-related options when opened
+        API
+            GET v3/users/<user_id> - Returns type field with value "customer"
+            GET v1/user - Returns user profile with type field
+    VIGO-06 | Verify Vigo menu is hidden for customer account when flag is disabled
+        Preconditions
+            User is logged in as customer account (type field = "customer") and a past delivery account
+            Vigo feature flag is disabled
+        Actions
+            Navigate to main menu or navigation
+            Search for the "Køb & Hent" menu option
+            Scroll through all available menu options
+        Expected
+            "Køb & Hent" menu option is not visible
+            No Vigo-related menu items are present
+            Other menu options display correctly without gaps
+        API
+            GET v3/users/<user_id> - Returns type field with value "customer"
+            GET v1/user - Returns user profile with type field
+    VIGO-07 | Verify Vigo menu is visible for store account when flag is enabled
+        Preconditions
+            User is logged in as store account (type field = "store")
+            Vigo feature flag is enabled
+        Actions
+            Navigate to main menu or navigation
+            Locate the "Køb & Hent" menu option
+            Tap on the menu option
+        Expected
+            "Køb & Hent" menu option is visible
+            Menu is accessible and functional
+            Store-specific Vigo options are displayed
+        API
+            GET v3/users/<user_id> - Returns type field with value "store"
+            GET v1/user - Returns user profile with type field
+    VIGO-08 | Verify Vigo menu is visible for store account when flag is disabled
+        Preconditions
+            User is logged in as store account (type field = "store")
+            Vigo feature flag is disabled
+        Actions
+            Navigate to main menu or navigation
+            Locate the "Køb & Hent" menu option
+            Verify menu accessibility
+        Expected
+            "Køb & Hent" menu option is visible for store accounts
+            Menu remains accessible even with flag disabled
+            Store account retains access to Vigo functionality
+        API
+            GET v3/users/<user_id> - Returns type field with value "store"
+            GET v1/user - Returns user profile with type field
+    VIGO-10 | Verify checkout displays only Scan selv option when delivery and collect are unavailable
+        Preconditions
+            User has shopping list with items
+            Logistics options API returns delivery with is_available = false and collect with is_available = false
+        Actions
+            Navigate to shopping list
+            Proceed to checkout options screen
+            Observe available checkout methods
+        Expected
+            Delivery option is not shown
+            Collect option is not shown
+            Scan Selv option is displayed (hardcoded)
+        API
+            GET v3/shopping-lists/{id}?include=logistic_options - Returns delivery object with is_available = false, collect object with is_available = false
+    VIGO-11 | Verify checkout displays K&H and scanSelv when delivery is unavailable
+        Preconditions
+            User has shopping list with items
+            Logistics options API returns delivery with is_available = false and collect with is_available = true
+        Actions
+            Navigate to shopping list
+            Proceed to checkout options screen
+            Observe available checkout methods
+        Expected
+            Click & collect option is displayed with price
+            Delivery option is not shown
+            Scan Selv option is displayed
+        API
+            GET v3/shopping-lists/{id}?include=logistic_options - Returns delivery object with is_available = false, collect object with is_available = true and price field
+    VIGO-13 | Verify checkout when both delivery and collect are null in API response
+        Preconditions
+            User has shopping list with items
+            Logistics options API returns null for both delivery and collect objects
+        Actions
+            Navigate to shopping list
+            Proceed to checkout options screen
+            Observe available checkout methods
+        Expected
+            App handles null values gracefully without crashing
+            Only Scan Selv option is displayed
+            User can proceed with Scan Selv checkout
+            No broken UI elements or error messages
+        API
+            GET v3/shopping-lists/{id}?include=logistic_options - Returns delivery = null, collect = null
+    VIGO-14 | Verify checkout displays available options when all are available
+        Preconditions
+            User has shopping list with items
+            Logistics options API returns delivery, collect, and Vigo all with is_available = true
+        Actions
+            Navigate to shopping list
+            Proceed to checkout options screen
+            Observe available checkout methods
+        Expected
+            Vigo option is displayed with pricing
+            Click & collect option is displayed with pricing
+            Delivery option is NOT displayed (removed per FRA-562)
+            Scan Selv option is displayed
+        API
+            GET v3/shopping-lists/{id}?include=logistic_options - Returns delivery object with is_available = true and price, collect object with is_available = true and price
+    VIGO-15 | Verify delivery option is removed even when marked available
+        Preconditions
+            User has shopping list with items
+            Logistics options API returns delivery with is_available = true
+        Actions
+            Navigate to shopping list
+            Proceed to checkout options screen
+            Observe all displayed checkout methods
+            Scroll through checkout options
+        Expected
+            Delivery option is NOT displayed anywhere
+            Only Vigo, collect, and Scan Selv options are shown
+            No UI elements reference delivery checkout
+            Checkout flow works correctly without delivery option
+        API
+            GET v3/shopping-lists/{id}?include=logistic_options - Returns delivery object with is_available = true and price field
+    VIGO-16 | Verify Scan Selv option is always displayed regardless of API response
+        Preconditions
+            User has shopping list with items
+            Logistics options API returns any combination of available options
+        Actions
+            Navigate to shopping list
+            Proceed to checkout options screen
+            Look for Scan Selv option
+        Expected
+            Scan Selv option is always displayed (hardcoded)
+            Scan Selv appears regardless of other option availability
+            Scan Selv option is functional and selectable
+        API
+            GET v3/shopping-lists/{id}?include=logistic_options - Returns any logistic_options response
+    VIGO-17 | Verify Vigo onboarding does not appear after successful login
+        Preconditions
+            User has valid login credentials
+            App is freshly installed or user is logged out
+        Actions
+            Launch the app
+            Enter valid username and password
+            Tap login button
+            Observe screens after successful login
+        Expected
+            User is taken directly to home screen or main app interface
+            No Vigo onboarding flow is displayed
+            No Vigo introduction screens appear
+            User can immediately access app features
+        API
+            N/A
+    VIGO-18 | Verify Vigo onboarding does not appear for first time user
+        Preconditions
+            Fresh app installation
+            User has never logged in before
+        Actions
+            Launch the app for the first time
+            Complete registration or login process
+            Observe post-authentication screens
+        Expected
+            Standard app onboarding may appear (if applicable)
+            Vigo-specific onboarding does not appear
+            User proceeds to main app interface
+        API
+            N/A
+    VIGO-19 | Verify Vigo onboarding does not appear after app update
+        Preconditions
+            User had previous version of app installed
+            User updates to new version with Vigo onboarding removed
+            User is already logged in
+        Actions
+            Open the updated app
+            Observe screens displayed after launch
+            Navigate through main app sections
+        Expected
+            No Vigo onboarding is triggered
+            User sees normal app interface
+            All existing user data and session are preserved
+        API
+            N/A
+    VIGO-20 | Verify Vigo-indkøber tab is hidden from settings if flag is disabled
+        Preconditions
+            User is logged into the app
+        Actions
+            Navigate to app settings or profile menu
+            Scroll through all available settings tabs
+            Look for "Vigo-indkøber" tab
+        Expected
+            "Vigo-indkøber" tab is not visible in settings
+            No Vigo shopper settings are accessible
+            Other settings tabs display correctly without gaps
+            Settings navigation remains functional
+    VIGO-22 | Verify spinning button does not show Få dine varer leveret option if flag is disabled
+        Preconditions
+            User is on the home screen
+            Spinning button feature is present on front page
+        Actions
+            Navigate to app front page
+            Locate the spinning button
+            Tap or interact with spinning button to reveal options
+            Observe all displayed options
+        Expected
+            "Få dine varer leveret" option is not displayed
+            Spinning button shows only remaining valid options
+            Button functions correctly with reduced options
+            No broken UI or empty slots in option list
+    VIGO-23 | Verify spinning button functionality show Få dine varer leveret option if flag is enabled
+        Preconditions
+            User is on the home screen
+            Vigo flag is enabled
+        Actions
+            Navigate to app front page
+            Tap the spinning button
+            
+        Expected
+            ALl spinning texts are shown
+            UI animations work smoothly
+Error handling
+    VIGO-25 | Verify checkout flow when logistic_options API returns error
+        Preconditions
+            User has shopping list with items
+            Logistics options API returns error or timeout
+        Actions
+            Navigate to shopping list
+            Attempt to proceed to checkout options screen
+            Observe app behavior
+        Expected
+            App displays appropriate error message
+            User is informed to try again or contact support
+            App does not crash or hang
+            User can navigate back to shopping list
+        API
+            GET v3/shopping-lists/{id}?include=logistic_options - Returns error response or timeout
+    VIGO-29 | Verify Vigo fallback behavior when feature flag response is malformed
+        Preconditions
+            User launches the app
+            Feature flag endpoint returns invalid JSON or corrupted data
+        Actions
+            Launch the app
+            Observe how app handles malformed feature flag response
+            Navigate to product listings to check ratings
+            Navigate to main menu to check Vigo options
+        Expected
+            App gracefully handles invalid response
+            Falls back to default behavior (Vigo enabled = true)
+            All Vigo features are accessible
+            Rating stars are visible
+            No crashes or app freezing occurs
+        API
+            Feature flag endpoint - Returns malformed JSON or invalid structure
+    VIGO-30 | Verify Vigo fallback behavior when feature flag response is missing
+        Preconditions
+            User has app installed
+            Feature flag endpoint returns empty response or null
+        Actions
+            Launch the app
+            Observe default feature behavior
+            Check if rating stars appear on products
+            Check if Vigo menu is accessible
+            Navigate through main app features
+        Expected
+            App treats missing flags as enabled (default = true)
+            All Vigo features are enabled by default
+            Rating stars are visible
+            Vigo menu options are accessible
+            App functions normally without flags
+        API
+            Feature flag endpoint - Returns empty response {} or null
+    VIGO-36 | Verify feature flag timeout behavior on slow network
+        Preconditions
+            User has app installed
+            Network connection is very slow (simulated or real)
+            Feature flag endpoint takes 10+ seconds to respond
+        Actions
+            Launch app on slow network
+            Observe app behavior while waiting for flags
+            Monitor what features are shown during wait
+            Check behavior after timeout
+        Expected
+            App shows loading state or proceeds with default (Vigo enabled = true)
+            Timeout occurs after reasonable duration (e.g., 5-10 seconds)
+            App falls back to enabling Vigo features after timeout
+            User is not blocked from using app
+            No infinite loading or frozen UI
+        API
+            Feature flag endpoint - Times out after delay
+    VIGO-36 | Verify feature flag timeout behavior on  token unauthorised
+        Preconditions
+            User has app installed
+            Network connection is very slow (simulated or real)
+            Feature flag endpoint takes 10+ seconds to respond
+        Actions
+            Launch app on slow network
+            Observe app behavior while waiting for flags
+            Monitor what features are shown during wait
+            Check behavior after timeout
+        Expected
+            App shows loading state or proceeds with default (Vigo enabled = true)
+            Timeout occurs after reasonable duration (e.g., 5-10 seconds)
+            App falls back to enabling Vigo features after timeout
+            User is not blocked from using app
+            No infinite loading or frozen UI
+        API
+            Feature flag endpoint - Times out after delay
+    VIGO-09 | Verify App defaults to customer when user type is null
+        Preconditions
+            User is logged in
+            User profile type field is null or not returned from API
+        Actions
+            Navigate to main menu or navigation
+            Observe available menu options
+            Check for "Køb & Hent" menu presence
+        Expected
+            App handles missing type field gracefully without crashing
+            Menu displays appropriate default options
+            User can continue using other app features normally
+        API
+            GET v3/users/<user_id> - Returns user profile without type field or type = null
+            GET v1/user - Returns user profile without type field or type = null
+    VIGO-24 | Verify app stability when user type changes from customer to store
+        Preconditions
+            User is logged in as customer account
+            User account is upgraded to store account
+        Actions
+            Navigate to main menu
+            Observe menu options
+            Pull to refresh or restart app to fetch latest user profile
+            Check "Køb & Hent" menu visibility after refresh
+        Expected
+            App fetches updated user type from API
+            "Køb & Hent" menu appears for store account
+            No crashes or errors during type transition
+            Menu updates reflect new account privileges
+        API
+            GET v3/users/<user_id> - Returns updated type field with value "store"
+            GET v1/user - Returns updated user profile with type field
+API calls & Refresh
+    VIGO-31 | Verify feature flags are fetched on app launch
+        Preconditions
+            User has app installed
+            App is completely closed (not in background)
+            Feature flags are configured on backend
+        Actions
+            Completely close the app (force quit on iOS / force stop on Android)
+            Launch the app
+            Monitor network requests
+            Observe when feature flags are loaded
+        Expected
+            Feature flag endpoint is called on app launch
+            Flags are fetched before displaying main UI
+            App waits for flag response or timeout before rendering Vigo features
+        API
+            Feature flag endpoint - Called on app initialization
+    VIGO-32 | Verify feature flags are fetched on app resume from background
+        Preconditions
+            User has app running in background
+            User previously launched app and flags were fetched
+            App has been in background for less than 10 minutes
+        Actions
+            Put app in background
+            Wait 2-5 minutes
+            Resume app by tapping app icon
+            Monitor network requests
+        Expected
+            Feature flag endpoint is NOT called on app resume
+            App uses previously cached flag values
+            No unnecessary network calls are made
+            App resumes quickly without flag fetch delay
+        API
+            Feature flag endpoint - Should NOT be called
+    VIGO-33 | Verify feature flags are refreshed on user login
+        Preconditions
+            User is logged out
+            User has valid credentials
+        Actions
+            Open the app while logged out
+            Enter credentials and tap login
+            Monitor network requests after successful login
+            Check if feature flags are fetched
+        Expected
+            Feature flag endpoint is called after successful login
+            Fresh flag values are retrieved for the logged-in user
+            Vigo features display according to latest flags
+            User sees personalized feature visibility
+        API
+            Feature flag endpoint - Called after login success
+    VIGO-33 | Verify feature flags are refreshed on background foreground
+        Actions
+            Open the app
+            Put the app in backgorund
+            Put the app in forgeround
+        Expected
+            Feature flags is called 
+            UI is updated if the flag is updated
+        API
+            Feature flag endpoint - Called after login success
+    VIGO-34 | Verify feature flags are refreshed when user switches accounts
+        Preconditions
+            User is logged into account A
+        Actions
+            Log out from account A
+            Log in with a different account
+            Inspect the network
+        Expected
+            Feature flags are re-fetched for the second accoount
+            Vigo features display correctly for new account
+        API
+            Feature flag endpoint - Called when switching users
+    VIGO-35 | Verify feature flags are not refresh on pull-to-refresh in main screen
+        Preconditions
+            User is logged in
+            User is on main screen or home feed
+            Feature flags were previously loaded
+        Actions
+            Navigate to main screen
+            Perform pull-to-refresh gesture
+            Monitor network requests
+            Check if flags are re-fetched
+        Expected
+            Feature flag endpoint may or may not be called (depends on implementation)
+            If called, fresh flag values are applied immediately
+            Vigo features update if flag values changed
+            Refresh completes smoothly without errors
+        API
+            Feature flag endpoint - May be called on refresh
+    VIGO-37 | Verify feature flags are NOT refreshed on every screen navigation
+        Preconditions
+            User is logged in
+            User has navigated through app previously
+            Feature flags were fetched on launch
+        Actions
+            Navigate to home screen
+            Navigate to product list
+            Navigate to settings
+            Navigate to shopping list
+            Monitor network requests during navigation
+        Expected
+            Feature flag endpoint is NOT called on each screen change
+            App uses cached flag values during session
+            No unnecessary network calls
+            Navigation remains fast and responsive
+            Flags persist throughout session
+        API
+            Feature flag endpoint - Should NOT be called
+VIGO-38 | Verify feature flag cache expiration and refresh
+    Preconditions
+        User has app installed
+        Feature flags were fetched more than 24 hours ago
+        App has been running in background
+    Actions
+        Open app after 24+ hour period
+        Monitor if flags are re-fetched
+        Check if cached flags are still valid
+        Observe any flag refresh trigger
+    Expected
+        Expired cached flags trigger fresh fetch
+        New flag values are retrieved from server
+        Vigo features update with latest flag state
+        Cache refresh happens seamlessly
+        User experience is not disrupted
+    API
+        Feature flag endpoint - Called when cache expires
+VIGO-39 | Verify fallback to Vigo enabled when feature flag parsing fails
+    Preconditions
+        User launches app
+        Feature flag endpoint returns valid JSON but unexpected format
+    Actions
+        Launch app
+        Observe app behavior with unexpected flag format
+        Navigate to rating stars section
+        Navigate to Vigo menu
+        Check all Vigo-related features
+    Expected
+        App safely handles unexpected flag structure
+        Falls back to default (Vigo enabled = true)
+        All Vigo features are accessible
+        Rating stars are visible
+        No crashes or error dialogs
+        App logs parsing error for debugging
+    API
+        Feature flag endpoint - Returns unexpected schema

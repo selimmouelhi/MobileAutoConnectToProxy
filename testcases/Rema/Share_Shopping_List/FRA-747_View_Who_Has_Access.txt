@@ -1,0 +1,373 @@
+Share Shopping List - FRA-747: View Who Has Access
+
+WHO_ACCESS-01 | Who has access section displays correct title [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section in the share sheet
+        Verify the section title text
+    Expected
+        The section displays a title matching localization key app_share_list.access_section_title
+        The title label is constrained to max 1 line and does not wrap
+        The title is clearly visible and not truncated
+    API
+        GET /api/shopping-lists/{id} - Returns shopping list with shared users data
+WHO_ACCESS-02 | Who has access section shows correct subtitle when list is not shared [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list that is not shared with anyone
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section subtitle
+        Verify the subtitle text content
+        Check that only one avatar is displayed
+    Expected
+        The subtitle displays text matching localization key app_share_list.access_section_subtitle_not_shared
+        The subtitle is constrained to max 1 line
+        Only the current user's avatar is shown in the section
+        Current user's avatar is displayed first and is the only avatar
+    API
+        GET /api/shopping-lists/{id} - Returns shopping list with empty shared users array
+WHO_ACCESS-03 | Who has access section shows correct subtitle when shared with one person [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with exactly one other person
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section subtitle
+        Verify the subtitle text and format
+        Verify the person's name is displayed correctly
+    Expected
+        The subtitle displays "Dig og <shared person's full name>" matching localization key app_share_list.access_section_subtitle_shared_with_one
+        The shared person's full name is correctly inserted into the subtitle string
+        The subtitle is constrained to max 1 line
+        If the name is too long the subtitle truncates gracefully
+    API
+        GET /api/shopping-lists/{id} - Returns shopping list with one shared user containing full_name field
+WHO_ACCESS-04 | Who has access section shows correct subtitle when shared with multiple people [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with two or more other people
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section subtitle
+        Verify the number displayed in the subtitle
+        Count the actual number of other users with access
+    Expected
+        The subtitle displays "Dig og <number> andre" matching localization key app_share_list.access_section_subtitle_shared_with_many
+        The number correctly reflects the count of other users with access excluding the current user
+        The subtitle is constrained to max 1 line
+        The count is dynamically calculated from the shopping list data
+    API
+        GET /api/shopping-lists/{id} - Returns shopping list with multiple shared users in array
+WHO_ACCESS-05 | Who has access section displays avatars with current user first [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least two other people
+        Share shopping list sheet is presented
+    Actions
+        Observe the avatars in the "Who has access" section
+        Note the order of avatars displayed from left to right
+        Compare avatar size to shopping list screen avatar size
+    Expected
+        The current user's avatar is always shown first in the leftmost position
+        Additional user avatars are displayed after the current user's avatar
+        Avatar size in this section is larger than the avatar size shown on the shopping list screen per FRA-735 logic
+        Avatars are displayed clearly and not overlapping
+    API
+        GET /api/shopping-lists/{id} - Returns shopping list with shared users data including avatar URLs
+WHO_ACCESS-06 | Tapping who has access section presents the access list [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented
+    Actions
+        Tap anywhere within the "Who has access" section area
+        Observe the sheet transition and title change
+    Expected
+        The sheet transitions to display the "Who has access" list view
+        The transition animation is smooth without stuttering
+        The sheet title updates to match localization key app_share_list.access_list_title
+        The bottom sheet height transitions to fit the number of people who have access
+    API
+        GET /api/shopping-lists/{id} - Data already loaded from previous screen
+WHO_ACCESS-07 | Who has access list shows current user last with "Dig" label [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least one other person
+        Who has access list is displayed
+    Actions
+        Scroll to the bottom of the access list if needed
+        Locate the current user's entry in the list
+        Verify the label displayed next to the current user's name
+    Expected
+        The current user is shown as the last item in the list
+        The label "Dig" matching localization key app_share_list.access_list_you is displayed to the right of the current user's name
+        The current user's avatar and full name are displayed correctly
+        No remove button is shown to the right of the current user
+    API
+        N/A
+WHO_ACCESS-08 | Who has access list sorts other users alphabetically by name [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least three other people
+        Who has access list is displayed
+    Actions
+        Observe the order of users in the list excluding the current user
+        Compare the displayed order to alphabetical sorting by name
+        Note the position of the current user in the list
+    Expected
+        All users except the current user are sorted alphabetically by their full name
+        The current user remains at the bottom of the list regardless of alphabetical order
+        Sorting is consistent and stable on repeated views
+        Name sorting is case-insensitive
+    API
+        N/A
+WHO_ACCESS-09 | Who has access list user names can span two lines [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with a user who has a very long name
+        Who has access list is displayed
+    Actions
+        Locate the user with a long name in the list
+        Observe how the name is displayed and formatted
+    Expected
+        Long user names wrap to a second line when they exceed the available width
+        The name is not truncated or cut off with ellipsis
+        The list item layout adjusts height to accommodate two-line names
+        No overlap occurs with the "Dig" label or other UI elements
+    API
+        N/A
+WHO_ACCESS-10 | Who has access list sheet height adjusts to fit number of users [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented
+    Actions
+        Tap on the "Who has access" section to open the list
+        Observe the sheet height during transition
+        Note the final sheet height relative to the number of users displayed
+    Expected
+        The bottom sheet height transitions smoothly from the main share view to the list view
+        The sheet height adjusts dynamically to fit the number of people who have access
+        If many users exist the sheet becomes scrollable rather than exceeding screen bounds
+        The transition animation is smooth with no visual glitches
+    API
+        N/A
+WHO_ACCESS-11 | Back button in access list returns to share sheet main view [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Who has access list is currently displayed
+    Actions
+        Locate the back button in the top left of the sheet header
+        Tap the back button
+        Observe the sheet transition and title change
+    Expected
+        The sheet transitions back to the main share shopping list view
+        The "Who has access" section is visible again in the main view
+        The transition animation is smooth and reverses the opening animation
+        Sheet title reverts to the main share sheet title
+    API
+        N/A
+WHO_ACCESS-12 | X button in access list dismisses the entire share sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Who has access list is currently displayed
+    Actions
+        Locate the X close button in the top right of the sheet header
+        Tap the X button
+        Observe the dismissal behavior
+    Expected
+        The entire share shopping list sheet is dismissed completely
+        User returns directly to the shopping list screen
+        No intermediate views are shown during dismissal
+        Dismiss animation plays smoothly
+    API
+        N/A
+WHO_ACCESS-13 | No remove button is shown for any user in the access list [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least two other people
+        Who has access list is displayed
+    Actions
+        Observe each user entry in the list including the current user
+        Check the right side of each list item for any buttons or actions
+    Expected
+        No remove button is displayed for any user in the list
+        No "Fjern" or remove action is present for other users
+        No remove button is present for the current user
+        The list is read-only and displays information only
+    API
+        N/A
+WHO_ACCESS-14 | Who has access section subtitle truncates gracefully with long names [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with exactly one person who has a very long full name
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section subtitle
+        Verify how the long name is handled within the one-line constraint
+    Expected
+        The subtitle displays "Dig og <person's full name>" but truncates with ellipsis if the name is too long
+        The subtitle respects the max 1 line constraint
+        The text does not overflow or wrap to a second line
+        The truncation is visually acceptable and readable
+    API
+        GET /api/shopping-lists/{id} - Returns user with long full_name field
+WHO_ACCESS-15 | Who has access list displays correctly with only current user [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list not shared with anyone
+        Who has access list is displayed
+    Actions
+        Observe the contents of the access list
+        Verify only the current user is shown
+        Check the list behavior and display
+    Expected
+        Only the current user is displayed in the list
+        The current user has the "Dig" label to the right of their name
+        The list does not show any empty states or placeholder entries
+        The sheet height adjusts to show only one user entry
+    API
+        N/A
+WHO_ACCESS-16 | Who has access section avatar display with maximum users [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with many users exceeding the visible avatar limit
+        Share shopping list sheet is presented
+    Actions
+        Observe the avatars displayed in the "Who has access" section
+        Count the number of visible avatars
+        Note if there is any overflow indicator
+    Expected
+        Avatars are displayed following the same logic as FRA-735 with larger size
+        If more users exist than can be shown avatars may overlap or show an overflow indicator per design
+        Current user's avatar is always shown first
+        The section handles many users gracefully without breaking the layout
+    API
+        GET /api/shopping-lists/{id} - Returns shopping list with many shared users
+WHO_ACCESS-17 | Who has access list displays correct avatar for each user [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with at least two other people
+        Who has access list is displayed
+    Actions
+        Observe each user's avatar in the list
+        Verify avatars display correctly for users with profile images
+        Verify avatars display correctly for users without profile images
+    Expected
+        Users with profile images display their avatar image correctly
+        Users without profile images display initials or placeholder avatar
+        Avatars are clearly visible and properly sized
+        Current user's avatar matches the avatar shown in the section view
+    API
+        N/A
+WHO_ACCESS-18 | Sheet title transitions correctly when navigating to access list [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented showing the main view
+    Actions
+        Note the current sheet title
+        Tap on the "Who has access" section
+        Observe the title during and after the transition
+    Expected
+        The sheet title transitions from the main share sheet title to app_share_list.access_list_title
+        The title change is synchronized with the view transition
+        The new title is clearly displayed and not truncated
+        The title updates smoothly without flickering
+    API
+        N/A
+WHO_ACCESS-19 | Who has access list handles users with missing or null names gracefully [P2]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Shopping list data contains a shared user with null or missing full_name field in the database
+        Who has access list is displayed
+    Actions
+        Observe the user entry with missing name data
+        Verify how the app handles the missing information
+    Expected
+        The app displays a fallback value for the user such as email or user ID or placeholder text
+        The list does not crash or show blank entries
+        The user entry is still displayed in the list
+        Alphabetical sorting handles the missing name appropriately
+    API
+        GET /api/shopping-lists/{id} - Returns user with null or missing full_name
+WHO_ACCESS-20 | Who has access section uses data from shopping list database [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Shopping list data has been synced to local database
+        Share shopping list sheet is presented
+    Actions
+        Observe the "Who has access" section
+        Verify the data source by checking offline behavior or database state
+    Expected
+        The "Who has access" section uses shopping list shared users data from the local database
+        Data displayed matches the most recent sync from the server
+        The section displays correctly even in offline mode if data is cached
+        No network request is required to display the section
+    API
+        GET /api/shopping-lists/{id} - Data previously fetched and stored in local database
+WHO_ACCESS-21 | Back navigation maintains sheet state when returning to main view [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Who has access list is currently displayed
+        User had previously scrolled on the main share sheet view before opening the list
+    Actions
+        Tap the back button to return to the main share sheet view
+        Observe the scroll position and view state
+    Expected
+        The main share sheet view is restored to its previous state
+        Scroll position is maintained or reset to top depending on design specification
+        The "Who has access" section is visible and interactive
+        View state is consistent with before navigating to the list
+    API
+        N/A
+WHO_ACCESS-22 | Subtitle count updates correctly when number of shared users changes [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list shared with multiple people
+        Share shopping list sheet is presented
+        Another user removes themselves or is removed while the sheet is open
+    Actions
+        Observe the initial subtitle showing the count of shared users
+        Trigger an update to the shopping list shared users in the background
+        Observe if the subtitle updates to reflect the new count
+    Expected
+        The subtitle count updates automatically when the shopping list data changes
+        The subtitle transitions from "Dig og <old_number> andre" to "Dig og <new_number> andre"
+        If count drops to one person the subtitle changes to the single person format
+        If count drops to zero the subtitle changes to not shared format
+    API
+        N/A - Testing local data update handling
+WHO_ACCESS-23 | Swipe down gesture on access list returns to main share view [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Who has access list is currently displayed
+        Platform supports swipe down gesture for bottom sheet navigation
+    Actions
+        Perform a swipe down gesture from the top of the sheet
+        Observe the sheet behavior
+    Expected
+        Swiping down on the access list navigates back to the main share sheet view
+        The behavior matches tapping the back button
+        The transition animation is smooth
+        Sheet title and content revert to the main view
+    API
+        N/A
+WHO_ACCESS-24 | Who has access section is tappable across entire section area [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented
+    Actions
+        Tap on different areas of the "Who has access" section including title area subtitle area and avatar area
+        Observe the response to each tap
+    Expected
+        Tapping anywhere within the "Who has access" section boundary opens the access list
+        The entire section acts as a single tappable button
+        Tap target is large enough for comfortable interaction
+        Visual feedback indicates the section is interactive such as subtle highlight or ripple effect
+    API
+        N/A

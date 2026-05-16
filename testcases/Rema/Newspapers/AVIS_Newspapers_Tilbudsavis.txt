@@ -1,0 +1,541 @@
+Newspapers (Aviser/Tilbudsavis) - AVIS
+
+AVIS-01 | Verify Aviser module displays on home screen [P0]
+    Preconditions
+        User is logged in
+        User is on the home screen
+    Actions
+        Scroll to the Aviser section
+        Observe the section header and content
+    Expected
+        Aviser section is visible on the home screen
+        Section shows a horizontal carousel of newspaper covers
+        Each card displays cover image, week label (e.g., "Uge 15"), and date range (e.g., "07.04.2026 - 11.04.2026")
+        "SE ALLE" link is visible at the top right of the section
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns catalog array; each catalog has label, run_from, run_till, images (thumb/view/zoom)
+AVIS-02 | Verify Kommende badge display matches API dates [P1]
+    Preconditions
+        User is logged in
+        User is on the home screen
+        At least one upcoming newspaper exists in the carousel
+    Actions
+        Scroll to the Aviser section
+        Observe newspaper cards — check which ones show "Kommende" badge
+        Compare badge visibility with run_from dates from catalogs API
+    Expected
+        Newspapers with run_from in the future display "Kommende" badge overlay
+        Current/past newspapers do not show the "Kommende" badge
+        Badge logic is consistent across home carousel and SE ALLE grid
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Badge shown when run_from > now; publish field determines when content is viewable
+AVIS-03 | Verify horizontal scrolling in Aviser carousel [P1]
+    Preconditions
+        User is logged in
+        User is on the home screen
+        More newspapers exist than fit on screen
+    Actions
+        Scroll to the Aviser section
+        Swipe left and right on the newspaper carousel
+    Expected
+        Carousel scrolls horizontally to reveal additional newspaper covers
+        Scrolling is smooth and responsive
+    API
+        N/A
+AVIS-04 | Verify opening newspaper from home carousel [P0]
+    Preconditions
+        User is logged in
+        User is on the home screen
+    Actions
+        Scroll to the Aviser section
+        Tap on a newspaper cover in the carousel
+    Expected
+        Newspaper detail view opens in WebView (publication-viewer.tjek.com)
+        Header displays back arrow, title "Uge XX", and date range
+        Full-page newspaper image is displayed
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Catalog id used to load WebView
+        POST https://squid-api.tjek.com/sync - Analytics event with pp.id matching catalog id
+AVIS-05 | Verify page navigation in newspaper viewer [P0]
+    Preconditions
+        User is in the newspaper detail view
+        Newspaper has multiple pages
+    Actions
+        Swipe left to go to next page
+        Swipe right to go to previous page
+        Swipe up/down to scroll within a page
+        Observe page number in the bottom corner
+    Expected
+        Swiping left advances to the next page, right goes back
+        Vertical scroll works within a single page without triggering page change
+        Page number updates correctly on each page transition
+        Total pages in viewer matches page_count from catalogs API
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - page_count field indicates total pages
+AVIS-06 | Verify first and last page boundary behavior [P1]
+    Preconditions
+        User is in the newspaper detail view
+    Actions
+        Navigate to the first page, swipe right repeatedly
+        Navigate to the last page, swipe left repeatedly
+    Expected
+        On first page, swiping right does not navigate further (bounce effect)
+        On last page, swiping left does not navigate further (bounce effect)
+        No crash or unexpected navigation
+    API
+        N/A
+AVIS-07 | Verify zoom functionality on newspaper page [P0]
+    Preconditions
+        User is in the newspaper detail view
+    Actions
+        Pinch outward to zoom in
+        Pinch inward to zoom out
+        Double-tap to toggle zoom
+        While zoomed in, swipe left to navigate to next page
+    Expected
+        Pinch zoom is smooth and responsive
+        Double-tap zooms in to predefined level, second double-tap zooms back out
+        Zoomed content remains readable
+        Navigating to next page resets zoom to default level
+    API
+        N/A
+AVIS-08 | Verify product tap opens offer overlay with correct data [P0]
+    Preconditions
+        User is in the newspaper detail view
+        Current page displays product offers
+    Actions
+        Tap on a product area within the newspaper page
+        Observe overlay content
+        Compare displayed price, description, and products with API response
+    Expected
+        Overlay opens with header "AVISVARER - UGE XX" and the offer price
+        Price matches pricing.price from offer API (formatted as Danish locale with comma separator)
+        If pre_price exists, shown as strikethrough original price
+        Product name (heading) and description from API are displayed
+        List of matched store products appears below
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - Returns heading, description, pricing (price/pre_price/currency), catalog_page, quantity, images
+        POST https://squid-api.tjek.com/v4/rpc/get_offer_products - Request body {"id": "offerId"}; returns offer_products array with matched store products
+AVIS-09 | Verify product details in offer overlay [P0]
+    Preconditions
+        User has opened a product detail overlay from a newspaper page
+    Actions
+        Observe product cards in the overlay
+        Scroll through the list of related products
+    Expected
+        Each product shows: image, weight/quantity, brand, product name, price per kg, price
+        Heart/favorite icon, info (i) icon, and add-to-cart (+) button are visible on each product
+        Some products may show availability messages ("Varen kan ikke handles online", "Findes ikke i alle butikker")
+        Validity text at bottom ("Tilbuddet gælder fra...") matches run_from/run_till from offer API
+    API
+        POST https://squid-api.tjek.com/v4/rpc/get_offer_products - Each product has: product.id, product.gtin (nullable), product.brand (nullable), product.images, name, external_id
+        GET https://api.staging.digital.rema1000.dk/api/v1/catalog/store/{storeId}/item/{itemId}/image/{timestamp}/{size}.png - Product images from Rema catalog
+AVIS-10 | Verify dismissing product detail overlay [P0]
+    Preconditions
+        User has opened a product detail overlay from a newspaper page
+    Actions
+        Tap the back button or use back gesture
+    Expected
+        Overlay dismisses
+        User returns to the newspaper page at the same page and scroll position
+    API
+        N/A
+AVIS-11 | Verify validity text on newspaper pages matches API dates [P2]
+    Preconditions
+        User is in the newspaper detail view
+        Current page has validity information
+    Actions
+        Observe validity text at bottom or left side of the page
+        Compare dates with run_from/run_till from catalogs API
+    Expected
+        Validity text (e.g., "Gælder fra tirsdag X. april til og med lørdag Y. april") is legible
+        Dates match run_from/run_till from catalogs API
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - run_from and run_till define the offer validity period
+AVIS-12 | Verify SE ALLE screen navigation and layout [P0]
+    Preconditions
+        User is logged in
+        User is on the home screen
+    Actions
+        Scroll to the Aviser section
+        Tap "SE ALLE"
+        Observe screen layout
+    Expected
+        SE ALLE screen opens with two tabs: "Aviser" and "Avisvarer"
+        "Aviser" tab is selected by default
+        Search icon (magnifying glass) is visible in top right
+        Back arrow in top left returns to home screen
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Fetched on SE ALLE load to populate Aviser grid
+AVIS-13 | Verify Aviser tab grid layout and newspaper cards [P0]
+    Preconditions
+        User is on the SE ALLE screen
+        "Aviser" tab is selected
+    Actions
+        Observe the grid layout
+        Scroll through the list
+        Tap on a newspaper card
+    Expected
+        Newspapers are displayed in a grid layout
+        Each card shows: cover image, title (e.g., "Uge 15"), date range
+        Current, previous, seasonal/special editions, and inserts (Indstik) are shown
+        Upcoming newspapers display "Kommende" badge
+        Tapping a card opens the newspaper detail view
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - label, images.thumb, run_from, run_till
+AVIS-14 | Verify Avisvarer tab with product categories [P0]
+    Preconditions
+        User is on the SE ALLE screen
+    Actions
+        Tap the "Avisvarer" tab
+        Scroll through the product list
+    Expected
+        Product list is displayed organized by categories (e.g., "DINE FAVORITTER", "BRØD & BAVINCHI")
+        "DINE FAVORITTER" section appears at top if user has favorited products in current offers
+        Category headers are clearly visible
+        Data is built client-side from cached offers — no additional API call on tab switch
+    API
+        N/A - Avisvarer product list is constructed client-side from offers data already fetched
+AVIS-15 | Verify product card content in Avisvarer [P0]
+    Preconditions
+        User is on the Avisvarer tab
+    Actions
+        Observe individual product cards
+    Expected
+        Each product shows: image, weight/quantity, brand, product name, price per kg, price
+        Heart/favorite icon, info (i) icon, and add-to-cart button are visible
+        Some products show "Max X stk til tilbudspris" (purchase limit from offer description)
+        Some products show "Findes ikke i alle butikker"
+        Beverages show PANT deposit information separately
+    API
+        GET https://api.staging.digital.rema1000.dk/api/v1/catalog/store/{storeId}/item/{itemId}/image/{timestamp}/{size}.png - Product images
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - description field contains purchase limit text (e.g., "Maks. 6 stk. pr. kunde pr. dag")
+AVIS-16 | Verify search in Avisvarer [P0]
+    Preconditions
+        User is on the Avisvarer tab
+    Actions
+        Tap the search icon
+        Type a product keyword (e.g., "brød", "kylling")
+        Observe results update
+        Tap clear (X) button
+        Type a keyword with no matches (e.g., "xyzabc123")
+    Expected
+        Search field shows placeholder "Søg i ugens avisvarer"
+        Results filter dynamically as user types — no network request (client-side filtering)
+        Clearing search returns full product list
+        No-match search shows empty state or "no results" message
+    API
+        N/A - Client-side filtering of locally cached offers data
+AVIS-17 | Verify add and remove product via swipe in Avisvarer [P0]
+    Preconditions
+        User is on the Avisvarer tab
+    Actions
+        Swipe right on a product row to add to cart
+        Observe quantity badge and cart total bar at bottom
+        Swipe left on the same product to decrease quantity
+    Expected
+        Swipe right adds product — quantity badge appears, cart total updates
+        Swipe left decrements quantity — if reaches 0, badge disappears
+        Cart total bar at bottom shows total items and price
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Request body contains changes array with item: amount, bought, name, source, store_id, store_item_id, offlineId (UUID)
+AVIS-18 | Verify favorite toggle on products [P0]
+    Preconditions
+        User is on the Avisvarer tab or product overlay
+    Actions
+        Tap heart icon on a non-favorited product
+        Tap heart icon again to unfavorite
+    Expected
+        Heart icon toggles between outline (not favorited) and filled (favorited)
+        Change is immediate (optimistic UI)
+        If product was in "DINE FAVORITTER" section, removing favorite may remove it from that section on next visit
+    API
+        N/A
+AVIS-19 | Verify tab state preservation and navigation [P1]
+    Preconditions
+        User is on the SE ALLE screen
+        User has scrolled down in the Avisvarer tab
+    Actions
+        Switch to the Aviser tab
+        Switch back to the Avisvarer tab
+        Tap back arrow to go home
+    Expected
+        Scroll position in Avisvarer tab is preserved after tab switch
+        Back arrow returns to home screen with scroll position near Aviser section
+    API
+        N/A
+AVIS-20 | Verify tapping non-product area in newspaper does nothing [P2]
+    Preconditions
+        User is in the newspaper detail view
+    Actions
+        Tap on an empty area of the newspaper page (no product)
+    Expected
+        No overlay opens, no navigation occurs, page stays in current state
+    API
+        N/A
+AVIS-21 | Verify catalog labels and dates in UI match API response [P0]
+    Preconditions
+        User is viewing Aviser section (home carousel or SE ALLE grid)
+    Actions
+        Compare newspaper titles in UI with label field from catalogs API
+        Compare date ranges in UI with run_from/run_till from catalogs API
+    Expected
+        Title in UI exactly matches label from API (e.g., "Uge 15")
+        Start date matches run_from, end date matches run_till
+        Date format is Danish locale (e.g., "07.04.2026 - 11.04.2026")
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - label, run_from, run_till fields
+AVIS-22 | Verify offer prices in overlay match API pricing [P0]
+    Preconditions
+        User has opened offer overlay from newspaper page
+    Actions
+        Compare displayed price with pricing.price from offer API
+        If pre_price exists, check for strikethrough display
+    Expected
+        Current price matches pricing.price (formatted with comma decimal, e.g., "19,95 kr.")
+        If pre_price present, shown as strikethrough original price
+        No pre_price → no discount indicator shown
+        Currency displayed as "kr." or "DKK"
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - pricing.price, pricing.pre_price, pricing.currency
+AVIS-23 | Verify product count in Avisvarer matches offer_count [P1]
+    Preconditions
+        User is on Avisvarer tab (unfiltered)
+    Actions
+        Count total products in Avisvarer list
+        Compare with offer_count from catalogs API for current catalog
+    Expected
+        Product count matches offer_count from API
+        Consistent across multiple loads
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - offer_count field
+AVIS-24 | Verify catalog_page maps offer to correct page in viewer [P1]
+    Preconditions
+        Offer has catalog_page field
+    Actions
+        Note catalog_page from offer API (e.g., catalog_page = 5)
+        Navigate to that page in newspaper viewer
+        Verify the product/offer appears on that page
+    Expected
+        Offer is located on the page indicated by catalog_page
+        Page number in viewer matches catalog_page value
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - catalog_page field
+AVIS-25 | Verify offer description with purchase limits renders correctly [P1]
+    Preconditions
+        Offer has description with purchase limit (e.g., "Maks. 6 stk. pr. kunde pr. dag")
+    Actions
+        Open offer overlay
+        Check description text matches API response
+    Expected
+        Full description displayed without truncation
+        Danish characters (æ, ø, å) render correctly
+        Purchase limit info shown in product list as "Max X stk til tilbudspris"
+    API
+        GET https://squid-api.tjek.com/v2/offers/{offerId} - description field
+AVIS-26 | Verify shopping list sync sends correct platform source and headers [P0]
+    Preconditions
+        User is logged in
+        User adds product from Avisvarer
+    Actions
+        Intercept POST to /api/v1/sync/shoppinglists-v2 (via Proxyman)
+        Verify source field and request headers
+    Expected
+        Android: source = "android_newspaper_list"; iOS: source = "ios_newspaper_list"
+        X-Device header matches platform ("android" / "ios")
+        X-Locale: "da", X-Timezone: "Europe/Copenhagen"
+        Authorization: Bearer {valid_token}
+        Item has required fields: amount, bought (false), name, store_id, store_item_id, offlineId (UUID)
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Platform-specific source field and headers
+AVIS-27 | Verify offlineId uniqueness in cart sync [P1]
+    Preconditions
+        User adds multiple products from Avisvarer in succession
+    Actions
+        Intercept multiple POST requests to shopping list sync API
+        Extract offlineId from each item
+    Expected
+        Each item has a unique offlineId in UUID format
+        Same product added multiple times gets different offlineIds
+        No duplicates across requests
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - items[].offlineId
+AVIS-28 | Verify analytics event fires on catalog open [P1]
+    Preconditions
+        User opens a newspaper in the viewer
+    Actions
+        Intercept POST to https://squid-api.tjek.com/sync
+        Verify pp.id matches catalog ID from catalogs API
+    Expected
+        Analytics event fires on catalog open
+        pp.id matches the catalog.id
+        Event is acknowledged (status: "ack" in response)
+    API
+        POST https://squid-api.tjek.com/sync - events[].pp.id field
+AVIS-29 | Verify app handles catalogs API failure gracefully [P1]
+    Preconditions
+        Tjek catalogs API returns 500 or times out (mock via Proxyman)
+    Actions
+        Navigate to Aviser section
+        Observe app behavior
+    Expected
+        App shows error state or empty state — no crash
+        Loading indicator shown during request, error message after failure/timeout
+        User can retry (pull to refresh)
+        Cached catalogs (if any) remain visible
+        Other home screen modules still display normally
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns 500 or times out
+AVIS-30 | Verify app handles empty catalogs response [P1]
+    Preconditions
+        Catalogs API returns empty array [] (mock via Proxyman)
+    Actions
+        Navigate to Aviser section
+        Observe app behavior
+    Expected
+        App shows empty state (e.g., "Ingen tilbudsaviser" or hidden section)
+        No crash or error
+        Other home screen modules still display
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - Returns []
+AVIS-31 | Verify app handles offer detail 404 [P1]
+    Preconditions
+        User taps a product in newspaper
+        Offer ID is invalid or deleted (mock 404 via Proxyman)
+    Actions
+        Observe app behavior when offer returns 404
+    Expected
+        App shows error or falls back gracefully — no crash
+        User can dismiss and continue browsing the newspaper
+    API
+        GET https://squid-api.tjek.com/v2/offers/INVALID_ID - Returns 404
+AVIS-32 | Verify app handles empty offer products [P2]
+    Preconditions
+        Offer exists but has no matched store products (mock empty array via Proxyman)
+    Actions
+        Tap product in newspaper to open overlay
+        Observe product list section
+    Expected
+        Overlay opens with offer header and price
+        Product list is empty or shows "Ingen varer fundet" message
+        No crash
+    API
+        POST https://squid-api.tjek.com/v4/rpc/get_offer_products - Returns {"offer_products": []}
+AVIS-33 | Verify app handles product image 404 [P2]
+    Preconditions
+        Product has invalid or missing image URL
+    Actions
+        View product in Avisvarer or offer overlay
+    Expected
+        Placeholder image or fallback UI shown — no crash
+        Product name, price, and other details still display correctly
+        Product can still be added to cart
+    API
+        GET https://api.staging.digital.rema1000.dk/api/v1/catalog/store/{storeId}/item/{itemId}/image/... - Returns 404
+AVIS-34 | Verify app handles shopping list sync failure [P2]
+    Preconditions
+        Shopping list sync API returns 401 or 500 (mock via Proxyman)
+    Actions
+        Add product from Avisvarer
+        Observe app behavior
+    Expected
+        On 401: app detects unauthorized, prompts re-login or shows session expired
+        On 500: error message displayed, user can retry
+        No crash in either case
+        Product may be queued for offline sync on server errors
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Returns 401 or 500
+AVIS-35 | Verify app handles Tjek WebView outage [P2]
+    Preconditions
+        All Tjek endpoints unreachable (block via Proxyman or airplane mode)
+    Actions
+        Try to open newspaper viewer
+    Expected
+        WebView fails to load — error message shown
+        No crash or freeze
+        User can navigate back
+    API
+        N/A - Complete Tjek API outage; publication-viewer.tjek.com unreachable
+AVIS-36 | Verify product with null gtin and brand still displays [P2]
+    Preconditions
+        Offer products API returns product with gtin = null and brand = null
+    Actions
+        View product in Avisvarer or overlay
+    Expected
+        Product displays with name and image — no crash from null fields
+        Product can be added to shopping list
+    API
+        POST https://squid-api.tjek.com/v4/rpc/get_offer_products - product.gtin = null, product.brand = null
+AVIS-37 | Verify expired catalogs are handled correctly [P1]
+    Preconditions
+        Catalogs API returns catalog with run_till in the past
+    Actions
+        Check if expired catalog appears in app
+        Try to open it
+    Expected
+        Expired catalogs may be shown but deprioritized — active catalogs appear first
+        User can still view expired catalogs if displayed
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - catalog with run_till < now
+AVIS-38 | Verify rapid add-to-cart sync integrity [P2]
+    Preconditions
+        User is on Avisvarer tab
+    Actions
+        Swipe to add multiple products in quick succession (< 1 second apart)
+        Observe sync behavior and cart total
+    Expected
+        Each add generates unique offlineId
+        All items sync without duplicates or data loss
+        Cart total updates correctly for all items
+    API
+        POST https://api.staging.digital.rema1000.dk/api/v1/sync/shoppinglists-v2 - Multiple rapid requests
+AVIS-39 | Verify newspaper viewer for logged-out user [P1]
+    Preconditions
+        User is not logged in
+    Actions
+        Navigate to Aviser section
+        Tap a newspaper and browse pages
+        Tap a product and attempt to add to cart
+    Expected
+        Newspaper pages are viewable without login
+        Product overlay may show products but add-to-cart requires login
+        App prompts login when attempting to add to cart
+    API
+        GET https://squid-api.tjek.com/v2/catalogs?dealer_id=11deC - No auth required for catalog browsing
+AVIS-40 | Verify newspaper loads on slow network [P2]
+    Preconditions
+        Device has slow network (throttle via Proxyman)
+    Actions
+        Open a newspaper from Aviser section
+        Observe loading behavior
+    Expected
+        Loading indicator/skeleton shown while pages load
+        Pages load progressively
+        App remains responsive — no timeout crash
+    API
+        N/A - WebView handles page image loading via publication-viewer.tjek.com
+AVIS-41 | Verify app recovers after backgrounding during newspaper view [P2]
+    Preconditions
+        User is viewing newspaper detail
+    Actions
+        Send app to background
+        Wait 5+ minutes
+        Return to app
+    Expected
+        App resumes on the same newspaper page — no crash or blank screen
+        Content reloads if session expired
+    API
+        N/A
+AVIS-42 | Verify orientation change in newspaper viewer [P2]
+    Preconditions
+        User is in the newspaper detail view
+        Device supports orientation changes
+    Actions
+        Rotate device from portrait to landscape
+        Rotate back to portrait
+    Expected
+        Newspaper page adjusts to new orientation
+        Content remains readable and properly scaled
+        Current page and zoom level are preserved
+    API
+        N/A

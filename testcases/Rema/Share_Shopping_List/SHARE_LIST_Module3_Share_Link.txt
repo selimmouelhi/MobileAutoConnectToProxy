@@ -1,0 +1,414 @@
+Share Shopping List - Module 3: Share Link
+
+SHARE_LINK-01 | Share sheet displays three rounded share link buttons [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented and fully loaded
+    Actions
+        Observe the bottom section of the share shopping list sheet
+        Identify the share link buttons displayed
+        Verify the count and labels of the buttons
+    Expected
+        Three rounded buttons are displayed in the share sheet footer area
+        The first button is labeled with text matching localization key app_share_list.share_footer_qr_code
+        The second button is labeled with text matching localization key app_share_list.share_footer_share_link
+        The third button is labeled with text matching localization key app_share_list.share_footer_copy_link
+        No raw localization key strings are displayed
+        All three buttons are visible without scrolling
+    API
+        N/A
+SHARE_LINK-02 | Share link buttons are always visible regardless of sharing state [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented and fully loaded
+    Actions
+        Open the share sheet on a shopping list that is not shared with anyone
+        Observe the share link buttons
+        Dismiss the sheet
+        Open the share sheet on a shopping list that is shared with multiple people
+        Observe the share link buttons
+    Expected
+        The three share link buttons (QR code, Share link, Copy link) are displayed on both shared and unshared lists
+        Button labels and positions are consistent regardless of sharing state
+        Buttons are fully interactive in both scenarios
+    API
+        N/A
+SHARE_LINK-03 | Share link buttons display highlight state on press [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+    Actions
+        Tap and hold the QR code button briefly and observe the visual state
+        Release the button
+        Tap and hold the Share link button briefly and observe the visual state
+        Release the button
+        Tap and hold the Copy link button briefly and observe the visual state
+        Release the button
+    Expected
+        Each button displays a visible highlight state while being pressed (Vigo button style)
+        The highlight state is visually distinct from the default resting state
+        The highlight state is removed when the press is released
+        All three buttons exhibit the same highlight behavior consistently
+    API
+        N/A
+SHARE_LINK-04 | Tapping share link button fetches the share link and shows loading state [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow the share link API request to proceed
+    Actions
+        Tap the Share link button
+        Observe the button state immediately after tapping
+        Observe the other two buttons during loading
+    Expected
+        The Share link button displays a loading state with a circle spinner within the button
+        The QR code button and Copy link button are not clickable during loading
+        The loading state persists until the share link is fetched from the Shared KMP module
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API
+SHARE_LINK-05 | Tapping copy link button fetches the share link and shows loading state [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow the share link API request to proceed
+    Actions
+        Tap the Copy link button
+        Observe the button state immediately after tapping
+        Observe the other two buttons during loading
+    Expected
+        The Copy link button displays a loading state with a circle spinner within the button
+        The QR code button and Share link button are not clickable during loading
+        The loading state persists until the share link is fetched from the Shared KMP module
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API
+SHARE_LINK-06 | Only the tapped button shows loading spinner while other buttons are disabled [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network is throttled to make the loading state observable
+    Actions
+        Tap the Share link button
+        Observe the visual state of all three buttons during loading
+        Attempt to tap the QR code button while loading is in progress
+        Attempt to tap the Copy link button while loading is in progress
+    Expected
+        Only the Share link button shows the circle spinner loading indicator
+        The QR code and Copy link buttons do not show a loading spinner
+        Tapping the QR code button during loading produces no action
+        Tapping the Copy link button during loading produces no action
+        The disabled buttons do not display a highlight state when tapped
+    API
+        N/A
+SHARE_LINK-07 | Share link action presents the native share sheet after fetching the link [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow a successful share link API response
+    Actions
+        Tap the Share link button
+        Wait for the share link to be fetched successfully
+        Observe the screen after fetching completes
+    Expected
+        The loading spinner on the Share link button disappears after the link is fetched
+        The native share sheet (iOS share sheet or Android share intent) is presented
+        The native share sheet contains the fetched share link URL
+        The share shopping list bottom sheet remains visible behind the native share sheet
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API
+SHARE_LINK-08 | Completing sharing in native share sheet dismisses the share shopping list sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        The native share sheet has been presented after tapping the Share link button
+        The fetched share link is visible in the native share sheet
+    Actions
+        Complete the sharing action in the native share sheet (e.g. select a messaging app and send the link)
+        Observe the result after sharing is completed
+    Expected
+        The native share sheet is dismissed after the sharing action completes
+        The share shopping list bottom sheet is also dismissed
+        User is returned to the shopping list screen
+        The shopping list screen state is preserved (scroll position, data unchanged)
+    API
+        N/A
+SHARE_LINK-09 | Cancelling the native share sheet does not dismiss the share shopping list sheet [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        The native share sheet has been presented after tapping the Share link button
+    Actions
+        Cancel or dismiss the native share sheet without completing a sharing action
+        Observe the state of the share shopping list sheet
+    Expected
+        The native share sheet is dismissed
+        The share shopping list bottom sheet remains open and fully interactive
+        All three share link buttons return to their default resting state
+        The Share link button is no longer in loading state
+        User can tap any of the three buttons again
+    API
+        N/A
+SHARE_LINK-10 | Copy link action copies to clipboard and dismisses the share sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow a successful share link API response
+    Actions
+        Tap the Copy link button
+        Wait for the share link to be fetched successfully
+        Observe the result after fetching completes
+        Open a text input field elsewhere on the device and paste to verify clipboard content
+    Expected
+        The loading spinner on the Copy link button disappears after the link is fetched
+        The share shopping list bottom sheet is dismissed
+        User is returned to the shopping list screen
+        The fetched share link URL has been copied to the device clipboard
+        Pasting from clipboard produces the correct share link URL
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API
+SHARE_LINK-11 | Share link fetch failure shows error alert and exits loading state [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions are configured to cause the share link API request to fail
+    Actions
+        Tap the Share link button
+        Wait for the request to fail
+        Observe the button state after failure
+        Observe the error alert that appears
+    Expected
+        The Share link button exits the loading state (spinner is removed)
+        An error alert is presented on top of the share shopping list sheet
+        The error alert title displays text matching localization key app_share_list.create_link_error_title (fallback: "Der skete en fejl")
+        The error alert message displays text matching localization key app_share_list.create_link_error_message (fallback: "Linket kunne ikke laves. Prøv igen")
+        The error alert has an action button matching localization key app_share_list.create_link_error_action (fallback: "OK")
+        No raw localization key strings are displayed
+    API
+        Share link request fails via the Shared KMP module
+SHARE_LINK-12 | Copy link fetch failure shows error alert and exits loading state [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions are configured to cause the share link API request to fail
+    Actions
+        Tap the Copy link button
+        Wait for the request to fail
+        Observe the button state after failure
+        Observe the error alert that appears
+    Expected
+        The Copy link button exits the loading state (spinner is removed)
+        An error alert is presented on top of the share shopping list sheet
+        The error alert title displays text matching localization key app_share_list.create_link_error_title (fallback: "Der skete en fejl")
+        The error alert message displays text matching localization key app_share_list.create_link_error_message (fallback: "Linket kunne ikke laves. Prøv igen")
+        The error alert has an action button matching localization key app_share_list.create_link_error_action (fallback: "OK")
+        No raw localization key strings are displayed
+    API
+        Share link request fails via the Shared KMP module
+SHARE_LINK-13 | Dismissing error alert returns to interactive share sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share link error alert is displayed on top of the share shopping list sheet
+    Actions
+        Tap the "OK" button on the error alert
+        Observe the error alert
+        Observe the share shopping list sheet
+    Expected
+        The error alert is dismissed
+        The share shopping list sheet remains open and visible
+        All three share link buttons return to their default resting state and are fully interactive
+        User can tap any of the three buttons to retry the action
+    API
+        N/A
+SHARE_LINK-14 | Buttons are re-enabled after error alert is dismissed [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        A share link error alert was displayed and then dismissed by tapping "OK"
+        Share shopping list sheet is still open
+    Actions
+        Tap the Share link button
+        Observe whether the button responds
+        Dismiss any resulting alert or sheet
+        Tap the Copy link button
+        Observe whether the button responds
+        Dismiss any resulting alert or sheet
+        Tap the QR code button
+        Observe whether the button responds
+    Expected
+        All three buttons are clickable and respond to taps after the error alert has been dismissed
+        Each button functions correctly as if it were the first interaction
+        Loading states and subsequent actions work correctly on retry
+    API
+        N/A
+SHARE_LINK-15 | Copy link snackbar displays correct title and subtitle after successful copy [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow a successful share link API response
+    Actions
+        Tap the Copy link button
+        Wait for the link to be fetched and the share sheet to be dismissed
+        Observe the snackbar that appears on the shopping list screen
+    Expected
+        A snackbar is displayed on the shopping list screen after the share sheet has been dismissed
+        The snackbar title displays text matching localization key app_share_list.toast_link_copied_title (fallback: "Link kopieret")
+        The snackbar subtitle displays text matching localization key app_share_list.toast_link_copied_body (fallback: "Linket er kopieret til udklipsholder")
+        No raw localization key strings are displayed
+    API
+        N/A
+SHARE_LINK-16 | Share link snackbar displays correct title and subtitle after successful share [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow a successful share link API response
+    Actions
+        Tap the Share link button
+        Wait for the native share sheet to appear
+        Complete the sharing action in the native share sheet
+        Wait for the share shopping list sheet to be dismissed
+        Observe the snackbar that appears on the shopping list screen
+    Expected
+        A snackbar is displayed on the shopping list screen after the share sheet has been dismissed
+        The snackbar title displays text matching localization key app_share_list.toast_link_shared_title (fallback: "Link delt")
+        The snackbar subtitle displays text matching localization key app_share_list.toast_link_shared_body (fallback: "Linket er delt med personen")
+        No raw localization key strings are displayed
+    API
+        N/A
+SHARE_LINK-17 | Snackbar appears after the share shopping list sheet is fully dismissed [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow a successful share link API response
+    Actions
+        Tap the Copy link button
+        Carefully observe the timing of the share sheet dismissal and snackbar appearance
+    Expected
+        The snackbar does not appear while the share shopping list sheet is still visible
+        The snackbar appears only after the share sheet dismiss animation has completed
+        The snackbar is displayed on the shopping list screen
+        The sequence is: loading completes, sheet dismisses, snackbar appears
+    API
+        N/A
+SHARE_LINK-18 | Snackbar has no tap action [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        A snackbar confirmation is currently displayed after a successful copy link or share link action
+    Actions
+        Tap on the snackbar
+        Observe the result
+    Expected
+        Tapping the snackbar produces no navigation or action
+        The snackbar does not dismiss prematurely when tapped
+        No screen transition occurs as a result of tapping the snackbar
+        The snackbar disappears on its own after its display duration expires
+    API
+        N/A
+SHARE_LINK-19 | Snackbar visual style matches existing product-added-to-list snackbar [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has previously observed the product-added-to-list snackbar for visual reference
+    Actions
+        Trigger a copy link action to produce the copy link snackbar
+        Observe the snackbar styling (colors, font, padding, position, animation)
+        Compare the styling with the existing product-added-to-list snackbar
+    Expected
+        The share link snackbar uses the same visual style as the product-added-to-list snackbar
+        Font size, font weight, and font color match
+        Background color and corner radius match
+        Padding and margin from screen edges match
+        Position on screen (top or bottom) matches
+        Entry and exit animations match
+    API
+        N/A
+SHARE_LINK-20 | No snackbar is shown when native share sheet is cancelled [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        The native share sheet has been presented after tapping the Share link button
+    Actions
+        Cancel or dismiss the native share sheet without completing a sharing action
+        Observe the shopping list screen and share shopping list sheet
+    Expected
+        No snackbar is displayed
+        The share shopping list sheet remains open
+        The shopping list screen does not show any confirmation message
+    API
+        N/A
+SHARE_LINK-21 | No snackbar is shown when share link fetch fails [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions are configured to cause the share link API request to fail
+    Actions
+        Tap the Share link or Copy link button
+        Wait for the request to fail
+        Dismiss the error alert
+        Observe the shopping list screen and share sheet
+    Expected
+        No snackbar is displayed at any point during the error flow
+        Only the error alert is shown as feedback for the failed request
+        After dismissing the error alert the share sheet remains open without any snackbar
+    API
+        N/A
+SHARE_LINK-22 | Share link button loading spinner is contained within the button [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network is throttled to make the loading state observable
+    Actions
+        Tap the Share link button
+        Observe the loading spinner placement and size
+    Expected
+        The circle spinner is displayed within the bounds of the Share link button
+        The spinner replaces or overlays the button label text
+        The spinner does not extend beyond the button edges
+        The button maintains its original size and shape during loading
+        No layout shift occurs in the surrounding buttons or content
+    API
+        N/A
+SHARE_LINK-23 | Copy link button loading spinner is contained within the button [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network is throttled to make the loading state observable
+    Actions
+        Tap the Copy link button
+        Observe the loading spinner placement and size
+    Expected
+        The circle spinner is displayed within the bounds of the Copy link button
+        The spinner replaces or overlays the button label text
+        The spinner does not extend beyond the button edges
+        The button maintains its original size and shape during loading
+        No layout shift occurs in the surrounding buttons or content
+    API
+        N/A
+SHARE_LINK-24 | Rapid repeated taps on share link button do not trigger multiple requests [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow API requests to proceed
+    Actions
+        Rapidly tap the Share link button multiple times in quick succession
+        Observe the button state and network activity
+        Wait for the request to complete
+    Expected
+        Only one share link request is sent to the API
+        The button enters loading state on the first tap and ignores subsequent taps
+        Only one native share sheet is presented after the link is fetched
+        No duplicate requests or race conditions occur
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API
+SHARE_LINK-25 | Rapid repeated taps on copy link button do not trigger multiple requests [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow API requests to proceed
+    Actions
+        Rapidly tap the Copy link button multiple times in quick succession
+        Observe the button state and network activity
+        Wait for the request to complete
+    Expected
+        Only one share link request is sent to the API
+        The button enters loading state on the first tap and ignores subsequent taps
+        The link is copied to clipboard only once
+        Only one snackbar confirmation is displayed
+        No duplicate requests or race conditions occur
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API

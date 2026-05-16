@@ -1,0 +1,293 @@
+zendesk-01 | Verify help button on Front Page screen
+    Actions
+        Navigate to the Front Page screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-02 | Verify help button on Main screen
+    Actions
+        Navigate to the Main screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-03 | Verify help button on More menu screen
+    Actions
+        Navigate to the More menu screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-04 | Verify help button on Search screen
+    Actions
+        Navigate to the Search screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-05 | Verify help button on Recipes screen
+    Actions
+        Navigate to the Recipes screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-06 | Verify help button on Catalogs screen
+    Actions
+        Navigate to the Catalogs screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-07 | Verify help button on Customer Service screen
+    Actions
+        Navigate to the Customer Service screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-08 | Verify help button on Order List screen
+    Actions
+        Navigate to the Order List screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-09 | Verify help button on Order Details screen
+    Actions
+        Navigate to the Order Details screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-10 | Verify help button on Order Time screen
+    Actions
+        Navigate to the Order Time screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-11 | Verify help button on Cancel Order screen
+    Actions
+        Navigate to the Cancel Order screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-12 | Verify help button on Confirm Delivery screen
+    Actions
+        Navigate to the Confirm Delivery screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-13 | Verify help button on Delivery Not Received screen
+    Actions
+        Navigate to the Delivery Not Received screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-14 | Verify help button on Contact Deliverer Notification screen
+    Actions
+        Navigate to the Contact Deliverer Notification screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-15 | Verify help button on Order Expired Notification screen
+    Actions
+        Navigate to the Order Expired Notification screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-16 | Verify help button on Order Expires Soon screen
+    Actions
+        Navigate to the Order Expires Soon screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-17 | Verify help button on Order MitID Validation screen
+    Actions
+        Navigate to the Order MitID Validation screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-18 | Verify help button on Delivery Container screen
+    Actions
+        Navigate to the Delivery Container screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-19 | Verify help button on Delivery Splash screen
+    Actions
+        Navigate to the Delivery Splash screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-20 | Verify help button on Accepted Delivery Jobs screen
+    Actions
+        Navigate to the Accepted Delivery Jobs screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-21 | Verify help button on Delivery Job Details screen
+    Actions
+        Navigate to the Delivery Job Details screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-22 | Verify help button on Cancel Delivery Job screen
+    Actions
+        Navigate to the Cancel Delivery Job screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-23 | Verify help button on Delivery MitID Validation screen
+    Actions
+        Navigate to the Delivery MitID Validation screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-24 | Verify help button on Delivery Payment screen
+    Actions
+        Navigate to the Delivery Payment screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-25 | Verify help button on Payment Receipt Scanner screen
+    Actions
+        Navigate to the Payment Receipt Scanner screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-26 | Verify help button on Delivery Validation Receipt screen
+    Actions
+        Navigate to the Delivery Validation Receipt screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-27 | Verify help button on Delivery Bags screen
+    Actions
+        Navigate to the Delivery Bags screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-28 | Verify help button on Delivery Bags Onboarding screen
+    Actions
+        Navigate to the Delivery Bags Onboarding screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-29 | Verify help button on Tax Earnings Request screen
+    Actions
+        Navigate to the Tax Earnings Request screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-30 | Verify help button on Tax Deductions Request screen
+    Actions
+        Navigate to the Tax Deductions Request screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-31 | Verify help button on Driving Book Route screen
+    Actions
+        Navigate to the Driving Book Route screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-32 | Verify help button on Driving Book Route Summary screen
+    Actions
+        Navigate to the Driving Book Route Summary screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-33 | Verify help button on Driving Book Route Start screen
+    Actions
+        Navigate to the Driving Book Route Start screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-34 | Verify help button on Driving Book Route End screen
+    Actions
+        Navigate to the Driving Book Route End screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-35 | Verify help button on Payment Bank Info Code Input screen
+    Actions
+        Navigate to the Payment Bank Info Code Input screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-36 | Verify help button on Payment Bank Info Verification screen
+    Actions
+        Navigate to the Payment Bank Info Verification screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-37 | Verify help button on Payment Bank Info Verification Error screen
+    Actions
+        Navigate to the Payment Bank Info Verification Error screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-38 | Verify help button on Shopping List Container screen
+    Actions
+        Navigate to the Shopping List Container screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-39 | Verify help button on Shopping List Content screen
+    Actions
+        Navigate to the Shopping List Content screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-40 | Verify help button on Shopping List Overview screen
+    Actions
+        Navigate to the Shopping List Overview screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-41 | Verify help button on Self-Scan Shopping List screen
+    Actions
+        Navigate to the Self-Scan Shopping List screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-42 | Verify help button on Virtual Store screen
+    Actions
+        Navigate to the Virtual Store screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-43 | Verify help button on Virtual Store Grid screen
+    Actions
+        Navigate to the Virtual Store Grid screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-44 | Verify help button on Virtual Store Item Details screen
+    Actions
+        Navigate to the Virtual Store Item Details screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-45 | Verify help button on Virtual Store Item List screen
+    Actions
+        Navigate to the Virtual Store Item List screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-46 | Verify help button on Virtual Store Label Filter screen
+    Actions
+        Navigate to the Virtual Store Label Filter screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-47 | Verify help button on Virtual Store Outgoing Declaration screen
+    Actions
+        Navigate to the Virtual Store Outgoing Declaration screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-48 | Verify help button on Shop MitID Validation screen
+    Actions
+        Navigate to the Shop MitID Validation screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser
+
+zendesk-49 | Verify help button on Delete User screen
+    Actions
+        Navigate to the Delete User screen and tap the help button
+    Expected
+        Help button opens Zendesk support in browser

@@ -1,0 +1,51 @@
+Deeplinking to the app 
+    Open Recipe link
+        Actions
+            Open recipe deeplink from mail - sms
+        Expected
+            App opens the right recipes / recipe theme
+    Open jobs deeplink
+        Actions
+            Open job deeplink
+        Expected
+            User is taken to the vigo correct navigation
+    Open items deeplink
+        Actions
+            Tap on deeplink
+        Expected
+            Deeplink navigates to teh correct place
+    Open shopping list deeplink
+        Actions
+            Tap on the deeplink
+        Expected
+            User is able to create a new list
+            User is able to open a specific list
+App shortcuts
+    Require FaceID
+        Actions
+            Hold on the app icon and require face id
+        Expected
+            App requires FaceID on open
+            Shortcuts are limited
+    Add to shopping list
+        Actions
+            Hold on the app icon and select add to shopping list
+        Expected
+            Search screen is open
+            Adding items syncs with shopping list
+    Scan Items
+        Actions
+            Hold on the app icon and select scanner
+        Expected
+            Scanner opens and works, item can be added to list 
+    Newspapers
+        Actions
+            Hold on the app icon and select  newspapers
+        Expected
+            Newspaper opens, item added, back works
+            user able to interact with items
+    Find Butik
+        Actions
+            Hold on the app icon and select butikker 
+        Expected
+            Map opens, permission handled, store selectable

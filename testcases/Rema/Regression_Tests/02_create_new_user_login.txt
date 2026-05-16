@@ -1,0 +1,68 @@
+Sign up flow
+    Create a new user after tapping on order flow
+        Actions
+            Fresh install of the latest RC build
+            Add items to current shopping list 
+            Tap on order flow
+            Tap on login/opret bruger 
+            Create a user
+        Expected
+            Loading state appears
+            User does not see become vigo indkøber 
+            User finds the previous created shopping list with the correct items
+Login flow
+    Login after tapping on order flow 
+        Actions
+            Fresh install of the latest RC build
+            Add items to current shopping list 
+            Tap on order flow
+            Tap on the left of cancel button
+            Tap on login/opret bruger 
+            Login
+        Expected
+            On prod, user is unable to choose users  from test menu
+            Loading state appears
+            User is logged in and has the previous list created and preselcted
+            User sees first delivery is free if it applies
+    Login with shopper who does not have free delivery
+        Actions
+            Tap on login
+            Enter normal shopper user details
+        Expected
+            Front page is shown
+            Previous shopping lists are retrieved
+            User does not see free delivery info box
+            User does not see become vigo iindkøber
+Delete user 
+    Actions
+        Delete user 
+    Expected
+        User is deleted
+        User can still login and recover the account before 7 days
+        User is unable to login after 7 days
+Logout while preselecting list 
+    Actions
+        Login with a user
+        Make sure to have at least 1 list created
+        Select the shopping lsit
+        Logout
+        Open front page
+    Expected
+        User is logged out
+        Shopping lists are cleared
+        Shopping list Empty state is shown
+User mitid verification [Test on preprod]
+    Verify mitID
+        Actions
+            Create new user
+            Add items to shopping list
+            Start order flow
+            Start mitID verfication flow
+        Expected
+            User is mitid verified
+            User is able to order items
+Edit user informations
+    Actions
+        Edit user informations ( address, phone number)
+    Expected
+        User is able to use the new address in the ordering flow

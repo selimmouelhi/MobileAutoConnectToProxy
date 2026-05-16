@@ -1,0 +1,455 @@
+PICKER_FLOW-01 | Swipe to pick item with quantity 1 - Success flow [P0]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items in the Job section
+        At least one item has quantity equal to 1
+    Actions
+        Navigate to the job details screen
+        Locate an item with quantity 1 in the Job section
+        Swipe the item to pick
+        Observe the item state during the API call
+        Wait for the request to complete
+    Expected
+        Loading indicator appears in the job item price area
+        Swipe action is disabled during the request
+        Item is moved from Job section to Basket section after success
+        Item displays correct details in Basket section
+        Total area updates to reflect the picked item
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Body contains only barcode (amount 1 implicit)
+        GET v3/jobs/{job-id}/baskets/{basket-id} - Updates basket total after item added
+
+PICKER_FLOW-02 | Swipe to pick item with quantity 1 - API failure [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items in the Job section
+        At least one item has quantity equal to 1
+        Network conditions may cause API failure
+    Actions
+        Navigate to the job details screen
+        Locate an item with quantity 1 in the Job section
+        Swipe the item to pick
+        Simulate or encounter API failure during POST request
+        Observe the error handling
+    Expected
+        Loading indicator appears in the job item price area initially
+        Loading state stops when request fails
+        Amount picker sheet is displayed
+        Error message is shown in the amount picker sheet
+        Item remains in the Job section (not moved to Basket)
+        User can retry the action
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Request fails with error response
+
+PICKER_FLOW-03 | Swipe to pick item with quantity greater than 1 - Success flow [P0]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items in the Job section
+        At least one item has quantity greater than 1
+    Actions
+        Navigate to the job details screen
+        Locate an item with quantity greater than 1 in the Job section
+        Swipe the item to pick
+        Observe that amount picker sheet appears
+        Select the desired amount in the picker
+        Tap the Done button
+        Wait for the request to complete
+    Expected
+        Amount picker sheet is displayed immediately after swipe
+        Amount picker sheet is dismissed immediately after tapping Done
+        Loading indicator appears in the job item price area
+        Swipe action is disabled during the request
+        Item is moved from Job section to Basket section after success
+        Item displays the selected quantity in Basket section
+        Total area updates to reflect the picked item with correct amount
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Body contains barcode and selected amount
+        GET v3/jobs/{job-id}/baskets/{basket-id} - Updates basket total after item added
+
+PICKER_FLOW-04 | Swipe to pick item with quantity greater than 1 - API failure [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items in the Job section
+        At least one item has quantity greater than 1
+        Network conditions may cause API failure
+    Actions
+        Navigate to the job details screen
+        Locate an item with quantity greater than 1 in the Job section
+        Swipe the item to pick
+        Select the desired amount in the amount picker sheet
+        Tap the Done button
+        Simulate or encounter API failure during POST request
+        Observe the error handling
+    Expected
+        Amount picker sheet dismisses after tapping Done
+        Loading indicator appears in the job item initially
+        Loading state stops when request fails
+        Amount picker sheet is displayed again
+        Error message is shown in the amount picker sheet
+        Item remains in the Job section (not moved to Basket)
+        User can retry with same or different amount
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Request fails with error response
+
+PICKER_FLOW-05 | Swipe to pick item with invalid quantity selection [P2]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items in the Job section
+        At least one item has quantity greater than 1
+    Actions
+        Navigate to the job details screen
+        Locate an item with quantity greater than 1 in the Job section
+        Swipe the item to pick
+        Attempt to select an amount of 0 or invalid value in the picker
+        Observe validation behavior
+    Expected
+        Amount picker sheet is displayed after swipe
+        Done button is disabled when invalid amount is selected
+        User cannot proceed with amount of 0 or negative value
+        User must select valid amount between 1 and required quantity
+        Appropriate validation feedback is shown
+    API
+        N/A
+
+PICKER_FLOW-06 | Scan barcode with quantity 1 - Success flow [P0]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items
+        At least one item with quantity 1 has a scannable barcode
+        Device camera or scanner is functional
+    Actions
+        Navigate to the job details screen
+        Activate the barcode scanner
+        Scan the barcode of an item with quantity 1
+        Observe the amount picker sheet behavior
+        Wait for the request to complete
+    Expected
+        Amount picker sheet appears immediately with loading state
+        POST request is initiated with only barcode in body
+        Amount picker sheet is dismissed automatically after success
+        Item is moved from Job section to Basket section
+        Last scanned area below scanner shows the scanned item
+        Item displays correct details in Basket section
+        Total area updates to reflect the picked item
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Body contains only barcode (amount 1 implicit)
+        GET v3/jobs/{job-id}/baskets/{basket-id} - Updates basket total after item added
+
+PICKER_FLOW-07 | Scan barcode with quantity 1 - API failure [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items
+        At least one item with quantity 1 has a scannable barcode
+        Network conditions may cause API failure
+    Actions
+        Navigate to the job details screen
+        Activate the barcode scanner
+        Scan the barcode of an item with quantity 1
+        Simulate or encounter API failure during POST request
+        Observe the error handling in amount picker sheet
+    Expected
+        Amount picker sheet appears with loading state
+        Loading state continues during API call
+        Error message is displayed in the amount picker sheet when request fails
+        Amount picker sheet remains open showing the error
+        Item remains in the Job section (not moved to Basket)
+        User can dismiss the picker and retry scanning
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Request fails with error response
+
+PICKER_FLOW-08 | Scan barcode with quantity greater than 1 - Success flow [P0]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items
+        At least one item with quantity greater than 1 has a scannable barcode
+        Device camera or scanner is functional
+    Actions
+        Navigate to the job details screen
+        Activate the barcode scanner
+        Scan the barcode of an item with quantity greater than 1
+        Wait for the initial POST request to complete
+        Observe the amount picker UI transition
+        Select the desired amount in the picker
+        Tap the OK button
+        Wait for the PATCH request to complete
+    Expected
+        Amount picker sheet appears immediately with loading state
+        Initial POST request completes successfully
+        Amount picker UI is shown for user to select quantity
+        Amount picker sheet dismisses immediately after tapping OK
+        Loading state appears in basket item and last scanned area
+        PATCH request is initiated with selected amount
+        Item remains in Basket section after PATCH completes
+        Item displays the selected quantity in Basket section
+        Last scanned area clears loading state after success
+        Total area updates to reflect correct amount
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Body contains only barcode
+        PATCH v3/jobs/{job-id}/baskets/{basket-id}/items - Body contains selected amount
+        GET v3/jobs/{job-id}/baskets/{basket-id} - Updates basket total
+
+PICKER_FLOW-09 | Scan barcode with quantity greater than 1 - Initial POST fails [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items
+        At least one item with quantity greater than 1 has a scannable barcode
+        Network conditions may cause API failure
+    Actions
+        Navigate to the job details screen
+        Activate the barcode scanner
+        Scan the barcode of an item with quantity greater than 1
+        Simulate or encounter API failure during initial POST request
+        Observe error handling
+    Expected
+        Amount picker sheet appears with loading state
+        Loading state continues during POST API call
+        Error message is displayed in the amount picker sheet when POST fails
+        Amount picker sheet remains open showing the error
+        User is not presented with amount selection UI
+        Item remains in the Job section (not moved to Basket)
+        User can dismiss the picker and retry scanning
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Request fails with error response
+
+PICKER_FLOW-10 | Scan barcode with quantity greater than 1 - PATCH fails after successful POST [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items
+        At least one item with quantity greater than 1 has a scannable barcode
+        Initial POST request succeeds but PATCH may fail
+    Actions
+        Navigate to the job details screen
+        Activate the barcode scanner
+        Scan the barcode of an item with quantity greater than 1
+        Wait for the initial POST request to complete successfully
+        Select the desired amount in the picker
+        Tap the OK button
+        Simulate or encounter API failure during PATCH request
+        Observe error handling behavior
+    Expected
+        Amount picker sheet appears with loading state initially
+        Amount picker UI is shown after successful POST
+        Amount picker dismisses after tapping OK
+        Loading state appears in basket item and last scanned area
+        PATCH request fails
+        Item is moved back from Basket section to Job section
+        Loading state is cleared
+        User can retry scanning the item
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Succeeds initially
+        PATCH v3/jobs/{job-id}/baskets/{basket-id}/items - Request fails with error response
+
+PICKER_FLOW-11 | Scan barcode of item already in basket - Update quantity [P0]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with at least one item already picked in Basket section
+        The picked item has a scannable barcode
+        Device camera or scanner is functional
+    Actions
+        Navigate to the job details screen
+        Verify the item exists in the Basket section with current quantity
+        Activate the barcode scanner
+        Scan the barcode of the item that is already in the basket
+        Observe amount picker behavior
+        Select a new amount in the picker
+        Tap the OK or Done button
+        Wait for the update request to complete
+    Expected
+        Amount picker sheet appears immediately (not with loading state)
+        Amount picker displays current quantity for the item
+        User can modify the quantity
+        PATCH request is initiated with new selected amount
+        Item quantity updates in the Basket section after success
+        Item remains in the Basket section
+        Total area updates to reflect the new quantity
+        Last scanned area shows the updated item
+    API
+        PATCH v3/jobs/{job-id}/baskets/{basket-id}/items - Body contains new selected amount
+        GET v3/jobs/{job-id}/baskets/{basket-id} - Updates basket total
+
+PICKER_FLOW-12 | Scan barcode of item already in basket - API failure during update [P2]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with at least one item already picked in Basket section
+        The picked item has a scannable barcode
+        Network conditions may cause API failure
+    Actions
+        Navigate to the job details screen
+        Verify the item exists in the Basket section with current quantity
+        Activate the barcode scanner
+        Scan the barcode of the item that is already in the basket
+        Select a new amount in the amount picker
+        Tap the OK or Done button
+        Simulate or encounter API failure during PATCH request
+        Observe error handling
+    Expected
+        Amount picker sheet appears immediately
+        Amount picker displays current quantity for the item
+        User selects new quantity and taps OK/Done
+        Loading state appears during PATCH request
+        Error message is displayed when PATCH fails
+        Item quantity remains unchanged in Basket section
+        User can dismiss error and retry
+    API
+        PATCH v3/jobs/{job-id}/baskets/{basket-id}/items - Request fails with error response
+
+PICKER_FLOW-13 | Scan invalid or unrecognized barcode [P2]
+    Preconditions
+        User is logged in as a picker
+        User has an active job
+        Device camera or scanner is functional
+    Actions
+        Navigate to the job details screen
+        Activate the barcode scanner
+        Scan a barcode that does not match any item in the job
+        Observe error handling behavior
+    Expected
+        Scanner successfully reads the barcode
+        System attempts to match barcode with job items
+        Error message is displayed indicating barcode not found or not valid for this job
+        No amount picker sheet is shown
+        No items are added to basket
+        User can scan again or manually select items
+    API
+        N/A
+
+PICKER_FLOW-14 | Remove item from basket - Existing functionality [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with at least one item in the Basket section
+    Actions
+        Navigate to the job details screen
+        Locate an item in the Basket section
+        Trigger the remove action (swipe or button)
+        Confirm removal if confirmation is required
+        Wait for the request to complete
+    Expected
+        Remove action is triggered successfully
+        DELETE or appropriate API request is sent
+        Item is removed from Basket section
+        Item is moved back to Job section (if applicable) or removed entirely
+        Total area updates to reflect the removed item
+        UI updates correctly without visual glitches
+    API
+        N/A
+
+PICKER_FLOW-15 | Update quantity on basket item manually - Existing functionality [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with at least one item in the Basket section
+    Actions
+        Navigate to the job details screen
+        Locate an item in the Basket section
+        Tap on the item or quantity field to trigger amount picker
+        Change the quantity value
+        Tap OK or Done to confirm
+        Wait for the update request to complete
+    Expected
+        Amount picker sheet is displayed with current quantity
+        User can increase or decrease the quantity
+        PATCH request is sent with new quantity
+        Item quantity updates in Basket section after success
+        Total area updates to reflect the new quantity
+        Error handling works if request fails
+    API
+        PATCH v3/jobs/{job-id}/baskets/{basket-id}/items - Body contains new quantity
+
+PICKER_FLOW-16 | Replace item functionality - Existing functionality [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with items that support replacement
+        At least one item is in the Job or Basket section
+    Actions
+        Navigate to the job details screen
+        Locate an item that can be replaced
+        Trigger the replace item action
+        Select a replacement item from available options
+        Confirm the replacement
+        Wait for the request to complete
+    Expected
+        Replace item UI is displayed
+        Available replacement options are shown
+        Selected replacement is processed via appropriate API
+        Original item is replaced with new item in the list
+        Total area updates if price difference exists
+        UI reflects the replacement accurately
+    API
+        N/A
+
+PICKER_FLOW-17 | Mark item as sold out - Existing functionality [P1]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with unpicked items in the Job section
+    Actions
+        Navigate to the job details screen
+        Locate an item in the Job section
+        Trigger the mark as sold out action
+        Confirm the action if confirmation is required
+        Wait for the request to complete
+    Expected
+        Mark sold out action is triggered successfully
+        Appropriate API request is sent to mark item as unavailable
+        Item is removed from Job section or marked with sold out status
+        Item does not appear in Basket section
+        Total area remains unchanged
+        UI updates to reflect sold out status
+    API
+        N/A
+
+PICKER_FLOW-18 | Total area displays spinner during basket GET call [P2]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with items in the Basket section
+        Basket total needs to be refreshed
+    Actions
+        Navigate to the job details screen
+        Perform an action that triggers GET basket call (add item, update quantity, or manual refresh)
+        Observe the Total area behavior during the API call
+    Expected
+        Total area hides the price value when GET request is initiated
+        Spinner is displayed in the Total area during the API call
+        Spinner disappears after GET request completes
+        Updated basket total is displayed in the Total area
+        No visual glitches or incorrect values are shown
+    API
+        GET v3/jobs/{job-id}/baskets/{basket-id} - Fetches updated basket total
+
+PICKER_FLOW-19 | Last scanned area shows loading state during API calls [P2]
+    Preconditions
+        User is logged in as a picker
+        User has an active job
+        Device camera or scanner is functional
+    Actions
+        Navigate to the job details screen
+        Scan or swipe an item to pick
+        Observe the Last scanned area below the scanner view
+        Wait for the API call to complete
+    Expected
+        Latest scanned or swiped item appears in Last scanned area immediately
+        Loading state (spinner or indicator) is displayed in Last scanned area during API call
+        Loading state is removed after API call completes (success or failure)
+        Last scanned area shows final item state with correct details
+        Area updates correctly for subsequent scans
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Add item API call in progress
+
+PICKER_FLOW-20 | Concurrent swipe and scan actions - Race condition handling [P2]
+    Preconditions
+        User is logged in as a picker
+        User has an active job with multiple unpicked items
+        Device camera or scanner is functional
+    Actions
+        Navigate to the job details screen
+        Swipe an item to pick (initiating API call)
+        Immediately scan another item before first request completes
+        Observe system behavior and API request handling
+    Expected
+        First swipe action initiates POST request
+        Swipe actions are disabled during first request
+        Second scan action is queued or handled appropriately
+        Both items are processed without data corruption
+        Items are moved to Basket section in correct order
+        No duplicate API calls or lost requests occur
+        Error handling works if requests conflict
+    API
+        POST v3/jobs/{job-id}/baskets/{basket-id}/items - Multiple calls may occur in sequence

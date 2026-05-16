@@ -1,0 +1,50 @@
+Start and Complete a Køb & Hent Order [TO TEST ON PREPROD] 
+    Preconditions
+        --User is logged in with items in shopping list
+    Actions
+        Add a mix of standard products and unspecified items to the shopping list
+        Add alcohol to the items to the shopping list
+        Start order flow via K&H by tapping on order button
+        Select a store from suggestions or via map
+        Choose a pick up time
+        Apply a gift code if possible
+        Tap continue
+        Complete paymnet via Mobile pay or Card
+        Review the order receipt
+    Expected
+        Store list, pickup times, and map open correctly
+        Gift code is validated and applied/rejected appropriately
+        Order receipt matches all listed items from shopping list
+        Product counts, totals, and discounts are accurate
+        Payment completes successfully
+        Order appears in front page or Dine indkøbsopgaver
+        User unable to cancel order 
+Order Status and Interactions [TO TEST ON PREPROD] 
+    Preconditions
+        --At least one active order
+    Actions
+        Go to front page
+        Check the order card for active order
+        Tap current order to view details
+    Expected
+        Order banner is visible and updates based on progress
+        Delivery info is correct (time, items, cost)
+        After order is taken, the order cannot be canceled, shows only informations
+        K&H orders go through 3 steps ( only possible to see first and last)
+        Order card is updated dynamically from backend for both K&H and delivery ( K&h will only update from 1-3)
+Orders History [TO TEST ON PREPROD] 
+    Preconditions
+        --User has already past orders
+    Actions
+        Open an order that has expired
+        Open an ongoain order but not picked up yet
+        Open an ongoain order and picked up
+        Open an order that has been marked done and rated
+        Open an order that has been marked as done but not rated
+    Expected
+        For expired orders, user sees an option to re order again
+        For ongoing orders and not treated yet, user can see the order details + option to modify/cancel order
+        For ongoaing orders and treated, user can see the order details
+        For orders that are marked as done and not rated, user can see details + option to rate the order 
+        For orders that are marked as done and not rated, user can see details only
+        Recipets showcase what has been bought and what has been marked as sold out 

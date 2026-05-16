@@ -1,0 +1,431 @@
+Share Shopping List - Module 4: QR Code
+
+QR_CODE-01 | Tapping QR code button fetches the share link and shows loading state [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        User has navigated to a shopping list
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow the share link API request to proceed
+    Actions
+        Tap the QR code button
+        Observe the button state immediately after tapping
+        Observe the other two buttons (Share link and Copy link) during loading
+    Expected
+        The QR code button displays a loading state with a circle spinner within the button
+        The Share link button and Copy link button are not clickable during loading
+        The loading state persists until the share link is fetched from the Shared KMP module
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API
+QR_CODE-02 | QR code button loading spinner is contained within the button [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network is throttled to make the loading state observable
+    Actions
+        Tap the QR code button
+        Observe the loading spinner placement and size
+    Expected
+        The circle spinner is displayed within the bounds of the QR code button
+        The spinner replaces or overlays the button label text
+        The spinner does not extend beyond the button edges
+        The button maintains its original size and shape during loading
+        No layout shift occurs in the surrounding buttons or content
+    API
+        N/A
+QR_CODE-03 | QR code fetch failure shows error alert and exits loading state [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions are configured to cause the share link API request to fail
+    Actions
+        Tap the QR code button
+        Wait for the request to fail
+        Observe the button state after failure
+        Observe the error alert that appears
+    Expected
+        The QR code button exits the loading state (spinner is removed)
+        An error alert is presented on top of the share shopping list sheet
+        The error alert title displays text matching localization key app_share_list.create_link_error_title (fallback: "Der skete en fejl")
+        The error alert message displays text matching localization key app_share_list.create_link_error_message (fallback: "Linket kunne ikke laves. Prøv igen")
+        The error alert has an action button matching localization key app_share_list.create_link_error_action (fallback: "OK")
+        No raw localization key strings are displayed
+    API
+        Share link request fails via the Shared KMP module
+QR_CODE-04 | Dismissing QR code error alert returns to interactive share sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code share link error alert is displayed on top of the share shopping list sheet
+    Actions
+        Tap the "OK" button on the error alert
+        Observe the error alert
+        Observe the share shopping list sheet
+    Expected
+        The error alert is dismissed
+        The share shopping list sheet remains open and visible
+        All three share link buttons return to their default resting state and are fully interactive
+        User can tap any of the three buttons to retry the action
+    API
+        N/A
+QR_CODE-05 | QR code screen is presented with fade in animation after successful link fetch [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow a successful share link API response
+    Actions
+        Tap the QR code button
+        Wait for the share link to be fetched successfully
+        Observe the screen transition after fetching completes
+    Expected
+        The loading spinner on the QR code button disappears after the link is fetched
+        A QR code screen is presented with a fade in animation
+        The fade in animation is smooth and not abrupt
+        The QR code is clearly visible on the screen
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API
+QR_CODE-06 | QR code encodes the share link URL [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed after a successful share link fetch
+    Actions
+        Use another device to scan the displayed QR code
+        Observe the decoded content
+    Expected
+        The QR code encodes the share link URL that was fetched from the API
+        Scanning the QR code with another device produces the correct share link URL
+        The URL is complete and well-formed
+    API
+        N/A
+QR_CODE-07 | QR code screen displays close button with correct label [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+    Actions
+        Observe the QR code screen for a close button
+        Verify the close button label text
+    Expected
+        A close button is displayed on the QR code screen
+        The close button label displays text matching localization key app_share_list.qr_close (fallback: "Luk")
+        No raw localization key string is displayed
+        The close button is clearly visible and tappable
+    API
+        N/A
+QR_CODE-08 | Tapping close button dismisses the QR code screen with fade out animation [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+    Actions
+        Tap the close button ("Luk")
+        Observe the screen transition
+    Expected
+        The QR code screen is dismissed with a fade out animation
+        The fade out animation is smooth and not abrupt
+        After the fade out completes the user returns to the share shopping list sheet
+        The share shopping list sheet is still open and fully interactive
+    API
+        N/A
+QR_CODE-09 | Closing QR code does not dismiss the share shopping list sheet [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Share shopping list sheet was open before the QR code screen was presented
+    Actions
+        Tap the close button ("Luk") on the QR code screen
+        Wait for the fade out animation to complete
+        Observe the state of the share shopping list sheet
+    Expected
+        The share shopping list sheet remains open after the QR code screen is dismissed
+        The share shopping list sheet is fully interactive
+        All three share link buttons are in their default resting state
+        The "Who has access" section and other sheet content are visible and unchanged
+    API
+        N/A
+QR_CODE-10 | Closing QR code does not show a snackbar confirmation [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+    Actions
+        Tap the close button ("Luk") on the QR code screen
+        Wait for the fade out animation to complete
+        Observe the share shopping list sheet and shopping list screen for any snackbar
+    Expected
+        No snackbar confirmation is displayed after the QR code screen is closed
+        The share shopping list sheet is shown without any toast or notification message
+        The shopping list screen does not display any confirmation message
+    API
+        N/A
+QR_CODE-11 | QR code screen prevents the phone from going to sleep [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Device auto-lock / screen timeout is set to a short duration (e.g. 30 seconds)
+        QR code screen is displayed
+    Actions
+        Leave the device idle with the QR code screen displayed
+        Wait for a duration that exceeds the device auto-lock setting
+        Observe whether the screen stays on
+    Expected
+        The phone screen does not turn off or lock while the QR code screen is displayed
+        The QR code remains visible and scannable during the entire idle period
+        The device does not enter sleep mode
+    API
+        N/A
+QR_CODE-12 | Phone sleep prevention is removed when QR code screen is closed [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Device auto-lock / screen timeout is set to a short duration (e.g. 30 seconds)
+    Actions
+        Tap the close button ("Luk") to dismiss the QR code screen
+        Leave the device idle on the share shopping list sheet
+        Wait for the device auto-lock duration to elapse
+        Observe whether the screen locks
+    Expected
+        After closing the QR code screen the device resumes its normal auto-lock behavior
+        The screen turns off or locks after the configured timeout elapses
+        The sleep prevention does not persist beyond the QR code screen lifecycle
+    API
+        N/A
+QR_CODE-13 | QR code is displayed until the user closes it [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+    Actions
+        Leave the QR code screen open for an extended period (e.g. several minutes)
+        Observe whether the QR code remains displayed
+        Verify the QR code is still scannable after the extended period
+    Expected
+        The QR code screen does not auto-dismiss or timeout on its own
+        The QR code remains visible and scannable indefinitely
+        The screen stays on due to the sleep prevention behavior
+        The QR code screen is only dismissed when the user taps the close button
+    API
+        N/A
+QR_CODE-14 | Show instructions button is displayed with correct label [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are not currently visible
+    Actions
+        Observe the QR code screen for a show instructions button
+        Verify the button label text
+    Expected
+        A show instructions button is displayed on the QR code screen
+        The button label displays text matching localization key app_share_list.qr_show_instructions (fallback: "Vis instruktioner")
+        No raw localization key string is displayed
+        The button is clearly visible and tappable
+    API
+        N/A
+QR_CODE-15 | Tapping show instructions animates QR code up and decreases its size [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are not currently visible
+    Actions
+        Tap the show instructions button ("Vis instruktioner")
+        Observe the QR code position and size during the animation
+    Expected
+        The QR code animates upward from its original position
+        The QR code size decreases during the animation
+        The animation is smooth and not abrupt
+        The QR code remains visible and scannable in its new smaller size and position
+    API
+        N/A
+QR_CODE-16 | Tapping show instructions fades in the instructions box [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are not currently visible
+    Actions
+        Tap the show instructions button ("Vis instruktioner")
+        Observe the instructions box appearing
+    Expected
+        The instructions box appears with a fade in animation
+        The fade in animation is smooth and synchronized with the QR code move animation
+        The instructions box is fully visible and readable after the animation completes
+    API
+        N/A
+QR_CODE-17 | Instructions box displays correct title text [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are visible (show instructions has been tapped)
+    Actions
+        Observe the title text in the instructions box
+    Expected
+        The instructions title displays text matching localization key app_share_list.qr_instructions_title (fallback: "Personen der skanner QR koden vil blive inviteret til indkobslisten")
+        No raw localization key string is displayed
+        The title text is clearly readable and not truncated
+    API
+        N/A
+QR_CODE-18 | Instructions box displays correct subtitle text [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are visible (show instructions has been tapped)
+    Actions
+        Observe the subtitle text in the instructions box
+    Expected
+        The instructions subtitle displays text matching localization key app_share_list.qr_instructions_subtitle (fallback: "For at det virker skal personen:")
+        No raw localization key string is displayed
+        The subtitle text is clearly readable and not truncated
+    API
+        N/A
+QR_CODE-19 | Instructions box displays all three bullet points with correct text [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are visible (show instructions has been tapped)
+    Actions
+        Observe the bullet points in the instructions box
+        Verify the text of each bullet point
+    Expected
+        Three bullet points are displayed in the instructions box
+        Bullet 1 displays text matching localization key app_share_list.qr_instructions_bullet1 (fallback: "Have REMA 1000 appen og vaere logget ind")
+        Bullet 2 displays text matching localization key app_share_list.qr_instructions_bullet2 (fallback: "Skanne QR koden")
+        Bullet 3 displays text matching localization key app_share_list.qr_instructions_bullet3 (fallback: "Acceptere invitationen i sin app")
+        No raw localization key strings are displayed
+        All bullet points are clearly readable and not truncated
+    API
+        N/A
+QR_CODE-20 | Show instructions button changes to hide instructions when instructions are visible [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are not currently visible
+    Actions
+        Tap the show instructions button ("Vis instruktioner")
+        Wait for the instructions to fully appear
+        Observe the button label text
+    Expected
+        The button label changes from show instructions to hide instructions
+        The button now displays text matching localization key app_share_list.qr_hide_instructions (fallback: "Skjul instruktioner")
+        No raw localization key string is displayed
+        The button is clearly visible and tappable
+    API
+        N/A
+QR_CODE-21 | Tapping hide instructions reverses the QR code animation [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are currently visible
+    Actions
+        Tap the hide instructions button ("Skjul instruktioner")
+        Observe the QR code position and size during the animation
+    Expected
+        The QR code animates downward back to its original position
+        The QR code size increases back to its original size
+        The animation is the reverse of the show instructions animation
+        The animation is smooth and not abrupt
+        The QR code returns to its original position and size
+    API
+        N/A
+QR_CODE-22 | Tapping hide instructions fades out the instructions box [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are currently visible
+    Actions
+        Tap the hide instructions button ("Skjul instruktioner")
+        Observe the instructions box disappearing
+    Expected
+        The instructions box disappears with a fade out animation
+        The fade out animation is smooth and synchronized with the QR code move animation
+        After the animation completes the instructions box is no longer visible
+    API
+        N/A
+QR_CODE-23 | Hide instructions button changes back to show instructions after hiding [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are currently visible
+    Actions
+        Tap the hide instructions button ("Skjul instruktioner")
+        Wait for the instructions to fully disappear
+        Observe the button label text
+    Expected
+        The button label changes from hide instructions back to show instructions
+        The button now displays text matching localization key app_share_list.qr_show_instructions (fallback: "Vis instruktioner")
+        No raw localization key string is displayed
+        The button is clearly visible and tappable
+    API
+        N/A
+QR_CODE-24 | Toggling instructions multiple times works consistently [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are not currently visible
+    Actions
+        Tap show instructions and wait for the animation to complete
+        Tap hide instructions and wait for the animation to complete
+        Tap show instructions again and wait for the animation to complete
+        Tap hide instructions again and wait for the animation to complete
+        Repeat several times
+    Expected
+        Each toggle animates correctly every time
+        The QR code moves and resizes smoothly in both directions
+        The instructions box fades in and out correctly each time
+        The button label toggles correctly between show and hide instructions
+        No visual glitches or animation stuttering occurs after repeated toggles
+        The QR code remains scannable after every toggle
+    API
+        N/A
+QR_CODE-25 | Rapid repeated taps on QR code button do not trigger multiple requests [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        Share shopping list sheet is presented and fully loaded
+        Network conditions allow API requests to proceed
+    Actions
+        Rapidly tap the QR code button multiple times in quick succession
+        Observe the button state and network activity
+        Wait for the request to complete
+    Expected
+        Only one share link request is sent to the API
+        The button enters loading state on the first tap and ignores subsequent taps
+        Only one QR code screen is presented after the link is fetched
+        No duplicate requests or race conditions occur
+    API
+        Share link is fetched via the Shared KMP module which calls the backend API
+QR_CODE-26 | QR code screen is scannable by another device running the Rema 1000 app [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app on Device A
+        QR code screen is displayed on Device A
+        A second device (Device B) has the Rema 1000 app installed and a user is logged in
+    Actions
+        On Device B open a QR code scanner or the device camera
+        Point Device B camera at the QR code displayed on Device A
+        Observe the scan result on Device B
+    Expected
+        Device B successfully reads the QR code
+        The decoded URL matches the share link invitation format
+        The QR code is readable at a reasonable scanning distance
+        The QR code has sufficient contrast and resolution for reliable scanning
+    API
+        N/A
+QR_CODE-27 | QR code remains scannable when instructions are shown and QR code is smaller [P0]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are visible (QR code is in its smaller, elevated position)
+    Actions
+        Use another device to scan the QR code while it is in the smaller size
+        Observe the scan result
+    Expected
+        The QR code is still scannable even in its smaller size
+        The decoded URL matches the same share link URL
+        The reduced size does not prevent successful scanning at a reasonable distance
+    API
+        N/A
+QR_CODE-28 | Closing QR code with instructions visible works correctly [P1]
+    Preconditions
+        User is logged in to the Rema 1000 app
+        QR code screen is displayed
+        Instructions are currently visible
+    Actions
+        Tap the close button ("Luk") while instructions are visible
+        Observe the screen transition
+    Expected
+        The entire QR code screen (including the instructions box) is dismissed with a fade out animation
+        The share shopping list sheet is shown after the fade out completes
+        The share shopping list sheet is fully interactive
+        No residual instruction content is visible
+    API
+        N/A
